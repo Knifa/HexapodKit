@@ -1,2 +1,5 @@
 ROS/build/
 ROS/devel/
+
+*.swp
+*.pyc
