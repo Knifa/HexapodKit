@@ -1,8 +1,8 @@
 #!/usr/bin/python
 import rospy
-import std_msgs.msg as msgs
-
 import serial
+
+from hexapod.msg import ServoCommand
 
 def servo_command_callback(data):
 	rospy.loginfo(data.data)
@@ -10,5 +10,5 @@ def servo_command_callback(data):
 if __name__ == "__main__":
 	rospy.init_node('servo_serial')
 
-	rospy.Subscriber('servo_command', msgs.Int8, servo_command_callback)
+	rospy.Subscriber('servo_command', ServoCommand, servo_command_callback)
 	rospy.spin()
