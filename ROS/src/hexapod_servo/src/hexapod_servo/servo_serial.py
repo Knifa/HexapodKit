@@ -7,6 +7,7 @@ from serial import Serial
 class HexapodServoSerial(object):
 	def __init__(self):
 		self.__serial = Serial('/dev/ttyACM0', 9600, stopbits=1, bytesize=8)
+		rospy.sleep(1)
 
 		rospy.init_node('servo_serial')
 		rospy.Subscriber('servo_command', ServoCommand, self.move_callback)
@@ -16,7 +17,7 @@ class HexapodServoSerial(object):
 		move_string = HexapodServoSerial.__move_string(data.index, data.angle)
 
 		if data.angle < 0 or data.angle > 180:
-			rospy.logerr('Tried to set servo #' + str(data.index) ' out of bounds (' + 
+			rospy.logerr('Tried to set servo #' + str(data.index) + ' out of bounds (' + 
 				str(data.angle) + ' degrees).')
 			return
 
@@ -24,11 +25,13 @@ class HexapodServoSerial(object):
 		rospy.logdebug('Sending command to controller: ' + move_string[:-2])
 
 		self.__serial.write(move_string)
+		self.__serial.flush()
+		rospy.sleep(0.001)
 
 	@staticmethod
 	def __move_string(index, angle):
 		pulse_duration = int(((angle / 180.0) * (2500 - 500))) + 500
-		return '#' + str(index) + 'P' + str(pulse_duration) + 'T100\r\n'
+		return '#' + str(index) + 'P' + str(pulse_duration) + 'T250\r\n'
 
 if __name__ == '__main__':
 	HexapodServoSerial()
