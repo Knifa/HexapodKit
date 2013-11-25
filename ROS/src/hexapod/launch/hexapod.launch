@@ -1,5 +1,6 @@
 <launch>
 	<group ns="hexapod">
 		<node name="servo_serial" pkg="hexapod_servo" type="servo_serial.py" />
+		<node name="servo_control" pkg="hexapod_servo" type="servo_control.py" />
 	</group>
 </launch>

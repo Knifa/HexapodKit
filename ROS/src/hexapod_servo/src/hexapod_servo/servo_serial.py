@@ -14,7 +14,7 @@ class HexapodServoSerial(object):
 		rospy.spin()
 
 	def move_callback(self, data):
-		move_string = HexapodServoSerial.__move_string(data.index, data.angle)
+		move_string = HexapodServoSerial.__move_string(data.index, data.angle, data.duration)
 
 		if data.angle < 0 or data.angle > 180:
 			rospy.logerr('Tried to set servo #' + str(data.index) + ' out of bounds (' + 
@@ -29,9 +29,16 @@ class HexapodServoSerial(object):
 		rospy.sleep(0.001)
 
 	@staticmethod
-	def __move_string(index, angle):
+	def __move_string(index, angle, duration):
+		rospy.logdebug(duration)
+		
+		if duration < 0.1:
+			duration = 0.1
+
 		pulse_duration = int(((angle / 180.0) * (2500 - 500))) + 500
-		return '#' + str(index) + 'P' + str(pulse_duration) + 'T250\r\n'
+		move_time = int(duration * 1000)
+
+		return '#' + str(index + 1) + 'P' + str(pulse_duration) + 'T' + str(move_time) + '\r\n'
 
 if __name__ == '__main__':
 	HexapodServoSerial()
