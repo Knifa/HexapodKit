@@ -26,14 +26,14 @@ class HexapodServoControl(object):
 			data.angle -= 5
 
 		if data.index == 2:
-			data.angle -= 10
+			data.angle -= 5
 		elif data.index == 3:
-			data.angle += 10
+			data.angle += 5
 
 		if data.index == 0:
-			data.angle += 8
+			data.angle += 5
 		elif data.index == 5:
-			data.angle -= 8
+			data.angle -= 5
 
 		self.__move(HexapodServoControl.__actual_index(data.index, 0), data.angle, data.duration)
 
@@ -42,7 +42,7 @@ class HexapodServoControl(object):
 			data.angle = 180 - data.angle
 
 		if data.index == 0:
-			data.angle -= 5
+			data.angle -= 10
 		if data.index == 5:
 			data.angle += 5
 

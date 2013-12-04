@@ -30,7 +30,7 @@ if __name__ == '__main__':
 	for i in range(6):
 		body_pub.publish(ServoCommand(index=i, angle=90))
 		shin_pub.publish(ServoCommand(index=i, angle=100 + legs_angle))
-		foot_pub.publish(ServoCommand(index=i, angle=70 - legs_angle))
+		foot_pub.publish(ServoCommand(index=i, angle=80 - legs_angle))
 
 	rospy.sleep(1)	
 
@@ -43,7 +43,7 @@ if __name__ == '__main__':
 		global up_servos, down_servos
 
 		#time = 1 + ((1 - ((abs(y_left) + abs(y_right)) / 2))*2)
-		time = 1
+		time = 1.25
 
 		for j in range(1):
 			for i in up_servos:
@@ -51,22 +51,22 @@ if __name__ == '__main__':
 			rospy.sleep(0.05 * time)
 
 			for i in up_servos:
-				foot_pub.publish(ServoCommand(index=i, angle=50 - legs_angle, duration=0.1 * time))
+				foot_pub.publish(ServoCommand(index=i, angle=70 - legs_angle, duration=0.1 * time))
 			rospy.sleep(0.05 * time)
 
 			# push up legs back
 			for i in up_servos:
 				if i >= 3:
-					body_pub.publish(ServoCommand(index=i, angle=90-(12*y_left), duration=0.1 * time))
+					body_pub.publish(ServoCommand(index=i, angle=90-(8*y_left), duration=0.1 * time))
 				else:
-					body_pub.publish(ServoCommand(index=i, angle=90+(12*y_right), duration=0.1 * time))
+					body_pub.publish(ServoCommand(index=i, angle=90+(8*y_right), duration=0.1 * time))
 
 			# push forward
 			for i in down_servos:
 				if i >= 3:
-					body_pub.publish(ServoCommand(index=i, angle=90+(12*y_left), duration=0.1 * time))
+					body_pub.publish(ServoCommand(index=i, angle=90+(8*y_left), duration=0.1 * time))
 				else:
-					body_pub.publish(ServoCommand(index=i, angle=90-(12*y_right), duration=0.1 * time))
+					body_pub.publish(ServoCommand(index=i, angle=90-(8*y_right), duration=0.1 * time))
 			rospy.sleep(0.15 * time)
 
 			# put legs down
@@ -75,7 +75,7 @@ if __name__ == '__main__':
 					shin_pub.publish(ServoCommand(index=i, angle=100 + legs_angle + (20*x_left), duration=0.1 * time))
 				else:
 					shin_pub.publish(ServoCommand(index=i, angle=100 + legs_angle - (20*x_right), duration=0.1 * time))
-				foot_pub.publish(ServoCommand(index=i, angle=70 - legs_angle, duration=0.1 * time))
+				foot_pub.publish(ServoCommand(index=i, angle=80 - legs_angle, duration=0.1 * time))
 
 			rospy.sleep(0.15 * time)
 
@@ -106,6 +106,6 @@ if __name__ == '__main__':
 			for i in range(6):
 				body_pub.publish(ServoCommand(index=i, angle=90))
 				shin_pub.publish(ServoCommand(index=i, angle=100 + legs_angle))
-				foot_pub.publish(ServoCommand(index=i, angle=70 - legs_angle))
+				foot_pub.publish(ServoCommand(index=i, angle=80 - legs_angle))
 
 		rospy.sleep(0.1)
