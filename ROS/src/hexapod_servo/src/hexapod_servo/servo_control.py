@@ -26,9 +26,9 @@ class HexapodServoControl(object):
 			data.angle -= 5
 
 		if data.index == 2:
-			data.angle -= 5
+			data.angle -= 0
 		elif data.index == 3:
-			data.angle += 5
+			data.angle += 0
 
 		if data.index == 0:
 			data.angle += 5
@@ -47,12 +47,12 @@ class HexapodServoControl(object):
 			data.angle += 5
 
 		if data.index == 2:
-			data.angle += 5
+			data.angle += 0
 		if data.index == 3:
 			data.angle -= 10
 
 		if data.index == 1:
-			data.angle += 10
+			data.angle += 5
 		if data.index == 4:
 			data.angle -= 10
 
