@@ -2,14 +2,14 @@
 import rospy
 from hexapod_servo.msg import ServoCommand
 
-class HexapodServoControl(object):
+class JointController(object):
 	def __init__(self):
-		self.__servo_pub = rospy.Publisher('/hexapod/servo_command', ServoCommand)
+		self.__servo_pub = rospy.Publisher('direct', ServoCommand)
 
-		rospy.init_node('servo_command')
-		rospy.Subscriber('move_body', ServoCommand, self.move_body)
-		rospy.Subscriber('move_shin', ServoCommand, self.move_shin)
-		rospy.Subscriber('move_foot', ServoCommand, self.move_foot)
+		rospy.init_node('joint_controller')
+		rospy.Subscriber('joint/body', ServoCommand, self.move_body)
+		rospy.Subscriber('joint/shin', ServoCommand, self.move_shin)
+		rospy.Subscriber('joint/foot', ServoCommand, self.move_foot)
 		rospy.spin()
 
 	def move_body(self, data):
@@ -35,7 +35,7 @@ class HexapodServoControl(object):
 		elif data.index == 5:
 			data.angle -= 5
 
-		self.__move(HexapodServoControl.__actual_index(data.index, 0), data.angle, data.duration)
+		self.__move(JointController.__actual_index(data.index, 0), data.angle, data.duration)
 
 	def move_shin(self, data):
 		if data.index in [1, 2, 5]:
@@ -56,7 +56,7 @@ class HexapodServoControl(object):
 		if data.index == 4:
 			data.angle -= 10
 
-		self.__move(HexapodServoControl.__actual_index(data.index, 1), data.angle, data.duration)
+		self.__move(JointController.__actual_index(data.index, 1), data.angle, data.duration)
 
 	def move_foot(self, data):
 		if data.index in [1, 5]:
@@ -67,7 +67,7 @@ class HexapodServoControl(object):
 		if data.index == 4:
 			data.angle += 10
 
-		self.__move(HexapodServoControl.__actual_index(data.index, 2), data.angle, data.duration)
+		self.__move(JointController.__actual_index(data.index, 2), data.angle, data.duration)
 
 	def __move(self, index, angle, duration):
 		servo_command = ServoCommand(index=index, angle=angle, duration=duration)
@@ -82,4 +82,4 @@ class HexapodServoControl(object):
 		return actual_index
 
 if __name__ == '__main__':
-	HexapodServoControl()
+	JointController()

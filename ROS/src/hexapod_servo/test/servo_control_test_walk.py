@@ -11,9 +11,9 @@ up_servos = [0,2,4]
 down_servos = [1,3,5]
 
 if __name__ == '__main__':
-	body_pub = rospy.Publisher('/hexapod/move_body', ServoCommand)
-	shin_pub = rospy.Publisher('/hexapod/move_shin', ServoCommand)
-	foot_pub = rospy.Publisher('/hexapod/move_foot', ServoCommand)
+	body_pub = rospy.Publisher('/hexapod/servo/joint/body', ServoCommand)
+	shin_pub = rospy.Publisher('/hexapod/servo/joint/shin', ServoCommand)
+	foot_pub = rospy.Publisher('/hexapod/servo/joint/foot', ServoCommand)
 	rospy.init_node('servo_control_test', anonymous=True)
 
 	js = pygame.joystick.Joystick(0)

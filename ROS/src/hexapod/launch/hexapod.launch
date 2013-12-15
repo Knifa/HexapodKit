@@ -1,6 +1,13 @@
 <launch>
 	<group ns="hexapod">
-		<node name="servo_serial" pkg="hexapod_servo" type="servo_serial.py" />
-		<node name="servo_control" pkg="hexapod_servo" type="servo_control.py" />
+		<group ns="servo">
+			<node name="servo_controller" pkg="hexapod_servo" type="servo_controller.py" />
+			<node name="joint_controller" pkg="hexapod_servo" type="joint_controller.py" />
+		</group>
+
+		<group ns="locomotion">
+			<node name="walker" pkg="hexapod_locomotion" type="walker.py" output="screen" />
+			<node name="joystick_controller" pkg="hexapod_locomotion" type="joystick_controller.py" output="screen" />
+		</group>
 	</group>
 </launch>
