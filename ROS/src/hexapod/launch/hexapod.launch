@@ -2,7 +2,7 @@
 	<group ns="hexapod">
 		<group ns="servo">
 			<node name="servo_controller" pkg="hexapod_servo" type="servo_controller.py" />
-			<node name="joint_controller" pkg="hexapod_servo" type="joint_controller.py" />
+			<node name="joint_controller" pkg="hexapod_servo" type="joint_controller.py" output="screen" />
 		</group>
 
 		<group ns="locomotion">
@@ -10,4 +10,6 @@
 			<node name="joystick_controller" pkg="hexapod_locomotion" type="joystick_controller.py" output="screen" />
 		</group>
 	</group>
+
+	<node name="joy" pkg="joy" type="joy_node" />
 </launch>

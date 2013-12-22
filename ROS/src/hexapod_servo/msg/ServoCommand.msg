@@ -1,4 +1,4 @@
 Header header
 uint8 index
-uint8 angle
+int16 angle
 float32 duration
