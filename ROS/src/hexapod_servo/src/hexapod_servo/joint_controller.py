@@ -2,6 +2,8 @@
 import rospy
 from hexapod_servo.msg import ServoCommand
 
+import pickle
+
 ####################################################################################################
 
 class Joint(object):
@@ -23,17 +25,9 @@ class JointController(object):
 			self.__shin_joints.append(Joint())
 			self.__foot_joints.append(Joint())
 
-		self.__body_joints[3].invert = True
-		self.__body_joints[4].invert = True
-		self.__body_joints[5].invert = True
-
-		self.__shin_joints[1].invert = True
-		self.__shin_joints[2].invert = True
-		self.__shin_joints[5].invert = True
-
-		self.__foot_joints[1].invert = True
-
 		rospy.init_node('joint_controller')
+
+		self.__load_offsets()
 
 		rospy.Subscriber('joint/body', ServoCommand, self.move_callback, callback_args=(self.__body_joints, 0))
 		rospy.Subscriber('joint/shin', ServoCommand, self.move_callback, callback_args=(self.__shin_joints, 1))
@@ -44,6 +38,29 @@ class JointController(object):
 		rospy.Subscriber('joint/offset/foot', ServoCommand, self.offset_callback, callback_args=self.__foot_joints)
 
 		rospy.spin()
+
+	################################################################################################
+
+	def __load_offsets(self):
+		self.__body_joints[3].invert = True
+		self.__body_joints[4].invert = True
+		self.__body_joints[5].invert = True
+
+		self.__shin_joints[2].invert = True
+		self.__shin_joints[5].invert = True
+
+		self.__foot_joints[0].invert = True
+		self.__foot_joints[1].invert = True
+		self.__foot_joints[3].invert = True
+		self.__foot_joints[4].invert = True
+		
+		offset_path = rospy.get_param('~offsets_path')
+		offsets = pickle.load(open(offset_path, 'rb'))
+
+		for i in range(6):
+			self.__body_joints[i].offset = offsets['b'][i]
+			self.__shin_joints[i].offset = offsets['s'][i]
+			self.__foot_joints[i].offset = offsets['f'][i]
 
 	################################################################################################
 

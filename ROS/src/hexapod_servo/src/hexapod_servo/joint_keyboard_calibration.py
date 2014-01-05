@@ -41,9 +41,9 @@ class JointKeyboardCalibration(object):
 				mode = chr(key)
 				clear = True
 			elif key == ord('x'):
-				pickle.dump( offset, open( "offset.p", "wb" ) )
+				pickle.dump( offset, open( "joint_offsets.dat", "wb" ) )
 			elif key == ord('l'):
-				offset = pickle.load( open( "offset.p", "rb" ) )
+				offset = pickle.load( open( "joint_offsets.dat", "rb" ) )
 			elif key == curses.KEY_UP:
 				offset[mode][servo] += 1
 				clear = True
