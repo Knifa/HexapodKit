@@ -4,6 +4,8 @@ import rospy
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
 
+import math
+
 ####################################################################################################
 
 class JoystickController(object):
@@ -16,8 +18,16 @@ class JoystickController(object):
 
 	def joy_callback(self, data):
 		velocity = Twist()
-		velocity.linear.x = data.axes[1]
-		velocity.angular.z = data.axes[3]
+
+		x = data.axes[1]
+		y = data.axes[3]
+
+		if (abs(x) > 0.25):
+			velocity.linear.x = math.copysign(1, data.axes[1])
+
+		if (abs(y) > 0.25):
+			velocity.angular.z = math.copysign(1, data.axes[3])
+
 		self.__velocity_pub.publish(velocity)
 
 ####################################################################################################

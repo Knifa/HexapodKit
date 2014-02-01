@@ -30,9 +30,13 @@ class Walker(object):
 		self.__body_linear_swing = int(rospy.get_param('~body_linear_swing'))
 		self.__body_angular_swing = int(rospy.get_param('~body_angular_swing'))
 
-		self.__distance_per_cycle = float(rospy.get_param('~distance_per_cycle'))
+		self.__lift_time = float(rospy.get_param('~lift_time'))
+		self.__swing_time = float(rospy.get_param('~swing_time'))
+		self.__cycle_time = (self.__lift_time * 2) + self.__swing_time
+
 		self.__distance_per_second = float(rospy.get_param('~distance_per_second'))
-		self.__rotation_per_second = float(rospy.get_param('~rotation_per_second'))
+		self.__distance_per_cycle = self.__cycle_time * self.__distance_per_second
+		self.__rotation_per_second = self.__body_angular_swing / self.__cycle_time
 
 		self.__twist = Twist()
 		self.__pose = Pose()
@@ -47,6 +51,7 @@ class Walker(object):
 
 		self.__odometry_pub = rospy.Publisher('odom', Odometry)
 		self.__tfb = tf.TransformBroadcaster()
+		self.__tfl = tf.TransformListener()
 
 		self.start()
 		
@@ -59,11 +64,14 @@ class Walker(object):
 				self.__walk(self.__twist)
 
 				self.__must_reset = True
-			elif self.__must_reset:
-				self.__reset()
-				self.__update_odometry(0, 0)
+			else:
+				if self.__must_reset:
+					self.__reset()
+					self.__must_reset = False
 
-				self.__must_reset = False
+				self.__update_odometry(0, 0, 0.1)
+
+			rospy.sleep(0.1)
 
 	################################################################################################
 
@@ -75,15 +83,15 @@ class Walker(object):
 	def __walk(self, twist):
 		linear_offset = self.__body_linear_swing * twist.linear.x
 		angular_offset = self.__body_angular_swing * twist.angular.z
-		self.__update_odometry(linear_offset, angular_offset)
+		self.__update_odometry(linear_offset, angular_offset, self.__cycle_time)
 
 		# Lift legs up.
 		for i in self.__up:
-			self.__shin_pub.publish(ServoCommand(index=i, angle=self.__shin_up, duration=0.2))
-			self.__foot_pub.publish(ServoCommand(index=i, angle=self.__foot_up, duration=0.2))
+			self.__shin_pub.publish(ServoCommand(index=i, angle=self.__shin_up, duration=self.__lift_time))
+			self.__foot_pub.publish(ServoCommand(index=i, angle=self.__foot_up, duration=self.__lift_time))
 
 		# Wait for completion.
-		rospy.sleep(0.2)
+		rospy.sleep(self.__lift_time)
 
 		# Rotate up legs into position for next cycle.
 		for i in self.__up:
@@ -92,7 +100,7 @@ class Walker(object):
 			else:
 				angle = 90 - linear_offset - angular_offset
 				
-			self.__body_pub.publish(ServoCommand(index=i, angle=angle, duration=0.4))
+			self.__body_pub.publish(ServoCommand(index=i, angle=angle, duration=self.__swing_time))
 
 		# Push down legs forward.
 		for i in self.__down:
@@ -101,50 +109,53 @@ class Walker(object):
 			else:
 				angle = 90 + linear_offset + angular_offset
 
-			self.__body_pub.publish(ServoCommand(index=i, angle=angle, duration=0.4))
+			self.__body_pub.publish(ServoCommand(index=i, angle=angle, duration=self.__swing_time))
 
 		# Wait for completion.
-		rospy.sleep(0.4)
+		rospy.sleep(self.__swing_time)
 
 		# Bring up legs down.
 		for i in self.__up:
-			self.__shin_pub.publish(ServoCommand(index=i, angle=self.__shin_down, duration=0.2))
-			self.__foot_pub.publish(ServoCommand(index=i, angle=self.__foot_down, duration=0.2))
+			self.__shin_pub.publish(ServoCommand(index=i, angle=self.__shin_down, duration=self.__lift_time))
+			self.__foot_pub.publish(ServoCommand(index=i, angle=self.__foot_down, duration=self.__lift_time))
 
 		# Wait for completion.
-		rospy.sleep(0.2)
+		rospy.sleep(self.__lift_time)
 
 		# Swap servos for next cycle.
 		temp_servos = self.__up
 		self.__up = self.__down
 		self.__down = temp_servos
 
-	def __update_odometry(self, linear_offset, angular_offset):
+	def __update_odometry(self, linear_offset, angular_offset, tf_delay):
 		self.__heading = (self.__heading + angular_offset) % 360
 		
 		q = tf.transformations.quaternion_from_euler(0, 0, math.radians(self.__heading))
 		self.__pose.position.x += math.cos(math.radians(self.__heading)) * self.__distance_per_cycle * self.__twist.linear.x
 		self.__pose.position.y += math.sin(math.radians(self.__heading)) * self.__distance_per_cycle * self.__twist.linear.x
+		self.__pose.position.z = 0.33
 		self.__pose.orientation = Quaternion(q[0], q[1], q[2], q[3])
 
-		self.__tfb.sendTransform(
-			(self.__pose.position.x, self.__pose.position.y, self.__pose.position.z),
-			q,
-			rospy.Time.now(),
-			'hexapod',
-			'odom')
+		now = rospy.Time.now() + rospy.Duration(tf_delay)
+
+		#self.__tfb.sendTransform(
+		#	(self.__pose.position.x, self.__pose.position.y, self.__pose.position.z),
+		#	q,
+		#	now,
+		#	'base_link',
+		#	'odom')
 
 		o = Odometry()
-		o.header.stamp = rospy.Time.now()
+		o.header.stamp = now
 		o.header.frame_id = 'odom'
-		o.child_frame_id = 'hexapod'
+		o.child_frame_id = 'base_link'
 		o.pose = PoseWithCovariance(self.__pose, None)
 
 		o.twist = TwistWithCovariance()
 		o.twist.twist.linear.x = self.__distance_per_second * self.__twist.linear.x
-		o.twist.twist.angular.z = self.__rotation_per_second * self.__twist.angular.z
+		o.twist.twist.angular.z = math.radians(self.__rotation_per_second) * self.__twist.angular.z
 
-		self.__odometry_pub.publish(o)
+		#self.__odometry_pub.publish(o)
 
 	def __reset(self):
 		for i in range(6):
