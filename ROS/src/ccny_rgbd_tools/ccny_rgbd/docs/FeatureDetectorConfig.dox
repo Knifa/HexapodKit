@@ -1,0 +1,12 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~detector_type" : \b [str] Detector type min: , default: GFT, max: 
+- \b "~smooth" : \b [int] Smoothing window half-size (pixels) min: 0, default: 0, max: 5
+- \b "~max_range" : \b [double] Maximum z-depth (meters) min: 0.0, default: 5.5, max: 15.0
+- \b "~max_stdev" : \b [double] Maximum std_dev(z) (meters) min: 0.0, default: 0.03, max: 0.2
+- \b "~show_keypoints" : \b [bool] Show 2D keypoint image min: False, default: False, max: True
+- \b "~publish_cloud" : \b [bool] Publish feature point cloud min: False, default: False, max: True
+- \b "~publish_covariances" : \b [bool] Publish feature covariance markers min: False, default: False, max: True
+

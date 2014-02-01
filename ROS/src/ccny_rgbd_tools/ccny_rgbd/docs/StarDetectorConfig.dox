@@ -1,0 +1,7 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~threshold" : \b [double] Detection threshold min: 1.0, default: 32.0, max: 100.0
+- \b "~min_distance" : \b [int] Minimum distance between features (pixels) min: 0, default: 2, max: 15
+

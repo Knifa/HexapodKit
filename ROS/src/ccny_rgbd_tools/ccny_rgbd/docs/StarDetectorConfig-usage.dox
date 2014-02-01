@@ -1,0 +1,8 @@
+\subsubsection usage Usage
+\verbatim
+<node name="dynamic_reconfigure_node" pkg="ccny_rgbd" type="dynamic_reconfigure_node">
+  <param name="threshold" type="double" value="32.0" />
+  <param name="min_distance" type="int" value="2" />
+</node>
+\endverbatim
+

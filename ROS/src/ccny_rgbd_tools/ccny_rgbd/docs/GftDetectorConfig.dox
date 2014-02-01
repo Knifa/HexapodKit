@@ -1,0 +1,7 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~n_features" : \b [int] Number of feautures requested min: 1, default: 400, max: 1000
+- \b "~min_distance" : \b [int] Minimum distance between features (pixels) min: 0, default: 1, max: 15
+

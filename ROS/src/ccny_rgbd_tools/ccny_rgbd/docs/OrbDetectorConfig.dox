@@ -1,0 +1,7 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~n_features" : \b [int] Number of feautures requested min: 1, default: 400, max: 1000
+- \b "~threshold" : \b [double] Detection threshold min: 1.0, default: 31.0, max: 200.0
+

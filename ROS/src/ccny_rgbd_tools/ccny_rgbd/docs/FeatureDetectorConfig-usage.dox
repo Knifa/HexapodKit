@@ -1,0 +1,13 @@
+\subsubsection usage Usage
+\verbatim
+<node name="dynamic_reconfigure_node" pkg="ccny_rgbd" type="dynamic_reconfigure_node">
+  <param name="detector_type" type="str" value="GFT" />
+  <param name="smooth" type="int" value="0" />
+  <param name="max_range" type="double" value="5.5" />
+  <param name="max_stdev" type="double" value="0.03" />
+  <param name="show_keypoints" type="bool" value="False" />
+  <param name="publish_cloud" type="bool" value="False" />
+  <param name="publish_covariances" type="bool" value="False" />
+</node>
+\endverbatim
+

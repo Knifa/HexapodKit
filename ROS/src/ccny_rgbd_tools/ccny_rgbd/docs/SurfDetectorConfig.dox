@@ -1,0 +1,6 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~threshold" : \b [double] Detection threshold min: 1.0, default: 400.0, max: 2000.0
+

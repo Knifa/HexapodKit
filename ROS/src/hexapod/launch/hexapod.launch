@@ -1,5 +1,5 @@
 <launch>
-	<include file="$(find hexapod)/launch/hexapod_nav.launch" />
+	<include file="$(find hexapod_nav)/launch/hexapod_nav.launch" />
 
 	<group ns="hexapod">
 		<group ns="servo">
