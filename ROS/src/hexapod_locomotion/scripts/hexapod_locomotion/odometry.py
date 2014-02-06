@@ -2,8 +2,8 @@ class Odometry(object):
 	def __init__(self):
 		rospy.init_node('odometry')
 
-		self.__odometry_pub = rospy.Publisher('odom', Odometry)
-		self.__tfb = tf.TransformBroadcaster()
+		#self.__odometry_pub = rospy.Publisher('odom', Odometry)
+		#self.__tfb = tf.TransformBroadcaster()
 
 ####################################################################################################
 

@@ -3,8 +3,7 @@
 
 	<group ns="hexapod">
 		<group ns="servo">
-			<node name="servo_controller" pkg="hexapod_servo" type="servo_controller.py"  output="screen"/>
-
+			<node name="servo_controller" pkg="hexapod_servo" type="servo_controller.py" />
 			<node name="joint_controller" pkg="hexapod_servo" type="joint_controller.py">
 				<param name="offsets_path" value="/home/knifa/HexapodKit/ROS/joint_offsets.dat" />
 			</node>
@@ -12,16 +11,14 @@
 
 		<group ns="locomotion">
 			<node name="walker" pkg="hexapod_locomotion" type="walker.py">
-				<param name="up_angle" value="45" />
-				<param name="down_angle" value="15" />
+				<param name="up_angle" value="50" />
+				<param name="down_angle" value="20" />
 
 				<param name="body_linear_swing" value="10" />
 				<param name="body_angular_swing" value="10" />
 
-				<param name="lift_time" value="0.25" />
-				<param name="swing_time" value="0.5" />
-
-				<param name="distance_per_second" value="0.035714285714285" />
+				<param name="lift_time" value="0.2" />
+				<param name="swing_time" value="0.4" />
 			</node>
 
 			<node name="joystick_controller" pkg="hexapod_locomotion" type="joystick_controller.py" />

@@ -14,10 +14,10 @@ class ServoController(object):
 			self.__serial = Serial('/dev/ttyACM0', 4800)
 			rospy.sleep(1)
 
-			for i in range(32):
-				self.__move(i, 90)
+			#for i in range(32):
+			#	self.__move(i, 90)
 
-			rospy.sleep(1)
+			#rospy.sleep(1)
 		except SerialException as e:
 			rospy.logfatal("Could not open serial port.")
 			exit(1)

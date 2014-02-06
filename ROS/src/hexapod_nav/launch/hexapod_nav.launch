@@ -2,9 +2,21 @@
 	<include file="$(find ccny_openni_launch)/launch/openni2.launch" />
 	<include file="$(find ccny_rgbd)/launch/visual_odometry.launch" />
 
-	<node pkg="tf" type="static_transform_publisher" name="xtion_to_hexapod" args="0 0 0 0 0 0 base_link camera_link 100" />
+	<node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
+		<remap from="cloud_in" to="/rgbd/cloud" />
+
+		<param name="base_frame_id" value="camera_link" />
+		<param name="sensor_model/max_range" value="5.0" />
+		<param name="latch" value="false" />
+	</node>
+
+	<node pkg="tf" type="static_transform_publisher" name="xtion_to_hexapod" args="0 0 0 0 0 0 1 /base_link /camera_link 100" />
+	<node pkg="tf" type="static_transform_publisher" name="odom_to_map" args="0 0 0 0 0 0 1 /map /odom 100" />
+
 	<node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan">
 		<remap from="image" to="/camera/depth/image_raw" />
+
+		<param name="scan_time" value="0.05" />
 	</node>
 
 	<!-- <include file="$(find amcl)/examples/amcl_omni.launch" /> -->

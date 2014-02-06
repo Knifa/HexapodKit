@@ -32,15 +32,15 @@ class Walker(object):
 
 		self.__lift_time = float(rospy.get_param('~lift_time'))
 		self.__swing_time = float(rospy.get_param('~swing_time'))
-		self.__cycle_time = (self.__lift_time * 2) + self.__swing_time
+		# self.__cycle_time = (self.__lift_time * 2) + self.__swing_time
 
-		self.__distance_per_second = float(rospy.get_param('~distance_per_second'))
-		self.__distance_per_cycle = self.__cycle_time * self.__distance_per_second
-		self.__rotation_per_second = self.__body_angular_swing / self.__cycle_time
+		# self.__distance_per_second = float(rospy.get_param('~distance_per_second'))
+		# self.__distance_per_cycle = self.__cycle_time * self.__distance_per_second
+		# self.__rotation_per_second = self.__body_angular_swing / self.__cycle_time
 
 		self.__twist = Twist()
-		self.__pose = Pose()
-		self.__heading = 0
+		# self.__pose = Pose()
+		# self.__heading = 0
 		self.__must_reset = True
 
 		self.__body_pub = rospy.Publisher('/hexapod/servo/joint/body', ServoCommand)
@@ -49,9 +49,9 @@ class Walker(object):
 
 		rospy.Subscriber('cmd_vel', Twist, self.velocity_callback)
 
-		self.__odometry_pub = rospy.Publisher('odom', Odometry)
-		self.__tfb = tf.TransformBroadcaster()
-		self.__tfl = tf.TransformListener()
+		# self.__odometry_pub = rospy.Publisher('odom', Odometry)
+		# self.__tfb = tf.TransformBroadcaster()
+		# self.__tfl = tf.TransformListener()
 
 		self.start()
 		
@@ -69,7 +69,7 @@ class Walker(object):
 					self.__reset()
 					self.__must_reset = False
 
-				self.__update_odometry(0, 0, 0.1)
+				# self.__update_odometry(0, 0, 0.1)
 
 			rospy.sleep(0.1)
 
@@ -83,7 +83,7 @@ class Walker(object):
 	def __walk(self, twist):
 		linear_offset = self.__body_linear_swing * twist.linear.x
 		angular_offset = self.__body_angular_swing * twist.angular.z
-		self.__update_odometry(linear_offset, angular_offset, self.__cycle_time)
+		# self.__update_odometry(linear_offset, angular_offset, self.__cycle_time)
 
 		# Lift legs up.
 		for i in self.__up:
@@ -138,12 +138,12 @@ class Walker(object):
 
 		now = rospy.Time.now() + rospy.Duration(tf_delay)
 
-		#self.__tfb.sendTransform(
-		#	(self.__pose.position.x, self.__pose.position.y, self.__pose.position.z),
-		#	q,
-		#	now,
-		#	'base_link',
-		#	'odom')
+		self.__tfb.sendTransform(
+			(self.__pose.position.x, self.__pose.position.y, self.__pose.position.z),
+			q,
+			now,
+			'base_link',
+			'odom')
 
 		o = Odometry()
 		o.header.stamp = now
