@@ -11,7 +11,7 @@ class ServoController(object):
 		rospy.init_node('servo_controller')
 
 		try:
-			self.__serial = Serial('/dev/ttyACM0', 4800)
+			self.__serial = Serial('/dev/ttyACM0', 9600)
 			rospy.sleep(1)
 
 			#for i in range(32):
