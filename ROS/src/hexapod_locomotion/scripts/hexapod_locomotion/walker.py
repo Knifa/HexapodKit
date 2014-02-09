@@ -47,7 +47,7 @@ class Walker(object):
 		self.__shin_pub = rospy.Publisher('/hexapod/servo/joint/shin', ServoCommand)
 		self.__foot_pub = rospy.Publisher('/hexapod/servo/joint/foot', ServoCommand)
 
-		rospy.Subscriber('cmd_vel', Twist, self.velocity_callback)
+		rospy.Subscriber('/cmd_vel', Twist, self.velocity_callback)
 
 		# self.__odometry_pub = rospy.Publisher('odom', Odometry)
 		# self.__tfb = tf.TransformBroadcaster()
@@ -60,7 +60,7 @@ class Walker(object):
 			linear_mag = Walker.vector3_magnitude(self.__twist.linear)
 			angular_mag = Walker.vector3_magnitude(self.__twist.angular)
 
-			if (linear_mag > 0.25) or (angular_mag > 0.25):
+			if (linear_mag > 0) or (angular_mag > 0):
 				self.__walk(self.__twist)
 
 				self.__must_reset = True
@@ -81,8 +81,34 @@ class Walker(object):
 	################################################################################################
 
 	def __walk(self, twist):
-		linear_offset = self.__body_linear_swing * twist.linear.x
-		angular_offset = self.__body_angular_swing * twist.angular.z
+		#linear_offset = self.__body_linear_swing * twist.linear.x
+		#angular_offset = self.__body_angular_swing * twist.angular.z
+
+		#augh
+		#if (abs(twist.linear.x) >= 0.25):
+		#	linear_vel = math.copysign(1.0, twist.linear.x)
+		#else:
+		#	linear_vel = 0
+
+		#if (abs(twist.angular.z) >= 0.25):
+		#	angular_vel = math.copysign(1.0, twist.angular.z)
+		#else:
+		#	angular_vel = 0
+
+		linear_vel = twist.linear.x * 4.0
+		angular_vel = twist.angular.z * 4.0
+
+		total_shares = abs(linear_vel) + abs(angular_vel)
+		angular_ratio = angular_vel / total_shares
+		linear_ratio = linear_vel / total_shares
+
+		linear_offset = self.__body_linear_swing * (linear_ratio)
+		angular_offset = self.__body_angular_swing * (angular_ratio)
+
+		#t = angular_offset
+		#angular_offset = angular_offset - math.copysign(linear_offset / 2.0, angular_offset)
+		#linear_offset = angular_offset - math.copysign(angular_offset / 2.0, linear_offset)
+
 		# self.__update_odometry(linear_offset, angular_offset, self.__cycle_time)
 
 		# Lift legs up.

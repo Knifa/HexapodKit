@@ -10,7 +10,7 @@ import math
 
 class JoystickController(object):
 	def __init__(self):
-		self.__velocity_pub = rospy.Publisher('cmd_vel', Twist)
+		self.__velocity_pub = rospy.Publisher('/cmd_vel', Twist)
 
 		rospy.init_node('joystick_controller')
 		rospy.Subscriber('/joy', Joy, self.joy_callback)

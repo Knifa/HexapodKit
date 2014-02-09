@@ -21,7 +21,7 @@
 				<param name="swing_time" value="0.4" />
 			</node>
 
-			<node name="joystick_controller" pkg="hexapod_locomotion" type="joystick_controller.py" />
+			<!-- <node name="joystick_controller" pkg="hexapod_locomotion" type="joystick_controller.py" /> -->
 		</group>
 	</group>
 
