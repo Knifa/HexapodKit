@@ -1,0 +1,3 @@
+[submodule "ROS/src/ccny_rgbd_tools"]
+	path = ROS/src/ccny_rgbd_tools
+	url = https://github.com/Knifa/ccny_rgbd_tools.git
