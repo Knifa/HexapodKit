@@ -25,7 +25,7 @@ class Walker(object):
 		self.__shin_up = 90 + up_angle
 		self.__foot_up = 90 - up_angle		
 		self.__shin_down = 90 + down_angle
-		self.__foot_down = 75 - down_angle
+		self.__foot_down = 80 - down_angle
 
 		self.__body_linear_swing = int(rospy.get_param('~body_linear_swing'))
 		self.__body_angular_swing = int(rospy.get_param('~body_angular_swing'))

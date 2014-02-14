@@ -12,13 +12,13 @@
 		<group ns="locomotion">
 			<node name="walker" pkg="hexapod_locomotion" type="walker.py">
 				<param name="up_angle" value="50" />
-				<param name="down_angle" value="20" />
+				<param name="down_angle" value="25" />
 
 				<param name="body_linear_swing" value="10" />
 				<param name="body_angular_swing" value="10" />
 
-				<param name="lift_time" value="0.2" />
-				<param name="swing_time" value="0.4" />
+				<param name="lift_time" value="0.10" />
+				<param name="swing_time" value="0.40" />
 			</node>
 
 			<!-- <node name="joystick_controller" pkg="hexapod_locomotion" type="joystick_controller.py" /> -->

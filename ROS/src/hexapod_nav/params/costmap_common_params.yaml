@@ -1,6 +1,6 @@
 obstacle_range: 2.5
 raytrace_range: 3.0
-#footprint: [[x0, y0], [x1, y1], ... [xn, yn]]
+#footprint: [[-0.1, -0.1], [0.1, -0.1], [0.1, 0.1], [-0.1, 0.1]]
 robot_radius: 0.1
 inflation_radius: 0.55
 
@@ -10,7 +10,7 @@ width: 10.0
 height: 10.0
 origin_x: -5.0
 origin_y: -5.0
-resolution: 0.025
+resolution: 0.05
 
 observation_sources: point_cloud_sensor
 point_cloud_sensor: {data_type: PointCloud2, topic: /rgbd/cloud, marking: true, clearing: true}
