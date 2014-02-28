@@ -1,0 +1,100 @@
+\pdfoutput=1
+
+\documentclass{l4proj}
+
+%
+% put any packages here
+%
+
+\begin{document}
+\title{Visual Control of a Hexapod Robot}
+\author{Daniel Callander}
+\date{March 28, 2014}
+\maketitle
+
+\begin{abstract}
+We show how to produce a level 4 project report using latex and pdflatex using the 
+style file l4proj.cls
+\end{abstract}
+
+\educationalconsent
+%
+%NOTE: if you include the educationalconsent (above) and your project is graded an A then
+%      it may be entered in the CS Hall of Fame
+%
+\tableofcontents
+%==============================================================================
+
+\chapter{Introduction}
+\pagenumbering{arabic}
+
+\section{Motivation}
+\section{Software}
+\subsection{ROS}
+
+\section{Hardware}
+\subsection{Hexapod}
+\subsection{RGB-D Sensor}
+
+\chapter{Background}
+
+\chapter{Requirements}
+
+\chapter{Architecture}
+\section{Nodes}
+\section{Packages}
+\section{Topics}
+
+\chapter{Hardware Interaction}
+
+\section{Servo Driver}
+\subsection{Protocol}
+
+\section{Limb Controller}
+\section{Limb Calibration Tool}
+\subsection{Usage}
+
+\chapter{Locomotion}
+
+\section{Tripod Gait Walker}
+\section{Joystick Controller}
+
+\chapter{Sensing}
+
+\section{Camera Driver}
+\section{Visual Odometry}
+\section{Environment Mapping}
+
+%%%%%%%%%%%%%%%%
+%              %
+%  APPENDICES  %
+%              %
+%%%%%%%%%%%%%%%%
+%\begin{appendices}
+%
+%\chapter{Running the Programs}
+%An example of running from the command line is as follows:
+%\begin{verbatim}
+%      > java MaxClique BBMC1 brock200_1.clq 14400
+%\end{verbatim}
+%This will apply $BBMC$ with $style = 1$ to the first brock200 DIMACS instance allowing 14400 seconds %of cpu time.
+
+%\chapter{Generating Random Graphs}
+%\label{sec:randomGraph}
+%We generate Erd\'{o}s-R\"{e}nyi random graphs $G(n,p)$ where $n$ is the number of vertices and
+%each edge is included in the graph with probability $p$ independent from every other edge. It produces
+a random graph in DIMACS format with vertices numbered 1 to $n$ inclusive. It can be run from the %command line as follows to produce 
+%a clq file
+%\begin{verbatim}
+%     > java RandomGraph 100 0.9 > 100-90-00.clq
+%\end{verbatim}
+%\end{appendices}
+
+%%%%%%%%%%%%%%%%%%%%
+%   BIBLIOGRAPHY   %
+%%%%%%%%%%%%%%%%%%%%
+
+%\bibliographystyle{plain}
+%\bibliography{bib}
+
+\end{document}
