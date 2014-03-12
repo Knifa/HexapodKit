@@ -1,9 +1,9 @@
 final:
-	latexmk -silent -gg -dvi- -ps- -pdf -f report.tex
+	latexmk -gg -dvi- -ps- -pdf report.tex
 	make clean
 
 preview:
-	latexmk -silent -gg -dvi- -ps- -pdf -pvc -f report.tex
+	latexmk -gg -dvi- -ps- -pdf -pvc report.tex
 	make clean
 
 clean:
