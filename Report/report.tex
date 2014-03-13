@@ -1,6 +1,9 @@
 \documentclass{l4proj}
-
 \usepackage{microtype}
+
+\usepackage{graphicx}
+\graphicspath{{./images/}}
+
 \usepackage{hyperref}
 \hypersetup{
     colorlinks = true,
@@ -31,12 +34,18 @@ Some abstract.
 \chapter{Introduction}
 
 \section{Objectives}
-The primary objective of this project is to evaluate the usefulness of the Robot Operating System (ROS) \cite{ros_site} as a framework for developing complex robotic systems. Specifically, we explore the standard library of packages that ROS provides, in addition to the large set of community-provided packages. These packages provide a large of range of functionalities, ranging from device drivers for particular sets of sensors, to simulation suites, to full autonomous navigation suites.
+The primary objective of this project was to evaluate the usefulness of the Robot Operating System (ROS) \cite{ros_site} as a framework for developing complex robotic systems. Specifically, we looked to explore the variety of standard that ROS provides, in addition to the large set of community-provided packages. These packages provide a large of range of functionalities, ranging from device drivers for particular sets of sensors, to simulation suites, to full autonomous navigation suites.
 
-As a secondary objective, we aim to evaluate the usefulness of open-source software as a means for accelerating development of these complex systems. Additionally, by using open-source software in this project, we set out to contribute in-kind by making any developments open-source.
+As a secondary objective, we aimed to evaluate the usefulness of open-source software as a means for accelerating development of these complex systems. Additionally, by using this open-source software in the project, we set out to contribute in-kind by making any developments open-source.
 
 \section{Achievements}
 Through the use of ROS, we will show that it was possible to implement complex behaviours such environment mapping and autonomous navigation, achieved with relative simplicity. Almost all functionality for these behaviours were is by a these standard and community-provided packages. In particular, the robot is able to walk using standard walk gaits, detect an interpret the environment around it, and navigate around that environment while avoiding any obstacles.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=12cm]{hexapod_body1}
+    \caption{This robot, a hexapod, is used as the basis for this project.}
+\end{figure}
 
 Furthermore, we show that non-standard hardware, such as the robot used throughout this project, can be integrated with ROS with relative ease. Most examples of robots running ROS tend to move themselves using either wheels or tracks, but in this case a walker-style robot is used.
 
@@ -93,7 +102,6 @@ ROS also provides a \emph{request-respond} style method of communication through
 
 
 \section{Hardware}
-\subsection{Hexapod}
 The hardware involved in operating the robot used in this project is relatively straightforward. The robot is a hexapod, in that it has six limbs. Each limb has three joints at which it can rotate, as shown in Figure~\ref{fig:hexapod_dof}, giving three degrees-of-freedom per limb. 
 
 \begin{figure}[!h]
@@ -103,9 +111,23 @@ The hardware involved in operating the robot used in this project is relatively 
     \label{fig:hexapod_dof}
 \end{figure}
 
-At each joint there is a servo to facilitate rotation.
+\subsection{Servos \& Servo Controller}
+Each joint piece is attached to the shaft of a servomechanism (servo) to facilitate rotation. Each servo is controlled by a \emph{pulse-width modulated} (PWM) signal supplied by the controller, such that the angle of the servo can be controlled. Servos operate using a feedback-loop system such that the current of a motor is controlled, rotating the shaft to the desired position. Rotational range and speed of servos vary depending on model, but in this case the servos allow for a rotational range of 180 degrees.
 
-The servos are controlled by an off-the-shelf servo controller board. 
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=6cm]{torobot_controller}
+    \caption{The \emph{Torobot 32-Channel Servo Controller}, as used in the hexapod.}
+    \label{fig:torobot_controller}
+\end{figure}
+
+The servos are controlled by an off-the-shelf servo controller board. This board, in particular, expects text-based control commands over serial, either via direct TTL or emulated over an on-board USB to TTL converter \cite{torobot_manual}. A number of commands are supported, allowing control of the position of both single and groups of servos. Additionally, a set of movements can be programmed and issues with a single command \cite{torobot_manual}. Power is also distrusted to the servos via this board.
+
+The servo controller itself is powered by a standard laboratory power supply.
+
+\subsubsection{Controller Protocol} 
+
+
 
 \subsection{RGB-D Sensor}
 The primary sensor in the system is an \emph{ASUS Xtion Pro Live} RGB-D sensor, which is very similar to the \emph{Microsoft Kinect}. The key functionality of this sensor is that it provides a depth video feed, giving a range of values indicating the distances to the objects in front of it.
@@ -129,7 +151,6 @@ This chapter will document the implementation process of the robot's systems.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Servo Driver}
-\subsubsection{Protocol}
 
 \subsection{Limb Controller}
 
