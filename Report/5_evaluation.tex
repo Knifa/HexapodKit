@@ -4,8 +4,80 @@
 
 \section{Experimental Design}
 
-\section{Results}
+A number of experiments were ran to evaluate the correctness of this robot control system.
+
 \subsection{Hardware Interaction}
+
+These experiments were created to evaluate that the systems used to control the hardware used in the robot operated correctly.
+
+Check one servo.
+
+Check multiple servos.
+
+Check ranges.
+
+Check timings.
+
+Video feeds from Xtion.
+
 \subsection{Locomotion}
+
+These experiments were created to evaluate that the systems designed to handle locomotion operated correctly.
+
+Calibration tool.
+
+Calibrated offsets applied.
+
+Walk cycle (linear).
+
+Walk cycle (rotation).
+
+Walk cycle (combination). 
+
 \subsection{Sensing}
+
+These experiments were created to evaluate that the systems could interpret the world around the robot via the supplied sensory input.
+
+Visual odometry (manual movement of camera).
+
+Visual odometry (walk cycle).
+
+Mapping (stationary).
+
+Mapping (object in front).
+
+Mapping (while walking).
+
 \subsection{Navigation}
+
+These experiments were created to evaluate that the systems could navigate autonomously using the interpreted sensory information.
+
+Navigation accuracy. (no obstacles, straight line)
+
+Navigation accuracy. (obstacle in way, curved path)
+
+Obstacles in way during navigation.
+
+\section{Results}
+
+\subsection{Hardware Interaction}
+
+Issues with timing, seems to be host dependent.
+
+\subsection{Locomotion}
+
+Difficulty in calibrating by eye alone. 
+
+Servos are inaccurate with small changes.
+
+Maximum speed constraints.
+
+\subsection{Sensing}
+
+Visual odometry drift. Difficulty with stationary rotation. Interesting reaction to mirrors. No resync if location is lost.
+
+Mapping is awesome all of the time, ruined by visual odometry.
+
+\subsection{Navigation}
+
+It works alright, I guess.

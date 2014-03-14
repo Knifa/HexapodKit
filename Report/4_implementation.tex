@@ -6,16 +6,21 @@ This chapter will document the implementation process of the robot's systems.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Hardware Interaction}
+\section{Hardware Operation}
 
+% FIXME: Maybe put this elsewhere?
+From the outset, it was known that the depth sensor relied on the \emph{OpenNI2} library and already had a supporting package. However, no such packages existed for the servo controller.
+
+\subsection{Camera Driver}
 \subsection{Servo Driver}
-\subsection{Limb Controller}
-\subsection{Limb Calibration Tool}
-\subsubsection{Usage}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Locomotion}
+
+\subsection{Limb Controller}
+\subsection{Limb Calibration Tool}
+\subsubsection{Usage}
 
 \subsection{Tripod Gait Walker}
 \subsection{Joystick Controller}
@@ -24,15 +29,24 @@ This chapter will document the implementation process of the robot's systems.
 
 \section{Sensing}
 
-\subsection{Camera Driver}
+openni2 originally, ccny\_rgbd \cite{ccny_rgbd} provides some clean up features.
+
 \subsection{Visual Odometry}
-ccny\_rgbd \cite{ccny_rgbd}
+
+ccny\_rgbd \cite{ccny_rgbd} was used.
 
 \subsection{Environment Mapping}
+
+ocotomap
+
 \subsubsection{Alternatives}
+
+SLAM, but expects laser scan.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Navigation}
+
+Built in stack.
 
 \subsection{Path Planning}
