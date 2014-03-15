@@ -1,8 +1,8 @@
 \chapter{Approach}
 
-To evaluate the usefulness of ROS, we set out to build a ROS-based system, targeting the hexapod as its primary hardware platform. A number of increasingly complex goals were to be achieved for this system. It was assumed that these complex goals would be otherwise unachievable in this project's time frame without the help of ROS's vast package repository.
+To evaluate the usefulness of ROS, we set out to build a ROS-based system, targeting the hexapod as its primary hardware platform. A number of increasingly complex goals were to be achieved for this system.
 
-Throughout, an attitude of code re-use was taken, relying on any existing nodes and packages where possible. As there are many ROS packages available that perform similar tasks, it was necessary to choose and compare these packages where appropriate. 
+Throughout, an attitude of code re-use was taken, relying on any existing nodes and packages where possible. It was assumed that these complex goals would be otherwise unachievable in this project's time frame without the help of this vast package repository. As there are many ROS packages available that perform similar tasks, it was necessary to choose and compare these packages where appropriate. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -12,20 +12,22 @@ These goals can be sectioned into four key categories, as explained in the follo
 
 \subsection{Hardware Operation}
 
-To achieve any real-world interaction, the system had to be capable of interfacing with our target hardware platform. Drivers in some form were required to allow communication to both the servo controller and the RGB-D sensor. Ideally, these should transmit and receive data using standard ROS data types.
+To achieve any real-world interaction, the system had to be capable of interfacing with our target hardware platform. Drivers in some form were required to allow communication to both the servo controller and the RGB-D sensor. Ideally, these should transmit and receive on topics using common data types.
 
 \subsection{Locomotion}
 
-As this robot relies on walking motions for movement, consisting of a complex sequence of servo rotations, some abstraction of this process was required. Specifically, it was necessary to be able to control both the linear and rotational velocities of the robot without knowledge of the underlying servo movements. For this, walking gaits would have to be investigated such that an appropriate one could be chosen.
+As this robot relies on walking motions for movement, which consists of a complex sequence of servo rotations, some abstraction of this process was required. Specifically, it was necessary to be able to control both the linear and rotational velocities of the robot without knowledge of the underlying servo movements. For this, walking gaits would have to be investigated such that an appropriate one could be chosen.
 
-Some calibration process was also necessary. Due to the manner in which the servos connect to their respective joint sections, it is extremely difficult to align them such that they are perfectly straight. A method was required such that offsets can be applied to any positions sent to the servo controller on a per-servo basis. To make this process easier, some tool to adjust these offsets was required.
+Some calibration process was also necessary. Due to the manner in which the servos connect to their respective joint sections, it is extremely difficult to align them such that they are perfectly straight. A method was required such that offsets can be applied to any positions sent to the servo controller, on a per-servo basis. To make this process easier, some tool to adjust these offsets was required.
 
 Additionally, a method of manually controlling the robot was needed. This would allow for simple testing before any autonomous behaviour was added, as well as acting as a general safety net should anything go wrong.
 
 \subsection{Sensing}
 
-By using information received from the attached RGB-D sensor, the system had to be be able to interpret the world around it. Specifically, we looked to build up some map of the immediate surrounding area such that it was possible to detect any objects and obstructions.
+By using information received from the attached RGB-D sensor, the system had to be be able to interpret the world around it. Specifically, we looked to build up a map of the immediate surrounding area such that it was possible to detect any objects and obstructions.
 
-Some manner of inferring the position of the robot relative to the rest of the world was also required. Wheeled robots have an advantage in that they are able to apply rotary encoder techniques, such that they can accurately detect their position relative to a starting position. As this is a walker-style robot, this presented a particularly interesting challenge.
+A method of inferring the position of the robot relative to the rest of the world was also required. Wheeled robots have an advantage in that they are able to apply rotary encoder techniques, allowing them to extrapolate their current position relative to a starting position. As this is a walker-style robot, this presented a particularly difficult challenge.
 
 \subsection{Navigation}
+
+Finally, the robot had to be capable of some autonomous behaviour. For this, autonomous navigation was chosen as it would be a stepping stone to any further behaviours. By using the interpreted visual data, the robot had to be able to navigate its environment to reach some particular target, avoiding any obstructions and obstacles where necessary. To achieve this, we would require a complete working integration of the previously mentioned goals.
