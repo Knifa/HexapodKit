@@ -80,14 +80,21 @@ The servos are controlled by an off-the-shelf servo controller board. This board
 
 \subsubsection{Protocol}
 
-Commands are issues using an ASCII-based protocol via serial communication. While the servo controller supports a number of commands, only the command which rotates an individual servo is necessary. This allows for more flexibility in terms of when the rotation begins, as all servos mentioned in a group command will begin rotation at the same time.
+Commands are issued using an ASCII-based protocol via serial communication. While the servo controller supports a number of commands, only the command which rotates an individual servo is necessary. This allows for more flexibility in terms of when the rotation begins, as all servos mentioned in a group command will begin rotation at the same time.
 
 \begin{figure}[!h]
     \centering
-    \texttt{\#\(n\)\#P\(a\)T\(t\)\emph{\textbackslash r\textbackslash n}}
+    \texttt{\#\(n\)\#P\(a\)T\(t\)}
 \end{figure}
 
-A rotation command is issued by sending a string in the format shown above, specifying the particular servo number ($n$), the target angle ($a$), and the time over which the rotation should occur ($t$) in milliseconds. It should be noted that the parameter for the target angle is actually the pulse width duration that is sent to the servo, rather than the actual angle. Duration ranges can very per manufacturer, however there is a common standard such that 1.5\textmu s corresponds to 0\textdegree{} and 2.5\textmu s correspond to 180\textdegree. These are the minimum and maximum possible values for this controller.
+A rotation command is issued by sending a string in the format shown above, specifying the particular servo number ($1 \leq n \leq 32$), the target position ($1500 \leq a \leq 2500$), and the time over which the rotation should occur ($100 \leq t \leq 9999$) in milliseconds. The command is ended by a carriage return followed by a new line character. A working example is shown below, where we rotate the servo at index 1 to 90\textdegree{} over 250ms.
+
+\begin{figure}[!h]
+    \centering
+    \texttt{\#1\#P2000T250}
+\end{figure}
+
+It should be noted that the parameter for the target angle is actually the pulse width duration (in milliseconds) that is sent to the servo, rather than an actual angle. Duration ranges can very per manufacturer, however there is a common standard such that 1.5\textmu s corresponds to 0\textdegree{} and 2.5\textmu s correspond to 180\textdegree. These are the minimum and maximum possible values for this controller. 
 
 \subsection{RGB-D Sensor}
 The primary sensor in the system is an \emph{ASUS Xtion Pro Live} RGB-D sensor, which is very similar to the \emph{Microsoft Kinect}. The key functionality of this sensor is that it provides a depth video feed, giving a range of values indicating the distances to the objects in front of it.
