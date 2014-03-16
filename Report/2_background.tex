@@ -26,9 +26,7 @@ As touched on in the opening paragraph, ROS can function as a distributed system
 \subsubsection{Nodes}
 In ROS terminology, a processes is referred to as a \emph{node}. A node is simply a process that is connected to the ROS broker, performing some sort computation \cite{ros_paper}.
 
-Nodes can specify a number of parameters to be set on launch.
-
-One of the primary design concepts of ROS is that the framework should not be tied to any particular language \cite{ros_paper}. Nodes are developed using a particular \emph{client library}, of which many are available. These are libraries developed for a particular language or ecosystem, providing an abstraction layer for interfacing with ROS. The two most used client libraries are \emph{roscpp} and \emph{rospy}, which target C++ and Python respectively \cite{ros_wiki_clientlibraries}. There are a number of experimental client libraries available for other systems, such as Java, Android, C\#, Arduino, among others \cite{ros_wiki_clientlibraries}.
+Nodes need not be tied to any particular programming language \cite{ros_paper}. Nodes are developed using a particular \emph{client library}, of which many are available. These are libraries developed for a particular language or ecosystem, providing an abstraction layer for interfacing with ROS. The two most used client libraries are \emph{roscpp} and \emph{rospy}, which target C++ and Python respectively \cite{ros_wiki_clientlibraries}. There are a number of experimental client libraries available for other systems, such as Java, Android, C\#, Arduino, among others \cite{ros_wiki_clientlibraries}.
 
 \subsubsection{Communicating Through Topics \& Services}
 Node communication is done through \emph{topics} in a one-to-many fashion \cite{ros_paper}. Broadcasting is done asynchronously, such that the broadcasting node can continue operating without regard as to which nodes receive the message. Any other node can then subscribe to that particular topic, receiving messages through a callback for processing. Each topic has a given resource name which is used to uniquely identify that topic.
@@ -44,11 +42,9 @@ Users are encouraged to share and distribute any developments they make by hosti
 
 \subsection{Standard Packages \& Utilities}
 \subsubsection{Launching Packages with roslaunch}
-While nodes can launched manually, ROS provides a means for launching multiple sets of nodes programmatically via \emph{roslaunch} \cite{ros_paper, ros_wiki_roslaunch}. This tool allows developers to specify a set of nodes to be ran, along with a number of parameters, in XML configuration files ("launch files" in ROS terminology).
+While nodes can launched manually, ROS provides a means for large sets of nodes programmatically via \emph{roslaunch} \cite{ros_paper, ros_wiki_roslaunch}. This tool allows developers to specify a set of nodes to be ran, along with a number of parameters, in XML configuration files ("launch files" in ROS terminology). \emph{roslaunch} provides many useful features.
 
-\emph{roslaunch} provides many useful features. A launch configuration can specify which namespace a group of nodes is in. This allows multiple nodes of the same type to be launched without conflict. 
-
-Any topic used by a node can also be remapped to one more appropriate. This means that nodes can be built generically, assuming that their topics will be remapped to fulfil some specific purpose. An example of this is the \texttt{depthimage\_to\_laserscan} node, which converts a depth image into a format usable by nodes expecting laser scan data. This node expects the depth image to be transmitted on \texttt{/image}, assuming that this will be remapped to the actual depth image.
+A key feature is the ability to specify which namespace a particular set of nodes is in. This allows multiple nodes of the same type to be launched without conflict. Any topic used by a node can also be remapped to one more appropriate. This means that nodes can be built generically, assuming that their topics will be remapped to fulfil some specific purpose. An example of this is the \texttt{depthimage\_to\_laserscan} node, which converts a depth image into a format usable by nodes expecting laser scan data. This node expects the depth image to be transmitted on \texttt{/image}, assuming that this will be remapped to the actual depth image.
 
 Launch files can also include other launch files. Generally, a package will provide a launch configuration that starts all the necessary nodes to provide dealing with this package. This can be used to create a "master" configuration that launches a number of necessary subsystems.
 
@@ -63,8 +59,8 @@ The robotic hardware used in this project is relatively straightforward, consist
 
 \begin{figure}[!h]
     \centering
-    (I am a diagram)
-    \caption{This diagram shows the three degrees-of-freedom available to each limb on the robot.}
+    \includegraphics[width=10cm]{hexapod_joints}
+    \caption{Joint 1 allows for horizontal rotation, whereas joint 2 and 3 allow for vertical rotation.}
     \label{fig:hexapod_dof}
 \end{figure}
 
