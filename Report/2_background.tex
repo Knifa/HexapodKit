@@ -6,6 +6,25 @@
 
 The \emph{Robot Operating System} (ROS) is an open-source framework for creating robot control systems, developed by \emph{Willow Garage} \cite{ros_paper}. ROS can be primarily thought of as a message-passing framework. A number of discrete processes, perhaps some even on a remote machine, communicate through a single broker service using an XMLRPC-based API. Each process performs a small part of a larger task, sharing data with other nodes through common data types.
 
+ROS functions as a distributed system by default. Specifically, the processes can run on a machine different from that of the broker. The processes can then connect to the broker over a network, receiving data seamlessly from any other processes in the system. In cases where nodes are running on the same machine as the broker, they are simply connecting to the local machine. This can be used to offload complex computations onto another machine as necessary. To give an example, an embedded system on a robot running ROS can be collecting sensor data and issues hardware commands. This embedded system can then be communicating to a more powerful machine, acting as a base station. This base station can perform the more complex operations such as sensor data interpretation and path planning, relaying the commands back to the embedded system to be carried out.
+
+\subsection{Nodes}
+In ROS terminology, a processes is referred to as a \emph{node}. A node is simply a process that is connected to the ROS broker, performing some sort computation \cite{ros_paper}.
+
+Nodes need not be tied to any particular programming language \cite{ros_paper}. Nodes are developed using a particular \emph{client library}, of which many are available. These are libraries developed for a particular language or ecosystem, providing an abstraction layer for interfacing with ROS. The two most used client libraries are \emph{roscpp} and \emph{rospy}, which target C++ and Python respectively \cite{ros_wiki_clientlibraries}. There are a number of experimental client libraries available for other systems, such as Java, Android, C\#, and Arduino, among others \cite{ros_wiki_clientlibraries}.
+
+\subsubsection{Nodelets}
+
+
+\subsection{Communicating Through Topics \& Services}
+Node communication is done through \emph{topics} in a one-to-many fashion \cite{ros_paper}. Broadcasting is done asynchronously, such that the broadcasting node can continue operating without regard as to which nodes receive the message. Any other node can then subscribe to that particular topic, receiving messages through a callback for processing. Each topic has a given resource name which is used to uniquely identify that topic.
+
+A topic is defined with a given \emph{message} type through \emph{msg} files. Messages are simple data structures consisting of a number of typed data fields. Each data field has a unique name, and can be of a number of built-in primitive types, as well as other arbitrarily nested data structures such as arrays and even other messages. A simple example of this would be the \texttt{Point} message from the \texttt{geometry\_msgs} package. This message consists of three \texttt{float64} fields named \texttt{x}, \texttt{y}, and \texttt{z} \cite{ros_api_point_msg}.
+
+ROS also provides a \emph{request-response} style method of communication through \emph{services} \cite{ros_wiki_services}. In this case, a \emph{service} type is defined, in a format similar to topic messages, through \emph{srv} files. However, it differs in that two messages are defined in one file --- one for the request and the other for the response. This communication method is synchronous, in that a requesting node will block until a response is given. 
+
+\subsection{Resource Names}
+
 Each resource in the system has a unique name, and can be placed into a namespace. This gives each resource a unique \emph{graph resource name} which can be used to identify this resource elsewhere throughout the system. As the name suggests, the layout of a ROS system can be thought of as a graph or tree. Some examples of \emph{graph resource names} are shown below.
 
 \begin{figure}[h]
@@ -17,20 +36,6 @@ Each resource in the system has a unique name, and can be placed into a namespac
 
     \texttt{/hexapod/servo\_controller} (a \emph{servo\_controller} node)
 \end{figure}
-
-As touched on in the opening paragraph, ROS can function as a distributed system. Specifically, the processes can run on a machine different from that of the broker. The processes can then connect to the broker over a network, receiving data seamlessly from any other processes in the system. This can be used to offload complex computations onto another machine as necessary. To give an example, an embedded system on a robot running ROS can be collecting sensor data and issues hardware commands. This embedded system can then be communicating to a more powerful machine, acting as a base station. This base station can perform the more complex operations such as sensor data interpretation and path planning, relaying the commands back to the embedded system to be carried out.
-
-\subsection{Nodes}
-In ROS terminology, a processes is referred to as a \emph{node}. A node is simply a process that is connected to the ROS broker, performing some sort computation \cite{ros_paper}.
-
-Nodes need not be tied to any particular programming language \cite{ros_paper}. Nodes are developed using a particular \emph{client library}, of which many are available. These are libraries developed for a particular language or ecosystem, providing an abstraction layer for interfacing with ROS. The two most used client libraries are \emph{roscpp} and \emph{rospy}, which target C++ and Python respectively \cite{ros_wiki_clientlibraries}. There are a number of experimental client libraries available for other systems, such as Java, Android, C\#, Arduino, among others \cite{ros_wiki_clientlibraries}.
-
-\subsection{Communicating Through Topics \& Services}
-Node communication is done through \emph{topics} in a one-to-many fashion \cite{ros_paper}. Broadcasting is done asynchronously, such that the broadcasting node can continue operating without regard as to which nodes receive the message. Any other node can then subscribe to that particular topic, receiving messages through a callback for processing. Each topic has a given resource name which is used to uniquely identify that topic.
-
-A topic is defined with a given \emph{message} type through \emph{msg} files. Messages are simple data structures consisting of a number of typed data fields. Each data field has a unique name, and can be of a number of built-in primitive types, as well as other arbitrarily nested data structures such as arrays and even other messages. A simple example of this would be the \texttt{Point} message from the \texttt{geometry\_msgs} package. This message consists of three \texttt{float64} fields named \texttt{x}, \texttt{y}, and \texttt{z} \cite{ros_api_point_msg}.
-
-ROS also provides a \emph{request-response} style method of communication through \emph{services} \cite{ros_wiki_services}. In this case, a \emph{service} type is defined, in a format similar to topic messages, through \emph{srv} files. However, it differs in that two messages are defined in one file --- one for the request and the other for the response. This communication method is synchronous, in that a requesting node will block until a response is given. 
 
 \subsection{Grouping Nodes in Packages}
 A collection of nodes providing a particular set of functionalities (e.g., path planning for autonomous navigation), can be grouped and distributed as \emph{packages} \cite{ros_paper}. These packages can then be included into other projects acting as a subsystem as part of a larger system.
@@ -47,6 +52,7 @@ Launch files can also include other launch files. Generally, a package will prov
 
 \subsubsection{Visualising Sensor Data with RViz}
 
+\subsubsection{Transforming between coordinate frames with TF}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -93,12 +99,17 @@ A rotation command is issued by sending a string in the format shown above, spec
 
 It should be noted that the parameter for the target position is actually the pulse-width duration (in milliseconds) that is sent to the servo, rather than an actual angle. Duration ranges can very per manufacturer, however there is a common standard such that 1.5\textmu s corresponds to 0\textdegree{} and 2.5\textmu s correspond to 180\textdegree. These are the minimum and maximum possible values for this controller. 
 
-\subsection{RGB-D Sensor}
-The primary sensor in the system is an \emph{ASUS Xtion Pro Live} RGB-D sensor, which is very similar to the \emph{Microsoft Kinect}. The key functionality of this sensor is that it provides a depth video feed, giving a range of values indicating the distances to the objects in front of it.
+\subsection{RGB-D Camera}
+The primary sensor in the system is an \emph{ASUS Xtion Pro Live} RGB-D camera, which is very similar to the \emph{Microsoft Kinect}. The key functionality of this camera is that it provides a depth video feed, giving a range of values indicating the distances to the objects in front of it.
 
 Whole bunch of example pictures of how it works, what it does, etc.
 
 The advantages this particular sensor provides over the \emph{Kinect} is mostly physical, specifically weight and footprint. The \emph{Kinect} has a motorized base which allows the device to be tilted upwards and downwards through software, in comparison to the \emph{Xtion} which has a simple hinge that can be rotated by hand. This feature is unnecessary in this use case and adds a significant amount of weight. Additionally, the \emph{Kinect} is intended to be a consumer device and, thus, has a much striking product design. However, this striking design comes at a cost of making the device much larger in general, which is somewhat troubling when it must be placed on an already space-starved robot base.
+
+\subsubsection{OpenNI}
+Should one which to develop for the \emph{Xtion} in general, they must use the \emph{OpenNI} framework. \emph{OpenNI} is a "standard framework for 3D sensing" \cite{openni_site}.
+
+In particular, the \emph{Xtion} requires the use of \emph{OpenNI2}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

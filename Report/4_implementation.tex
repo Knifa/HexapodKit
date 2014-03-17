@@ -4,6 +4,14 @@
 
 This chapter will document the implementation process of the robot's systems.
 
+At the time of writing, the most recent version of ROS is \emph{Hydro}. A machine running \emph{Ubuntu 12.04 LTS}, the primary distribution for Hydro, was used for all development.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Architecture}
+
+Through the use of packages, we split the robot system into a number of systems, grouped by one larger system. Specifically, 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Hardware Operation}
@@ -11,8 +19,19 @@ This chapter will document the implementation process of the robot's systems.
 % FIXME: Maybe put this elsewhere?
 From the outset, it was known that the depth sensor relied on the \emph{OpenNI2} library and already had a supporting package. However, no such packages existed for the servo controller.
 
-\subsection{Camera Driver}
+\subsection{RGB-D Camera Driver}
+
+A wrapper for the \emph{OpenNI2} library is provided by the \texttt{openni2\_camera} \cite{ros_wiki_openni2_camera} and \texttt{openni2\_launch} \cite{ros_wiki_openni2_launch} packages. The former provides a single nodelet which acquires and publishes the image data, whereas the latter provides a means for starting that nodelet.
+
+This driver publishes image data from the camera on a number of different topics, with varying data types. Only two of these are particularly useful to us, however. The topic \texttt{/camera/rgb/image} provides the general optical feed from the camera, and the topic \texttt{/camera/depth/image} provides the depth feed from the camera, both of message type \texttt{Image}. Some example output from these topics is shown below.
+
+Additionally, a \texttt{PointCloud2} is published on \texttt{/camera/depth/points}.
+
+Understanding these package was rather troublesome, as both the wiki and GitHub pages documenting them were (and still are) completely blank. Instead, the documentation for a similar set of these packages for the first version of \emph{OpenNI}, named \texttt{openni\_launch}, was used \cite{ros_wiki_openni_launch}. Regardless, there was little difficulty in setting this package up.
+
 \subsection{Servo Driver}
+
+While there were already drivers for the RGB-D sensor, the case was not the same for the servo controller. For this, a custom node had to be developed.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
