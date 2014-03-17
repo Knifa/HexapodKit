@@ -2,14 +2,11 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{ROS}
+\section{Robot Operating System}
 
-The \emph{Robot Operating System} (ROS) is an open-source framework for creating robot control systems, developed by \emph{Willow Garage} \cite{ros_paper}.
+The \emph{Robot Operating System} (ROS) is an open-source framework for creating robot control systems, developed by \emph{Willow Garage} \cite{ros_paper}. ROS can be primarily thought of as a message-passing framework. A number of discrete processes, perhaps some even on a remote machine, communicate through a single broker service using an XMLRPC-based API. Each process performs a small part of a larger task, sharing data with other nodes through common data types.
 
-\subsection{Architecture}
-ROS can be primarily thought of as a message-passing framework. A number of discrete processes, perhaps some even on a remote machine, communicate through a single broker service using an XMLRPC-based API. Each process performs a small part of a larger task, sharing data with other nodes through common data types.
-
-Each resource has a unique name, and can be placed into a namespace. This gives each resource a unique \emph{graph resource name} which can be used to identify this resource elsewhere throughout the system. As the name suggests, the layout of a ROS system can be thought of as a graph or tree. Some examples of \emph{graph resource names} are shown below.
+Each resource in the system has a unique name, and can be placed into a namespace. This gives each resource a unique \emph{graph resource name} which can be used to identify this resource elsewhere throughout the system. As the name suggests, the layout of a ROS system can be thought of as a graph or tree. Some examples of \emph{graph resource names} are shown below.
 
 \begin{figure}[h]
     \centering
@@ -21,28 +18,28 @@ Each resource has a unique name, and can be placed into a namespace. This gives 
     \texttt{/hexapod/servo\_controller} (a \emph{servo\_controller} node)
 \end{figure}
 
-As touched on in the opening paragraph, ROS can function as a distributed system. Specifically, the processes can run on a machine different from that of the broker. The processes can then connect to the broker via a network. This can be used to offload complex computations onto another machine, should it be a requirement. To give an example, an embedded system running ROS on the robot can be collecting sensor data and issues hardware commands. This embedded system can then be communicating to a more powerful machine, acting as a base station. This base station can perform the more complex operations such as sensor data interpretation and path planning, relaying the commands back to the embedded system to be carried out.
+As touched on in the opening paragraph, ROS can function as a distributed system. Specifically, the processes can run on a machine different from that of the broker. The processes can then connect to the broker over a network, receiving data seamlessly from any other processes in the system. This can be used to offload complex computations onto another machine as necessary. To give an example, an embedded system on a robot running ROS can be collecting sensor data and issues hardware commands. This embedded system can then be communicating to a more powerful machine, acting as a base station. This base station can perform the more complex operations such as sensor data interpretation and path planning, relaying the commands back to the embedded system to be carried out.
 
-\subsubsection{Nodes}
+\subsection{Nodes}
 In ROS terminology, a processes is referred to as a \emph{node}. A node is simply a process that is connected to the ROS broker, performing some sort computation \cite{ros_paper}.
 
 Nodes need not be tied to any particular programming language \cite{ros_paper}. Nodes are developed using a particular \emph{client library}, of which many are available. These are libraries developed for a particular language or ecosystem, providing an abstraction layer for interfacing with ROS. The two most used client libraries are \emph{roscpp} and \emph{rospy}, which target C++ and Python respectively \cite{ros_wiki_clientlibraries}. There are a number of experimental client libraries available for other systems, such as Java, Android, C\#, Arduino, among others \cite{ros_wiki_clientlibraries}.
 
-\subsubsection{Communicating Through Topics \& Services}
+\subsection{Communicating Through Topics \& Services}
 Node communication is done through \emph{topics} in a one-to-many fashion \cite{ros_paper}. Broadcasting is done asynchronously, such that the broadcasting node can continue operating without regard as to which nodes receive the message. Any other node can then subscribe to that particular topic, receiving messages through a callback for processing. Each topic has a given resource name which is used to uniquely identify that topic.
 
-A topic is defined with a given \emph{message} type. Messages are simple data structures consisting of a number of typed data fields. Each data field has a unique name, and can be of a number of built-in primitive types, as well as other arbitrarily nested data structures such as arrays and even other messages. A simple example of this would be the \texttt{Point} message from the \texttt{geometry\_msgs} package. This message consists of three \texttt{float64} fields named \texttt{x}, \texttt{y}, and \texttt{z} \cite{ros_api_point_msg}.
+A topic is defined with a given \emph{message} type through \emph{msg} files. Messages are simple data structures consisting of a number of typed data fields. Each data field has a unique name, and can be of a number of built-in primitive types, as well as other arbitrarily nested data structures such as arrays and even other messages. A simple example of this would be the \texttt{Point} message from the \texttt{geometry\_msgs} package. This message consists of three \texttt{float64} fields named \texttt{x}, \texttt{y}, and \texttt{z} \cite{ros_api_point_msg}.
 
-ROS also provides a \emph{request-response} style method of communication through \emph{services} \cite{ros_wiki_services}.
+ROS also provides a \emph{request-response} style method of communication through \emph{services} \cite{ros_wiki_services}. In this case, a \emph{service} type is defined, in a format similar to topic messages, through \emph{srv} files. However, it differs in that two messages are defined in one file --- one for the request and the other for the response. This communication method is synchronous, in that a requesting node will block until a response is given. 
 
-\subsubsection{Grouping Nodes in Packages}
+\subsection{Grouping Nodes in Packages}
 A collection of nodes providing a particular set of functionalities (e.g., path planning for autonomous navigation), can be grouped and distributed as \emph{packages} \cite{ros_paper}. These packages can then be included into other projects acting as a subsystem as part of a larger system.
 
 Users are encouraged to share and distribute any developments they make by hosting repositories of their code, preferably on \emph{GitHub} \cite{ros_wiki_getinvolved}. Contributors can then request that their repository be listed on a package index on the ROS website \cite{ros_wiki_getinvolved}. This aspect is a particular advantage of ROS, as there is a wide array of packages available for usage. Additionally, as ROS provides a number of common data types used in robotics, packages from different vendors can interact with one another with relative ease.
 
 \subsection{Standard Packages \& Utilities}
 \subsubsection{Launching Packages with roslaunch}
-While nodes can launched manually, ROS provides a means for large sets of nodes programmatically via \emph{roslaunch} \cite{ros_paper, ros_wiki_roslaunch}. This tool allows developers to specify a set of nodes to be ran, along with a number of parameters, in XML configuration files ("launch files" in ROS terminology). \emph{roslaunch} provides many useful features.
+While nodes can launched manually, ROS provides a means for large sets of nodes programmatically via \emph{roslaunch} \cite{ros_paper, ros_wiki_roslaunch}. This tool allows developers to specify a set of nodes to be ran, along with a number of parameters, in XML configuration files ("launch files" in ROS terminology). \emph{roslaunch} provides a number of useful features.
 
 A key feature is the ability to specify which namespace a particular set of nodes is in. This allows multiple nodes of the same type to be launched without conflict. Any topic used by a node can also be remapped to one more appropriate. This means that nodes can be built generically, assuming that their topics will be remapped to fulfil some specific purpose. An example of this is the \texttt{depthimage\_to\_laserscan} node, which converts a depth image into a format usable by nodes expecting laser scan data. This node expects the depth image to be transmitted on \texttt{/image}, assuming that this will be remapped to the actual depth image.
 
@@ -60,7 +57,7 @@ The robotic hardware used in this project is relatively straightforward, consist
 \begin{figure}[!h]
     \centering
     \includegraphics[width=10cm]{hexapod_joints}
-    \caption{Joint 1 allows for horizontal rotation, whereas joint 2 and 3 allow for vertical rotation.}
+    \caption{This annotated photograph shows the three degrees-of-freedom available to each limb on the robot. Joint 1 provides horizontal rotation to the leg, allowing the robot to push itself forward. Joints 2 and 3 provide vertical rotation, which can be used to adjust the robots height, as well as being used for locomotion in general.}
     \label{fig:hexapod_dof}
 \end{figure}
 
@@ -94,7 +91,7 @@ A rotation command is issued by sending a string in the format shown above, spec
     \texttt{\#1\#P2000T250}
 \end{figure}
 
-It should be noted that the parameter for the target angle is actually the pulse width duration (in milliseconds) that is sent to the servo, rather than an actual angle. Duration ranges can very per manufacturer, however there is a common standard such that 1.5\textmu s corresponds to 0\textdegree{} and 2.5\textmu s correspond to 180\textdegree. These are the minimum and maximum possible values for this controller. 
+It should be noted that the parameter for the target position is actually the pulse-width duration (in milliseconds) that is sent to the servo, rather than an actual angle. Duration ranges can very per manufacturer, however there is a common standard such that 1.5\textmu s corresponds to 0\textdegree{} and 2.5\textmu s correspond to 180\textdegree. These are the minimum and maximum possible values for this controller. 
 
 \subsection{RGB-D Sensor}
 The primary sensor in the system is an \emph{ASUS Xtion Pro Live} RGB-D sensor, which is very similar to the \emph{Microsoft Kinect}. The key functionality of this sensor is that it provides a depth video feed, giving a range of values indicating the distances to the objects in front of it.
