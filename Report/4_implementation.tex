@@ -23,9 +23,9 @@ From the outset, it was known that the depth sensor relied on the \emph{OpenNI2}
 
 A wrapper for the \emph{OpenNI2} library is provided by the \texttt{openni2\_camera} \cite{ros_wiki_openni2_camera} and \texttt{openni2\_launch} \cite{ros_wiki_openni2_launch} packages. The former provides a single nodelet which acquires and publishes the image data, whereas the latter provides a means for starting that nodelet.
 
-This driver publishes image data from the camera on a number of different topics, with varying data types. Only two of these are particularly useful to us, however. The topic \texttt{/camera/rgb/image} provides the general optical feed from the camera, and the topic \texttt{/camera/depth/image} provides the depth feed from the camera, both of message type \texttt{Image}. Some example output from these topics is shown below.
+This driver publishes image data from the camera on a number of different topics, with varying data types. Only two of these are particularly useful to us, however. The topic \texttt{/camera/rgb/image} provides the general optical feed from the camera, and the topic \texttt{/camera/depth/image} provides the depth feed from the camera, both of message type \texttt{Image}. Some example output from these topics is shown below. 
 
-Additionally, a \texttt{PointCloud2} is published on \texttt{/camera/depth/points}.
+While the depth feed can be interpreted as an 8-bit monochrome image for displaying on-screen, the image is actually given in a 16-bit format, where each pixel value represents the distance from the sensor in millimeters. Additionally, the depth data is available in a point cloud format, published on \texttt{/camera/depth/points} as \texttt{PointCloud2} messages.
 
 Understanding these package was rather troublesome, as both the wiki and GitHub pages documenting them were (and still are) completely blank. Instead, the documentation for a similar set of these packages for the first version of \emph{OpenNI}, named \texttt{openni\_launch}, was used \cite{ros_wiki_openni_launch}. Regardless, there was little difficulty in setting this package up.
 
