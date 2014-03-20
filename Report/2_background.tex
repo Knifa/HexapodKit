@@ -1,21 +1,31 @@
 \chapter{Background and Related Works}
 \label{chap:background}
 
+For the correct operation of robot hardware, an extremely large software infrastructure is required. Developing this directly, without the use of any frameworks or libraries, would require a large amount of person hours in terms of both design and implementation time. Many different subsystems are required, each of which would require a deep technical understanding of the underlying intricacies. Typical systems require a means for communicating with hardware, locomotion control for movement, vision systems for guidance and environment mapping, autonomous navigation, means of user interaction, and so on. The complexity of each of these is such that they are research fields in their own right. 
+
+However, through the use of ROS, it is possible to gain access to these state-of-the-art functionalities for free of charge, both in terms of cost in person hours. The open-source nature of ROS is such that any innovations made by other developers can be easily shared to the rest of the community. This offloads the complex understanding to smaller development teams which have expertise in that particular area.
+
+The following sections in this chapter elaborate on the features of the ROS and our robot hardware, providing a basis of understanding required for the implementation and why these features are relevant.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Robot Operating System}
 
-The \emph{Robot Operating System} (ROS) is an open-source framework for creating robot control systems, developed by \emph{Willow Garage} \cite{ros_paper}. ROS can be primarily thought of as a message-passing framework. A number of discrete processes, perhaps some even on a remote machine, communicate through a single broker service using an XMLRPC-based API. Each process performs a small part of a larger task, sharing data with other nodes through common data types.
+The \emph{Robot Operating System} (ROS) is an open-source framework for creating robot control systems, developed by \emph{Willow Garage} \cite{ros_paper}. ROS can be primarily thought of as a message-passing framework. A number of discrete processes, perhaps some even on a remote machine, communicate through a single broker service (the ROS "master") using an XMLRPC-based API. Each process performs a small part of a larger task, sharing data with other nodes through common data types.
 
 ROS functions as a distributed system by default. Specifically, the processes can run on a machine different from that of the broker. The processes can then connect to the broker over a network, receiving data seamlessly from any other processes in the system. In cases where nodes are running on the same machine as the broker, they are simply connecting to the local machine. This can be used to offload complex computations onto another machine as necessary. To give an example, an embedded system on a robot running ROS can be collecting sensor data and issues hardware commands. This embedded system can then be communicating to a more powerful machine, acting as a base station. This base station can perform the more complex operations such as sensor data interpretation and path planning, relaying the commands back to the embedded system to be carried out.
+
+\subsection{Supported Platforms}
+At the time of writing, the latest version of ROS is \emph{Hydro Medusa} which primarily targets the \emph{Ubuntu} Linux distrubution, specifically versions 12.04 (LTS) to 13.04 \cite{ros_wiki_installation, ros_wiki_installation_ubuntu}. An Ubuntu repository containing binaries for ROS and its standard library of packages is available allowing for a trivial installation process, as well as allowing any updates to be delivered and installed with simplicity.
+
+Experimental support is also available for other Linux distributions and systems, such as Ubuntu ARM, OS X, Debian, Arch Linux, Windows, and a number of embedded platforms \cite{ros_wiki_installation}. As the source code for ROS is freely available, it is possible to compile it on any system as long as the relevant supporting libraries are available.
 
 \subsection{Nodes}
 In ROS terminology, a processes is referred to as a \emph{node}. A node is simply a process that is connected to the ROS broker, performing some sort computation \cite{ros_paper}.
 
 Nodes need not be tied to any particular programming language \cite{ros_paper}. Nodes are developed using a particular \emph{client library}, of which many are available. These are libraries developed for a particular language or ecosystem, providing an abstraction layer for interfacing with ROS. The two most used client libraries are \emph{roscpp} and \emph{rospy}, which target C++ and Python respectively \cite{ros_wiki_clientlibraries}. There are a number of experimental client libraries available for other systems, such as Java, Android, C\#, and Arduino, among others \cite{ros_wiki_clientlibraries}.
 
-\subsubsection{Nodelets}
-
+As intraprocess communication can be somewhat costly in terms of performance, ROS provides a means for running multiple nodes in the same process via \emph{nodelets} \cite{ros_wiki_nodelet}. This allows messages to be passed in a zero copy manner, as pointers to memory locations where messages are stored can be shared directly. Nodes must be modified to support this behaviour, however, as they must export some class that can be dynamically loaded by a \emph{nodelet manager}. This feature is used extensively when real-time performance is required such as with computer vision related tasks, for example.
 
 \subsection{Topics \& Services}
 Node communication is done through \emph{topics} in a one-to-many fashion \cite{ros_paper}. Broadcasting is done asynchronously, such that the broadcasting node can continue operating without regard as to which nodes receive the message. Any other node can then subscribe to that particular topic, receiving messages through a callback for processing. Each topic has a given resource name which is used to uniquely identify that topic.
@@ -28,7 +38,7 @@ ROS also provides a \emph{request-response} style method of communication throug
 
 Each resource in the system has a unique name, and can be placed into a namespace. This gives each resource a unique \emph{graph resource name} which can be used to identify this resource elsewhere throughout the system. As the name suggests, the layout of a ROS system can be thought of as a graph or tree. Some examples of \emph{graph resource names} are shown below.
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
 
     \texttt{/} (the global namespace)
@@ -57,7 +67,7 @@ Launch files can also include other launch files. Generally, a package will prov
 
 In addition to providing autonomous behaviour, it is often necessary that a control system must be able to provide some useful visualisations to the user operating the system. This can be much more helpful for gaining an understanding of what data the system is receiving, versus trawling through text logs alone. Rather than having to develop new visualisation software for every robot system, ROS provides a generic means for achieving this via \emph{rviz} \cite{ros_wiki_rviz}.
 
-\begin{figure}[t]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=12cm]{rviz1.jpg}
     \caption{An example configuration of RViz, specifically in the configuration used for the robot control system. The two image feeds from the camera can be seen on the left hand side, along with the configuration window for each visualisation. The main window shows the space in which the robot is operating, where a number of visualisations show the positioning and mapping facilities of the system. The green line, in particular, represents the current navigational path that the robot will follow.}
@@ -77,7 +87,7 @@ A recurring problem in robotics is the need to transform between particular coor
 
 The robotic hardware used in this project is relatively straightforward, consisting of a number of off-the-shelf components. The robot is a hexapod-type, in that it has six limbs. Each limb has three joints at which it can rotate, as shown in Figure~\ref{fig:hexapod_dof}, giving three degrees-of-freedom per limb. 
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=10cm]{hexapod_joints}
     \caption{This annotated photograph shows the three degrees-of-freedom available to each limb on the robot. Joint 1 provides horizontal rotation to the leg, allowing the robot to push itself forward. Joints 2 and 3 provide vertical rotation, which can be used to adjust the robots height, as well as being used for locomotion in general.}
@@ -89,7 +99,7 @@ In its current state, the robot has no wireless capability and, thusly, operates
 \subsection{Servos \& Servo Controller}
 Each joint piece is attached to the shaft of a servomechanism (servo) to facilitate rotation. Each servo is controlled by a \emph{pulse-width modulated} (PWM) signal supplied by the controller, such that the angle of the servo can be controlled. Servos operate using a feedback-loop system such that the current of a motor is controlled, rotating the shaft to the desired position. Rotational range and speed of servos vary depending on model, but in this case the servos allow for a total rotational range of 180\textdegree.
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=5cm]{torobot_controller}
     \caption{The \emph{Torobot 32-Channel Servo Controller}, as used in the hexapod.}
@@ -117,9 +127,15 @@ A rotation command is issued by sending a string in the format shown above, spec
 It should be noted that the parameter for the target position is actually the pulse-width duration (in milliseconds) that is sent to the servo, rather than an actual angle. Duration ranges can very per manufacturer, however there is a common standard such that 1.5\textmu s corresponds to 0\textdegree{} and 2.5\textmu s correspond to 180\textdegree. These are the minimum and maximum possible values for this controller. 
 
 \subsection{RGB-D Camera}
-The primary sensor in the system is an \emph{ASUS Xtion Pro Live} RGB-D camera, which is very similar to the \emph{Microsoft Kinect}. The key functionality of this camera is that it provides a depth video feed, giving a range of values indicating the distances to the objects in front of it.
+The primary sensor in the system is an \emph{ASUS Xtion Pro Live} RGB-D camera, which is very similar to the \emph{Microsoft Kinect}. The key functionality of this camera is that it provides a depth data feed, giving a range of values indicating the distances to the objects in front of it.
 
-Whole bunch of example pictures of how it works, what it does, etc.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=6cm]{rgbd_rgb2.jpg}
+    \includegraphics[width=6cm]{rgbd_depth2.jpg}
+    \caption{Example imagery from the RGB-D camera mounted on top of the robot, as given by the \texttt{openni2\_camera} package. The image on the left shows the RGB output from the camera. The image on the right shows the depth output interpreted as a monochrome image.}
+    \label{fig:rgbd_images1}
+\end{figure}
 
 The advantages this particular sensor provides over the \emph{Kinect} is mostly physical, specifically weight and footprint. The \emph{Kinect} has a motorized base which allows the device to be tilted upwards and downwards through software, in comparison to the \emph{Xtion} which has a simple hinge that can be rotated by hand. This feature is unnecessary in this use case and adds a significant amount of weight. Additionally, the \emph{Kinect} is intended to be a consumer device and, thus, has a much striking product design. However, this striking design comes at a cost of making the device much larger in general, which is somewhat troubling when it must be placed on an already space-starved robot base.
 

@@ -5,7 +5,7 @@
 
 This chapter will document the implementation process of the robot's systems.
 
-At the time of writing, the most recent version of ROS is \emph{Hydro}. A machine running \emph{Ubuntu 12.04 LTS}, the primary distribution for Hydro, was used for all development.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -24,17 +24,7 @@ From the outset, it was known that the depth sensor relied on the \emph{OpenNI2}
 
 A wrapper for the \emph{OpenNI2} library is provided by the \texttt{openni2\_camera} \cite{ros_wiki_openni2_camera} and \texttt{openni2\_launch} \cite{ros_wiki_openni2_launch} packages. The former provides a single nodelet which acquires and publishes the image data, whereas the latter provides a means for starting that nodelet.
 
-This driver publishes image data from the camera on a number of different topics, with varying data types. Only two of these are particularly useful to us, however. The topic \texttt{/camera/rgb/image} provides the general optical feed from the camera, and the topic \texttt{/camera/depth/image} provides the depth feed from the camera, both of message type \texttt{Image}. An example of the output from these topics is shown in Figure~\ref{fig:rgbd_images1}. 
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=8cm]{rgbd_rgb2.jpg}
-    \includegraphics[width=8cm]{rgbd_depth2.jpg}
-    \caption{Example imagery from the RGB-D camera mounted on top of the robot, as given by the \texttt{openni2\_camera} package. The image on the left shows the RGB output from the camera. The image on the right shows the depth output interpreted as a monochrome image.}
-    \label{fig:rgbd_images1}
-\end{figure}
-
-While the depth feed can be interpreted as an 8-bit monochrome image for displaying on-screen, the image is actually given in a 16-bit format, where each pixel value represents the distance from the sensor in millimeters. Additionally, the depth data is available in a point cloud format, published on \texttt{/camera/depth/points} as \texttt{PointCloud2} messages. This can be visualised in RViz, an example of which is shown in Figure~\ref{fig:rgbd_images2}.
+This driver publishes image data from the camera on a number of different topics, with varying data types. Only two of these are particularly useful to us, however. The topic \texttt{/camera/rgb/image} provides the general optical feed from the camera, and the topic \texttt{/camera/depth/image} provides the depth feed from the camera, both of message type \texttt{Image}. An example of the output from these topics is shown in Figure~\ref{fig:rgbd_images1}. While the depth feed can be interpreted as an 8-bit monochrome image for displaying on-screen, the image is actually given in a 16-bit format, where each pixel value represents the distance from the sensor in millimeters. Additionally, the depth data is available in a point cloud format, published on \texttt{/camera/depth/points} as \texttt{PointCloud2} messages. This can be visualised in RViz, an example of which is shown in Figure~\ref{fig:rgbd_images2}.
 
 \begin{figure}[h!]
     \centering
@@ -43,11 +33,19 @@ While the depth feed can be interpreted as an 8-bit monochrome image for display
     \label{fig:rgbd_images2}
 \end{figure}
 
+The \texttt{openni2\_launch} package also publishes static TF transforms for the individual sensors on the camera, such that the slight difference in perspective can be corrected.
+
+Camera calibration is also performed.
+
 Understanding these package was rather troublesome, as both the wiki and GitHub pages documenting them were (and still are) completely blank. Instead, the documentation for a similar set of these packages for the first version of \emph{OpenNI}, named \texttt{openni\_launch}, was used \cite{ros_wiki_openni_launch}. Regardless, there was little difficulty in setting this package up.
 
 \subsection{Servo Driver}
 
-While there were already drivers for the RGB-D sensor, the case was not the same for the servo controller. For this, a custom node had to be developed.
+While there were already drivers available for the RGB-D sensor, the case was not the same for the servo controller. For this, a custom node had to be developed.
+
+Python. pySerial.
+
+Topics used so that any sending nodes don't need to queue or wait. Can cause conflicts however.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -56,11 +54,23 @@ While there were already drivers for the RGB-D sensor, the case was not the same
 Strictly, only joints 1 and 2 are necessary for a tripod gait. Joint 3 can be locked, perhaps as a single solid piece of material, such that a right angle is formed between the foot and leg sections. This provides a stable stance for the robot to balance upon as it pushes itself forward between each cycle.
 
 \subsection{Limb Controller}
+
+Splits limb into logical sections.
+
 \subsection{Limb Calibration Tool}
+
+Provides offsets.
+
 \subsubsection{Usage}
 
+Console app.
+
 \subsection{Tripod Gait Walker}
+
+Need diagrams.
+
 \subsection{Joystick Controller}
+Joy package, ez.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
