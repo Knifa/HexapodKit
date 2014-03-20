@@ -1,4 +1,5 @@
 \chapter{Background and Related Works}
+\label{chap:background}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -52,10 +53,23 @@ A key feature is the ability to specify which namespace a particular set of node
 
 Launch files can also include other launch files. Generally, a package will provide a launch configuration that starts all the necessary nodes to provide dealing with this package. This can be used to create a "master" configuration that launches a number of necessary subsystems.
 
-\subsubsection{RViz: Visualising Sensor Data}
+\subsubsection{rviz: Visualising Sensor Data}
 
+In addition to providing autonomous behaviour, it is often necessary that a control system must be able to provide some useful visualisations to the user operating the system. This can be much more helpful for gaining an understanding of what data the system is receiving, versus trawling through text logs alone. Rather than having to develop new visualisation software for every robot system, ROS provides a generic means for achieving this via \emph{rviz} \cite{ros_wiki_rviz}.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=12cm]{rviz1.png}
+    \caption{An example configuration of RViz, specifically in the configuration used for the robot control system. The two image feeds from the camera can be seen on the left hand side, along with the configuration window for each visualisation. The main window shows the space in which the robot is operating, where a number of visualisations show the positioning and mapping facilities of the system. The green line, in particular, represents the current navigational path that the robot will follow.}
+    \label{fig:rviz}
+\end{figure}
+
+\emph{rviz} is a highly configurable program, primarily for displaying visualising data from topics in the system. It can be considered the hub of interactivity for the robot control system, allowing a user to control and understand the underlying system. Visualisations are made possible through a plugin system, a number of which are distributed with the package. These plugins provide visualisations for a number of common messages \cite{ros_wiki_rviz_datatypes}, examples of which are shown in Figure~{\ref{fig:rviz}. A major advantage of this plugin concept is that new visualisations can be developed an integrated with \emph{rviz} easily, without having to modify the core of the program itself. This may be necessary if a control system implements some new type of message, for example. In particular, many community-provided packages implement new visualisations for their custom messages.
+
+Additionally, it is possible to interact with the control system through \emph{rviz} through \emph{interactive markers} \cite{ros_wiki_rviz_intmark}. A user is able to move or rotate these markers on-screen, depending on the configuration, which can be used to control a corresponding robot limb, for example. The same markers can also be used to set navigational markers which a robot can then follow. Internally, marker data is transmitted and received through the usual topic system.
 
 \subsubsection{TF: Transforming Between Coordinate Frames}
+A recurring problem in robotics is the need to transform between particular coordinate frames. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -63,7 +77,7 @@ Launch files can also include other launch files. Generally, a package will prov
 
 The robotic hardware used in this project is relatively straightforward, consisting of a number of off-the-shelf components. The robot is a hexapod-type, in that it has six limbs. Each limb has three joints at which it can rotate, as shown in Figure~\ref{fig:hexapod_dof}, giving three degrees-of-freedom per limb. 
 
-\begin{figure}[!h]
+\begin{figure}[h]
     \centering
     \includegraphics[width=10cm]{hexapod_joints}
     \caption{This annotated photograph shows the three degrees-of-freedom available to each limb on the robot. Joint 1 provides horizontal rotation to the leg, allowing the robot to push itself forward. Joints 2 and 3 provide vertical rotation, which can be used to adjust the robots height, as well as being used for locomotion in general.}
@@ -75,7 +89,7 @@ In its current state, the robot has no wireless capability and, thusly, operates
 \subsection{Servos \& Servo Controller}
 Each joint piece is attached to the shaft of a servomechanism (servo) to facilitate rotation. Each servo is controlled by a \emph{pulse-width modulated} (PWM) signal supplied by the controller, such that the angle of the servo can be controlled. Servos operate using a feedback-loop system such that the current of a motor is controlled, rotating the shaft to the desired position. Rotational range and speed of servos vary depending on model, but in this case the servos allow for a total rotational range of 180\textdegree.
 
-\begin{figure}[!h]
+\begin{figure}[h]
     \centering
     \includegraphics[width=5cm]{torobot_controller}
     \caption{The \emph{Torobot 32-Channel Servo Controller}, as used in the hexapod.}

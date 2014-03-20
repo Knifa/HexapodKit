@@ -1,4 +1,5 @@
 \chapter{Implementation}
+\label{chap:implementation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -27,8 +28,8 @@ This driver publishes image data from the camera on a number of different topics
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=8cm]{rgbd_rgb1.jpg}
-    \includegraphics[width=8cm]{rgbd_depth1.jpg}
+    \includegraphics[width=8cm]{rgbd_rgb2.jpg}
+    \includegraphics[width=8cm]{rgbd_depth2.jpg}
     \caption{Example imagery from the RGB-D camera mounted on top of the robot, as given by the \texttt{openni2\_camera} package. The image on the left shows the RGB output from the camera. The image on the right shows the depth output interpreted as a monochrome image.}
     \label{fig:rgbd_images1}
 \end{figure}
@@ -37,8 +38,8 @@ While the depth feed can be interpreted as an 8-bit monochrome image for display
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=10cm]{rgbd_pc1.jpg}
-    \caption{Example point cloud output from the RGB-D camera mounted on top of the robot, as given by the \texttt{openni2\_camera} package, visualized using RViz. In this case, the points are projected into 3D space relative to the robot's position, and then coloured using the corresponding pixels on the RGB image. The "shadow" effect produced by nearby objects is particularly striking in this example.}
+    \includegraphics[width=10cm]{rgbd_pc2.png}
+    \caption{Example point cloud output from the RGB-D camera mounted on top of the robot, as given by the \texttt{openni2\_camera} package, visualized using RViz. In this case, the points are projected into 3D space relative to the robot's position, and then coloured using the corresponding pixels on the RGB image.}
     \label{fig:rgbd_images2}
 \end{figure}
 

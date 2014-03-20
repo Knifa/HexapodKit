@@ -1,4 +1,5 @@
 \chapter{Introduction}
+\label{chap:introduction}
 \pagenumbering{arabic}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -22,7 +23,7 @@ This report will detail how this objective was achieved with great success. Thro
 	The system allows the robot to walk with a tripod-type walk gait in an abstracted manner. This abstraction allows any control subsystems to request linear and angular movements, without regard as to the specific actuator commands. The system also provides a means for calibrating the actuators, allowing for movements to be made precisely. Additionally, the robot can be manually controlled via a standard game controller.
 
 	\item[Sensing] \hfill \\
-	The system is capable of building a 3D map of the environment around the robot, updating in real-time as the robot moves around. This map is stored in an efficient manner, allowing the system to quickly determine if any obstacles are nearby. Additionally, the system is capable of localising the position of the robot relative to the environment.
+	The system is capable of building a 3D map of the environment around the robot, updating in real-time as the robot moves around. This map is stored in an efficient manner, allowing the system to quickly determine if any obstacles are nearby. Additionally, the system is capable of localising the position of the robot relative its environment.
 
 	\item[Navigation] \hfill \\
 	The system is capable of fully autonomous navigation. Given a target position, the system will determine the most efficient path through the known environment and then supply the appropriate commands to move the robot to that position. Should the robot encounter any new obstacles, the path will be recalculated in real-time to avoid that obstacle.
@@ -34,3 +35,32 @@ Without access to the packages available for use through ROS, each of these capa
 \section{Motivation}
 
 \section{Overview}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=10cm]{overview.png}
+\end{figure}
+
+\section{Outline}
+
+The remainder of this report is divided up into the following chapters:
+
+\begin{description}
+	\item[Chapter~\ref{chap:background}: Background] \hfill \\
+	This chapter elaborates on the context of the project, specifically the technical intricacies of ROS and hardware. A number of existing robot systems will also be presented for comparison.
+
+	\item[Chapter~\ref{chap:approach}: Approach] \hfill \\
+	This chapter details the development approach used throughout the project, including the requirements for the robot control system.
+
+	\item[Chapter~\ref{chap:implementation}: Implementation] \hfill \\
+	This chapter explains the resulting implementation of the robot control system, elaborating on any design decisions or caveats.
+
+	\item[Chapter~\ref{chap:evaluation}: Evaluation] \hfill \\
+	This chapter presents the results on an evaluation of the performance of the robot control system, as well as detailing the experimental setup.
+
+	\item[Chapter~\ref{chap:usage}: Usage] \hfill \\
+	This chapter shows how the implemented robot control system is used. Specifically, how a user can interact with the control system, allowing navigational commands to be given.
+
+	\item[Chapter~\ref{chap:conclusion}: Conclusion] \hfill \\
+	This chapter will summarise the report, providing a number of ideas for future development of the project.
+\end{description}
