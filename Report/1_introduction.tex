@@ -4,7 +4,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The objective of this project was to implement a control system for an existing hexapod-type robot (shown in Figure~\ref{fig:hexapod}) through the use of the Robot Operating System (ROS) \cite{ros_site}. By attempting to implement a number of complex behaviours, such as environment mapping and autonomous navigation, we aimed to evaluate the usefulness of ROS as a framework for rapidly developing these control systems. Specifically, we looked to explore a range of standard and community-provided packages available for use through ROS which provide state-of-the-art functionality, including those that were necessary for this control system.
+The objective of this project was to implement a control system for an existing hexapod-type robot (shown in \autoref{fig:hexapod}) through the use of the Robot Operating System (ROS) \cite{ros_site}. By attempting to implement a number of complex behaviours, such as environment mapping and autonomous navigation, we aimed to evaluate the usefulness of ROS as a framework for rapidly developing these control systems. Specifically, we looked to explore a range of standard and community-provided packages available for use through ROS which provide state-of-the-art functionality, including those that were necessary for this control system.
 
 \begin{figure}[t]
     \centering
@@ -58,7 +58,7 @@ To give further context to the project, we provide the following overview of the
 	This subsystem combines the sensing and locomotion subsystems to achieve autonomous navigation through the environment surrounding the robot.
 \end{description}
 
-ROS is used as a framework for implementing this control system, providing a means of communication between each component. Where possible, built-in and community-provided ROS packages are used to provide the implementation, rather than relying on any hand-written code. A high-level overview of the system is shown in Figure~\ref{fig:overview}, showing the connectivity between each subsystem and the underlying hardware it relies on. Upon starting the system, each subsystem begins communicating such that the complex behaviours can be performed by relying on data from one another.
+ROS is used as a framework for implementing this control system, providing a means of communication between each component. Where possible, built-in and community-provided ROS packages are used to provide the implementation, rather than relying on any hand-written code. A high-level overview of the system is shown in \autoref{fig:overview}, showing the connectivity between each subsystem and the underlying hardware it relies on. Upon starting the system, each subsystem begins communicating such that the complex behaviours can be performed by relying on data from one another.
 
 \begin{figure}[h]
 	\centering
