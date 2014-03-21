@@ -4,12 +4,12 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The objective of this project was to implement a control system for an existing hexapod-type robot (shown in \autoref{fig:hexapod}) through the use of the Robot Operating System (ROS) \cite{ros_site}. By attempting to implement a number of complex behaviours, such as environment mapping and autonomous navigation, we aimed to evaluate the usefulness of ROS as a framework for rapidly developing these control systems. Specifically, we looked to explore a range of standard and community-provided packages available for use through ROS which provide state-of-the-art functionality, including those that were necessary for this control system.
+The objective of this project was to implement a control system for an existing hexapod-type robot (shown in \autoref{fig:hexapod}) through the use of the Robot Operating System (ROS) \cite{ros_site}. By attempting to implement a number of complex behaviours such as environment mapping and autonomous navigation, we aimed to evaluate the usefulness of ROS as a framework for rapidly developing these control systems. Specifically, we looked to explore a range of standard and community-provided packages available for use through ROS which provide state-of-the-art functionality, including those that were necessary for this control system.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=10cm]{hexapod_body1}
-    \caption{This hexapod-type which is used as the target hardware platform for this project. The robot has eighteen actuators; three on each limb. A RGB-D camera sits atop as the primary sensor, providing the robot with a 3D view of its immediate environment. A controller sits within the base of the robot, providing the necessary signals to operate the actuators. A bundle of cables protrudes from the back connecting the hardware to a nearby computer for operation, as well as a power source.}
+    \caption{This hexapod-type robot which is used as the target hardware platform for this project. The robot has six limbs with three actuators on each, for a total of eighteen actuators. A RGB-D camera sits atop as the primary sensor, providing the robot with a 3D view of its immediate environment. A controller sits within the base of the robot, providing the necessary signals to operate the actuators. A bundle of cables protrudes from the back connecting the hardware to a nearby computer for operation, as well as a power source.}
     \label{fig:hexapod}
 \end{figure}
 
@@ -34,7 +34,7 @@ Without access to the packages available for use through ROS, each of these capa
 
 \section{Motivation}
 
-The primary motivation was to show that it is possible to implement these complex behaviours, previously restricted to research projects with large budgets, on robots utilising cheaper consumer components. Laser range-finders, in particular, are typically used for environment scanning and positional tracking. These scanners provide extremely accurate results but can cost multiple thousands of pounds. However, as RGB-D sensors become increasingly available, it is possible to achieve similar results at a fraction of the cost, even with reduced accuracy.
+The primary motivation was to show that it is possible to implement these complex behaviours, previously restricted to research projects with large budgets, on robots utilising cheaper consumer components. Laser range-finders, in particular, are typically used for environment scanning and positional tracking. These scanners provide extremely accurate results but can cost multiple thousands of pounds. However, as RGB-D sensors become increasingly available, it is possible to achieve similar results at a fraction of the cost with reduced accuracy.
 
 As a secondary motivation, we wanted to show that it was possible to implement these behaviours without having to invest an immense number of person hours. Through the use of readily available libraries and frameworks, it is possible for a very small team to implement these behaviours without having to fully understand the underlying intricacies of any one system. Robot control systems are, simply, software development projects. By applying standard software development concepts, such as code reuse and separations of concerns, it allows us to make use of any existing works without having to "re-invent the wheel" each time.
 
@@ -58,7 +58,7 @@ To give further context to the project, we provide the following overview of the
 	This subsystem combines the sensing and locomotion subsystems to achieve autonomous navigation through the environment surrounding the robot.
 \end{description}
 
-ROS is used as a framework for implementing this control system, providing a means of communication between each component. Where possible, built-in and community-provided ROS packages are used to provide the implementation, rather than relying on any hand-written code. A high-level overview of the system is shown in \autoref{fig:overview}, showing the connectivity between each subsystem and the underlying hardware it relies on. Upon starting the system, each subsystem begins communicating such that the complex behaviours can be performed by relying on data from one another.
+ROS is used as a framework for implementing this control system, providing a means of communication between each component. Where possible, built-in and community-provided ROS packages are used to provide the implementation, rather than relying on any self-sourced code. A high-level overview of the system is shown in \autoref{fig:overview}, showing the connectivity between each subsystem and the underlying hardware it relies on. Upon starting the system, each subsystem begins communicating such that the complex behaviours can be performed by relying on data from one another.
 
 \begin{figure}[h]
 	\centering
@@ -90,5 +90,5 @@ The remainder of this report is divided into the chapters described below.
 	This chapter shows how the implemented robot control system is used. Specifically, how a user can interact with the control system, allowing navigational commands to be given.
 
 	\item[Chapter~\ref{chap:conclusion}: Conclusion] \hfill \\
-	This chapter will summarise the report, providing a number of ideas for future development of the project.
+	This chapter summarises the report, providing a number of ideas for future development of the project.
 \end{description}

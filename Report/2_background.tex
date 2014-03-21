@@ -1,11 +1,11 @@
-\chapter{Background and Related Works}
+\chapter{Background \& Related Works}
 \label{chap:background}
 
-For the correct operation of robot hardware, an extremely large software infrastructure is required. Developing this directly, without the use of any frameworks or libraries, would require a large amount of person hours in terms of both design and implementation time. Many different subsystems are required, each of which would require a deep technical understanding of the underlying intricacies. Typical systems require a means for communicating with hardware, locomotion control for movement, vision systems for guidance and environment mapping, autonomous navigation, means of user interaction, and so on. The complexity of each of these is such that they are research fields in their own right. 
+For a set of robot to operate correctly, a vast infrastructure of software is generally required. Developing this directly without the use of any frameworks or libraries would require a large amount of person hours, in terms of both design and implementation time. Many different subsystems are required, each of which would require a deep technical understanding of the underlying intricacies. Typical systems require a means for communicating with hardware, locomotion control for movement, vision systems for guidance and environment mapping, autonomous navigation, means of user interaction, and so on. The complexity of each of these is such that they are research fields in their own right. 
 
-However, through the use of ROS, it is possible to gain access to these state-of-the-art functionalities for free of charge, both in terms of cost in person hours. The open-source nature of ROS is such that any innovations made by other developers can be easily shared to the rest of the community. This offloads the complex understanding to smaller development teams which have expertise in that particular area.
+However, through the use of ROS it is possible to gain access to these state-of-the-art functionalities free of charge, both in terms of cost in person hours. The open-source nature of ROS is such that any innovations made by other developers can be easily shared to the rest of the community. This offloads the complex understanding to smaller development teams which have expertise in that particular area.
 
-The following sections in this chapter elaborate on the features of the ROS and our robot hardware, providing the basis of understanding required for further chapters, and why these features are relevant to this project.
+The following sections in this chapter elaborate on the features of the ROS and our robot hardware, explaining why they are relevant to this project. This will provide a basis of understanding necessary for the implementation chapter and beyond.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -23,7 +23,7 @@ Experimental support is also available for other Linux distributions and systems
 \subsection{Nodes}
 In ROS terminology, a processes is referred to as a \emph{node}. A node is simply a process that is connected to the ROS broker, performing some sort computation \cite{ros_paper}.
 
-Nodes need not be tied to any particular programming language \cite{ros_paper}. Nodes are developed using a particular \emph{client library}, of which many are available. These are libraries developed for a particular language or ecosystem, providing an abstraction layer for interfacing with ROS. The two most used client libraries are \emph{roscpp} and \emph{rospy}, which target C++ and Python respectively \cite{ros_wiki_clientlibraries}. There are a number of experimental client libraries available for other systems, such as Java, Android, C\#, and Arduino, among others \cite{ros_wiki_clientlibraries}.
+Nodes need not be tied to any particular programming language \cite{ros_paper}. Nodes are developed using a particular \emph{client library}, of which many are available. These are libraries developed for a particular language or ecosystem, providing an abstraction layer for interfacing with ROS. The two most used client libraries are \emph{roscpp} and \emph{rospy}, which target C++ and Python respectively \cite{ros_wiki_clientlibraries}. There are a number of experimental client libraries available for other systems such as Java, Android, C\#, and Arduino, among others \cite{ros_wiki_clientlibraries}.
 
 \begin{figure}[h!]
     \centering
@@ -56,7 +56,7 @@ Each resource in the system has a unique name, and can be placed into a namespac
 \end{figure}
 
 \subsection{Packages}
-A collection of nodes providing a particular set of functionalities (e.g., path planning for autonomous navigation), can be grouped and distributed as \emph{packages} \cite{ros_paper}. These packages can then be included into other projects acting as a subsystem as part of a larger system.
+A collection of nodes providing a particular set of functionalities (e.g., path planning for autonomous navigation), can be grouped and distributed as \emph{packages} \cite{ros_paper}. This can be used to divide nodes in a system into logical subsystems. By developing nodes and packages in a generic way, they can also act as a means for providing drop-in functionality.
 
 Users are encouraged to share and distribute any developments they make by hosting repositories of their code, preferably on \emph{GitHub} \cite{ros_wiki_getinvolved}. Contributors can then request that their repository be listed on a package index on the ROS website \cite{ros_wiki_getinvolved}. This aspect is a particular advantage of ROS, as there is a wide array of packages available for usage. Additionally, as ROS provides a number of common data types used in robotics, packages from different vendors can interact with one another with relative ease.
 
@@ -83,10 +83,10 @@ In addition to providing autonomous behaviour, it is often necessary that a cont
 
 \emph{rviz} is a highly configurable program, primarily for displaying visualising data from topics in the system. It can be considered the hub of interactivity for the robot control system, allowing a user to control and understand the underlying system. Visualisations are made possible through a plugin system, a number of which are distributed with the package. These plugins provide visualisations for a number of common messages \cite{ros_wiki_rviz_datatypes}, examples of which are shown in \autoref{fig:rviz}. A major advantage of this plugin concept is that new visualisations can be developed an integrated with \emph{rviz} easily, without having to modify the core of the program itself. This may be necessary if a control system implements some new type of message, for example. In particular, many community-provided packages implement new visualisations for their custom messages.
 
-Additionally, it is possible to interact with the control system through \emph{rviz} through \emph{interactive markers} \cite{ros_wiki_rviz_intmark}. A user is able to move or rotate these markers on-screen, depending on the configuration, which can be used to control a corresponding robot limb, for example. The same markers can also be used to set navigational markers which a robot can then follow. Internally, marker data is transmitted and received through the usual topic system.
+Additionally, it is possible to interact with the control system through \emph{rviz} through \emph{interactive markers} \cite{ros_wiki_rviz_intmark}. A user is able to move or rotate these markers on-screen, depending on the configuration, which can be used to control a corresponding robot limb, for example. The same markers can also be used to set navigational waypoints which a robot can then follow. Internally, marker data is transmitted and received through the usual topic system.
 
 \subsubsection{tf: Transforming Between Various Coordinate Frames}
-A common problem in robotics is the need to transform between different coordinate frames. For example, a number of laser rangefinders may be placed in varying positions around the the base of a robot. The incoming range data from a rangefinders will be relative to the origin of that particular rangefinder. Should it be necessary to find the distance from the base of the robot to a nearby wall in sight of the rangefinder, for example, some arithmetic must be performed to calculate the distance, based on the physical offsets between the base and the rangefinder. Rather than performing these calculations manually each time, ROS provides a standard solution for achieving this through the \emph{tf} package \cite{ros_wiki_tf}. An annotated example of these concepts is shown in \autoref{fig:tf}.
+A common problem in robotics is the need to transform between different coordinate frames. For example, a number of laser rangefinders may be placed in varying positions around the the base of a robot. The incoming range data from a rangefinders will be relative to its origin. Should it be necessary to find the distance from the base of the robot to a nearby wall in sight of the rangefinder, for example, some arithmetic must be performed to calculate the distance, based on the physical offsets between the base and the rangefinder. Rather than performing these calculations manually each time, ROS provides a standard solution for achieving this through the \emph{tf} package \cite{ros_wiki_tf}. An annotated example of these concepts is shown in \autoref{fig:tf}.
 
 \begin{figure}[h!]
     \centering
@@ -95,7 +95,7 @@ A common problem in robotics is the need to transform between different coordina
     \label{fig:tf}
 \end{figure}
 
-The relations between different coordinate frames and their transformations are represented in a tree-like hierarchy, where each node is a particular coordinate frame. A fixed frame is used as the root of this node, representing a coordinate frame for an environment for example. By traversing through the tree, it is possible to calculate positions in one coordinate frame relative to another. An example transform tree is shown in \autoref{fig:tf_tree}.
+The relations between different coordinate frames and their transformations are represented in a tree-like hierarchy, where each node corresponds to a particular coordinate frame. A fixed frame is used as the root of this node, representing a coordinate frame which the rest can relate to. This fixed can represent the environment around a robot, for example. By traversing through this tree, it is possible to calculate positions in one coordinate frame relative to another. An example transform tree is shown in \autoref{fig:tf_tree}.
 
 \begin{figure}[h!]
     \centering
@@ -104,7 +104,7 @@ The relations between different coordinate frames and their transformations are 
     \label{fig:tf_tree}
 \end{figure}
 
-The \emph{tf} package has a variety of useful features. Transform positions are cached throughout runtime, for example, such that it is possible to request the position of a particular coordinate at a time in the past. Additionally, a number of nodes are available in the \emph{tf} package that can publish static transforms between coordinate frames. In the example show in \autoref{fig:tf}, one would use these nodes to publish the offsets between base of the robot and the camera.
+The \emph{tf} package has a variety of useful features. Transform positions are cached throughout run-time such that it is possible to request positions at times in the past. Additionally, a number of nodes are available in the \emph{tf} package that can publish static transforms between coordinate frames. In the example show in \autoref{fig:tf}, one would use these nodes to publish the offsets between base of the robot and the camera.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
