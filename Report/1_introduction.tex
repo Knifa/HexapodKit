@@ -6,14 +6,14 @@
 
 The objective of this project was to implement a control system for an existing hexapod-type robot (shown in \autoref{fig:hexapod}) through the use of the Robot Operating System (ROS) \cite{ros_site}. By attempting to implement a number of complex behaviours such as environment mapping and autonomous navigation, we aimed to evaluate the usefulness of ROS as a framework for rapidly developing these control systems. Specifically, we looked to explore a range of standard and community-provided packages available for use through ROS which provide state-of-the-art functionality, including those that were necessary for this control system.
 
-\begin{figure}[t]
+\begin{figure}[h!]
     \centering
-    \includegraphics[width=10cm]{hexapod_body1}
+    \includegraphics[width=12cm]{hexapod_body1}
     \caption{This hexapod-type robot which is used as the target hardware platform for this project. The robot has six limbs with three actuators on each, for a total of eighteen actuators. A RGB-D camera sits atop as the primary sensor, providing the robot with a 3D view of its immediate environment. A controller sits within the base of the robot, providing the necessary signals to operate the actuators. A bundle of cables protrudes from the back connecting the hardware to a nearby computer for operation, as well as a power source.}
     \label{fig:hexapod}
 \end{figure}
 
-This report will detail how this objective was achieved with great success. Through the use of ROS and its packages, it was possible to implement a control system that provides a number of these complex behaviours with relative brevity and simplicity. The resulting robot control system has a number of impressive capabilities:
+This report will detail how these objectives were achieved. Through the use of ROS and its packages, it was possible to implement a control system that provides a number of these complex behaviours with relative brevity and simplicity. ROS endows the resulting robot control system with a number of impressive capabilities:
 
 \begin{description}
 	\item[Hardware Operations] \hfill \\
@@ -32,11 +32,13 @@ This report will detail how this objective was achieved with great success. Thro
 
 Without access to the packages available for use through ROS, each of these capabilities would have taken a great number of person hours to develop, test and integrate. 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Motivation}
 
 The primary motivation was to show that it is possible to implement these complex behaviours, previously restricted to research projects with large budgets, on robots utilising cheaper consumer components. Laser range-finders, in particular, are typically used for environment scanning and positional tracking. These scanners provide extremely accurate results but can cost multiple thousands of pounds. However, as RGB-D sensors become increasingly available, it is possible to achieve similar results at a fraction of the cost with reduced accuracy.
 
-As a secondary motivation, we wanted to show that it was possible to implement these behaviours without having to invest an immense number of person hours. Through the use of readily available libraries and frameworks, it is possible for a very small team to implement these behaviours without having to fully understand the underlying intricacies of any one system. Robot control systems are, simply, software development projects. By applying standard software development concepts, such as code reuse and separations of concerns, it allows us to make use of any existing works without having to "re-invent the wheel" each time.
+As a secondary motivation, we wanted to show that it was possible to implement these behaviours without having to invest an immense number of person hours. Through the use of readily available libraries and frameworks, it is possible for a very small team to implement these behaviours without having to fully understand the underlying intricacies of any one system. Robot control systems are, simply, software development projects. By applying standard software development concepts, such as code reuse and separations of concerns, it allows us to make use of any existing works without having to ``re-invent the wheel'' each time.
 
 Additionally, these behaviours, such as being able to move around and understand an environment, act as a general foundation for any further developments. The ramifications of being able to rapidly develop these robot system are such that new developments and innovations can be made more quickly, with less overall cost in terms of both budget and time.
 
@@ -68,6 +70,8 @@ ROS is used as a framework for implementing this control system, providing a mea
 \end{figure}
 
 As with any good software development project, this separation of concerns is essential for building a manageable system. The methods with which each subsystem communicate is generic, such that one can be replaced in its entirety with some other implementation, as long as it uses a similar interface. This also means that the subsystems can be used in other projects, should they be relevant.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Outline}
 

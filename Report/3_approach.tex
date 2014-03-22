@@ -1,15 +1,15 @@
 \chapter{Approach}
 \label{chap:approach}
 
-To evaluate the usefulness of ROS, we set out to build a ROS-based system, targeting the hexapod as its primary hardware platform. A number of increasingly complex goals were to be achieved for this system.
+To evaluate the usefulness of ROS, we set out to build a ROS-based robot control system, targeting the hexapod as its primary hardware platform. A number of increasingly complex requirements were necessary for this system to function correctly.
 
-Throughout, an attitude of code re-use was taken, relying on any existing nodes and packages where possible. It was assumed that these complex goals would be otherwise unachievable in this project's time frame without the help of this vast package repository. As there are many ROS packages available that perform similar tasks, it was necessary to choose and compare these packages where appropriate. 
+Throughout, an attitude of code re-use was taken, relying on any existing nodes and packages where possible. It was assumed that these requirements would be otherwise unachievable in this project's time frame without the help of this vast package repository. As there are many ROS packages available that perform similar tasks, it was necessary to choose and compare these packages where appropriate. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Goals}
+\section{Requirements}
 
-These goals can be sectioned into four key categories, as explained in the following sections.
+The requirements for the control system can be divided into four key categories as explained in the following sections.
 
 \subsection{Hardware Operation}
 
@@ -32,3 +32,7 @@ A method of inferring the position of the robot relative to the rest of the worl
 \subsection{Navigation}
 
 Finally, the robot had to be capable of some autonomous behaviour. For this, autonomous navigation was chosen as it would be a stepping stone to any further behaviours. By using the interpreted visual data, the robot had to be able to navigate its environment to reach some particular target, avoiding any obstructions and obstacles where necessary. To achieve this, we would require a complete working integration of the aforementioned goals.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Design}
