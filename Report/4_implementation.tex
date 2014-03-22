@@ -21,7 +21,7 @@ A wrapper for the \emph{OpenNI2} library is provided by the \texttt{openni2\_cam
 
 This driver publishes image data from the camera on a number of different topics, with varying data types. Only two of these are particularly useful to us, however. The topic \texttt{/camera/rgb/image} provides the general optical feed from the camera, and the topic \texttt{/camera/depth/image} provides the depth feed from the camera, both of message type \texttt{Image}. An example of the output from these topics is shown in \autoref{fig:rgbd_images1}. While the depth feed can be interpreted as an 8-bit monochrome image for displaying on-screen, the image is actually given in a 16-bit format, where each pixel value represents the distance from the sensor in millimeters. Additionally, the depth data is available in a point cloud format, published on \texttt{/camera/depth/points} as \texttt{PointCloud2} messages. This can be visualised in RViz, an example of which is shown in \autoref{fig:rgbd_images2}.
 
-\begin{figure}[h!]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=12cm]{rgbd_pc2.jpg}
     \caption{Example point cloud output from the RGB-D camera mounted on top of the robot, as given by the \texttt{openni2\_camera} package, visualized using RViz. In this case, the points are projected into 3D space relative to the robot's position, and then coloured using the corresponding pixels on the RGB image.}
@@ -36,13 +36,13 @@ Understanding these package was rather troublesome, as both the wiki and GitHub 
 
 \subsection{Servo Driver}
 
-While there were already drivers available for the RGB-D sensor, this was not the case for the servo controller. A custom node, named \texttt{servo\_controller}, was developed which accepts command messages through a topic. This node then relays commands to the controller by converting them into the format specified in the protocol. Furthermore, the node is implemented in such a way that it can be used to move any number of servos connected to the controller, not just the eighteen as required by the hexapod.
+While there were already drivers available for the RGB-D sensor, this was not the case for the servo controller. A custom \texttt{servo\_controller} node was developed which accepts command messages through a topic. This node then relays commands to the controller by converting them into the format specified in the protocol. Furthermore, the node is implemented in such a way that it can be used to move any number of servos connected to the controller, not just the eighteen as required by the hexapod.
 
-The node listens for movement commands on a topic named \texttt{direct} relative to its namespace. By using a topic over a service, we ensure that any node sending commands to the controller need not wait for the command to actually be issued. This simplifies any timing necessities for a commanding node, such as the the locomotion nodes. A custom \texttt{ServoCommand} message had to be created to support this topic as none of the standard messages distributed with ROS were appropriate. In particular, it was necessary that a command include which servo to rotate, the target position, and how long it should take to move to that angle. The specification for this message is shown in \autoref{fig:servocommand_msg}.
+The node listens for movement commands on a topic named \texttt{direct} relative to its namespace. By using a topic over a service, we ensure that any node sending commands to the controller need not wait for the command to actually be issued. This simplifies any timing necessities for a commanding node, such as those performing locomotion duties. A custom \texttt{ServoCommand} message had to be created to support this topic as none of the standard messages distributed with ROS were appropriate. In particular, it was necessary that a command include which servo to rotate, the target position, and how long it should take to move to that angle. The specification for this message is shown in \autoref{fig:servocommand_msg}. Having received one of these messages, the node will relay it to the controller after performing the steps necessary to transform it into the required protocol format.
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
-	\begin{tabular}{ l c p{10cm} }
+	\begin{tabular}{ r r p{10cm} }
 		\textbf{Name} & \textbf{Type} & \textbf{Description} \\
 		\hline
 
@@ -62,13 +62,15 @@ The node listens for movement commands on a topic named \texttt{direct} relative
 		\texttt{float32} &
 		The duration for how long the rotation should take in seconds, essentially setting a speed for the rotation. \\
 	\end{tabular}
-	\caption{The specification for the \texttt{ServoCommand} message used by the \texttt{servo\_controller} node.}
+	\caption{The specification for the \texttt{ServoCommand} message as used by the \texttt{servo\_controller} node.}
 	\label{fig:servocommand_msg}
 \end{figure}
 
-To specify the time taken to rotate the servo, a \texttt{duration} primitive could have been used rather than a \texttt{float32} \cite{ros_wiki_msg}. These primitives are implemented in the client libraries such that they can be manipulated easily, allowing them to be added or subtracted for example \cite{ros_api_duration_msg}. While this may be useful, the duration can only be specified using integers in either \emph{seconds} or \emph{nanoseconds} \cite{ros_api_duration_msg}. This granularity can be quite tedious as the rotation durations are usually specified in the range of hundreds of milliseconds. To give an example, to rotate with a duration of a 0.1 seconds, the duration would need to be specified as either 1 second---thus being wildly inaccurate---or 100,000,000 nanoseconds---a rather excessively large number. It was for this reason that \texttt{float32} was chosen which allows time to specified in seconds directly with fractions if necessary.
+To specify the time taken to rotate the servo, a \texttt{duration} primitive could have been used rather than a \texttt{float32} \cite{ros_wiki_msg}. These primitives are by backed by classes in the client libraries such that they can be manipulated more easily \cite{ros_api_duration_msg}. For example, a \texttt{duration} can be added to a \texttt{time}---another primitive---resulting in a new \texttt{time}. While this may be useful, the duration can only be specified using integers in either \emph{seconds} or \emph{nanoseconds} \cite{ros_api_duration_msg}. This granularity can be quite tedious as the rotation durations are usually specified in the range of hundreds of milliseconds. To give an example, to rotate with a duration of a 0.1 seconds, the duration would need to be specified as either 1 second---thus being wildly inaccurate---or 100,000,000 nanoseconds---a rather excessively large number. It was for this reason that \texttt{float32} was chosen as it allows time to specified in seconds directly with fractions if necessary.
 
-As standard with UNIX systems, the device presents itself as a file located in the \texttt{/dev} directory once connected which can be read from and written to \cite{unix_devices}. In this case, the device shows itself to be an external serial port with path \texttt{/dev/ttyAMC0}, though this may vary depending on system configuration. While it is possible to open this file and begin writing directly using standard Python file semantics, a number of settings must be applied beforehand to ensure correct operation. A library named \emph{pySerial} was used to simplify this process by encapsulating access to the serial port while still a means of reading and writing using the familiar file semantics \cite{pyserial}. Additionally, this library provides the same interface to the serial port across many platforms allowing the controller node to be used in a variety of situations.
+As standard with UNIX systems, the device presents itself as a file located in the \texttt{/dev} directory once connected which can be read from and written to \cite{unix_devices}. In this case, the device shows itself to be an external serial port with path \texttt{/dev/ttyAMC0} though this may vary depending on system configuration. While it is possible to open this file and begin writing directly using standard Python file semantics, a number of settings must be applied beforehand to ensure correct operation. A library named \emph{pySerial} was used to simplify this process by encapsulating access to the serial port while still a means of reading and writing using the familiar file semantics \cite{pyserial}. Additionally, this library provides the same interface to the serial port across many platforms allowing the controller node to be used in a variety of situations \cite{pyserial}.
+
+Due to some quirk in the servo controller's programming, a time delay had to be added between sending commands. Without this, commands would get lost or abort midway through a rotation. A delay of 3 milliseconds was adequate to correct this without causing timing issues elsewhere in the system, minimized purely through trial and error. Seemingly, the controller requires some processing time after a command before it can begin processing another. Unfortunately, it is impossible to diagnose this issue any further as no source code is available, nor does the protocol documentation mention this limitation in any form \cite{torobot_manual}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -90,8 +92,54 @@ Console app.
 
 Need diagrams.
 
-\subsection{Joystick Controller}
-Joy package, ez.
+\subsection{Gamepad Controller}
+
+Manual locomotion control was implemented using a custom \texttt{gamepad\_controller} node powered by the \texttt{joy} package, a standard package for a interfacing with joysticks and gamepads in a device-agnostic way through topics. A gamepad consists of a number of physical controls that a user can manipulate, such as buttons and analogue sticks. Buttons provide a digital output (i.e., currently pressed or not pressed) whereas analogue sticks provide a pair of coordinates ranging from (-1, -1) to (1, 1) depending on their position. While the \texttt{joy} package provides generic joystick access, the \emph{Microsoft Xbox 360 Controller} was targeted specifically---shown in \autoref{fig:xbox_360}.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=12cm]{360.png}
+	\caption{A diagram showing the layout of the Microsoft Xbox 360 Controller \cite{360_controller}. In the case of this control system, the left and right analogue sticks are used to input linear and angular motions respectively.}.
+	\label{fig:xbox_360}
+\end{figure}
+
+The \texttt{joy} package contains one node named \texttt{joy\_node}. This node parses joystick input data, converts that data into standard \texttt{Joy} messages, and then broadcasts it through a \texttt{joy} topic relative to itself \cite{ros_wiki_joy}. The specification for the \texttt{Joy} message can be seen in \autoref{fig:joy_msg} and some example output from the \texttt{joy} topic can be seen in \autoref{fig:joy_example}. Additionally, \texttt{joy\_node} accepts a \texttt{dev} parameter which specifies where it should read joystick data from. If no parameter is set, the node will read data from \texttt{/dev/input/js0} which is the first controller connected to the system. 
+
+\begin{figure}[!h]
+	\centering
+	\begin{tabular}{ r r p{10cm} }
+		\textbf{Name} & \textbf{Type} & \textbf{Description} \\
+		\hline
+
+		\texttt{axes} & 
+		\texttt{float32[]} &
+		An array of floating point numbers indicating the current position of each axes on the controller, ranging from -1 to 1. An analogue stick like on the controller shown in \autoref{fig:xbox_360} will consist of two axes, one for the X position and the other for the Y position. \\
+		
+		\texttt{buttons} & 
+		\texttt{int32[]} & 
+		An array of integers indicating the state of each button on the controller. A value of 1 indicates that the button is currently pressed, while a value of 0 indicates the opposite. \\
+	\end{tabular}
+	\caption{The specification for the \texttt{Joy} message as used by the \texttt{joy\_node} and \texttt{gamepad\_controller} nodes. The message also contains a \texttt{header} field but is omitted for brevity.}
+	\label{fig:joy_msg}
+\end{figure}
+
+\begin{figure}[!h]
+	\centering
+	\begin{lstlisting}
+		axes:    [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+		buttons: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+		---
+		axes:    [-1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+		buttons: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+		---
+		axes:    [0.0, 0.0, 1.0, 0.5, 0.0, 1.0, 0.0, 0.0]
+		buttons: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	\end{lstlisting}
+	\caption{Some example output from the \texttt{joy} topic as provided by the \texttt{rostopic} utility. The message header has been omitted for brevity. The first message shows all axes it rest while the \emph{A} button on the controller is pressed. The second message shows the left analogue stick pushed all the way to the left with no buttons pressed. The third message shows the right analogue stick pushed halfway upwards with no buttons pressed.}
+	\label{fig:joy_example}
+\end{figure}
+
+The implemented \texttt{gamepad\_controller} node listens on this \texttt{joy} topic for any controller movements. Once received, the node will send a \texttt{Twist} message to the \texttt{/cmd\_vel} topic as required by the locomotion controller. The \emph{y axis} of the left analogue, at index 1 in the axes array, is used stick for linear motion and the \emph{x axis} of the right analogue stick, in index 3 in the axes array, is used for angular motion. A ``deadzone'' had to be set on any axis movements as the analogue sticks on the controller tend not to center exactly on a (0, 0) value, causing the robot to move even if the user was not touching them in any way. Instead, movement commands will only be sent if either of the axes is moved by at least one quarter of the range (i.e., $|x| \geq 0.25$).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

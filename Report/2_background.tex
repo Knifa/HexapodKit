@@ -25,7 +25,7 @@ In ROS terminology, a processes is referred to as a \emph{node}. A node is simpl
 
 Nodes need not be tied to any particular programming language \cite{ros_paper}. Nodes are developed using a particular \emph{client library}, of which many are available. These are libraries developed for a particular language or ecosystem, providing an abstraction layer for interfacing with ROS. The two most used client libraries are \emph{roscpp} and \emph{rospy}, which target C++ and Python respectively \cite{ros_wiki_clientlibraries}. There are a number of experimental client libraries available for other systems such as Java, Android, C\#, and Arduino, among others \cite{ros_wiki_clientlibraries}.
 
-\begin{figure}[h!]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=16cm]{nodes.png}
     \caption{A simplified diagram showing an example of node relations, modelled after the implemented robot system. White boxes represent particular nodes, while the grey boxes surrounding them represent a namespace in which they exist. Arrows between nodes indicate a communication flow.}
@@ -45,7 +45,7 @@ ROS also provides a \emph{request-response} style method of communication throug
 
 Each resource in the system has a unique name, and can be placed into a namespace. This gives each resource a unique \emph{graph resource name} which can be used to identify this resource elsewhere throughout the system. As the name suggests, the layout of a ROS system can be thought of as a graph or tree. Some examples of \emph{graph resource names} are shown below.
 
-\begin{figure}[h!]
+\begin{figure}[!h]
     \centering
     \begin{tabular}{  l l  }
         \textbf{Path} & \textbf{Description} \\
@@ -75,7 +75,7 @@ Launch files can also include other launch files. Generally, a package will prov
 
 In addition to providing autonomous behaviour, it is often necessary that a control system must be able to provide some useful visualisations to the user operating the system. This can be much more helpful for gaining an understanding of what data the system is receiving, versus trawling through text logs alone. Rather than having to develop new visualisation software for every robot system, ROS provides a generic means for achieving this via \emph{rviz} \cite{ros_wiki_rviz}.
 
-\begin{figure}[h!]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=15cm]{rviz1.jpg}
     \caption{An example configuration of RViz, specifically in the configuration used for the robot control system. The two image feeds from the camera can be seen on the left hand side, along with the configuration window for each visualisation. The main window shows the space in which the robot is operating, where a number of visualisations show the positioning and mapping facilities of the system. The green line, in particular, represents the current navigational path that the robot will follow.}
@@ -89,7 +89,7 @@ Additionally, it is possible to interact with the control system through \emph{r
 \subsubsection{tf: Transforming Between Various Coordinate Frames}
 A common problem in robotics is the need to transform between different coordinate frames. For example, a number of laser rangefinders may be placed in varying positions around the the base of a robot. The incoming range data from a rangefinders will be relative to its origin. Should it be necessary to find the distance from the base of the robot to a nearby wall in sight of the rangefinder, for example, some arithmetic must be performed to calculate the distance, based on the physical offsets between the base and the rangefinder. Rather than performing these calculations manually each time, ROS provides a standard solution for achieving this through the \emph{tf} package \cite{ros_wiki_tf}. An annotated example of these concepts is shown in \autoref{fig:tf}.
 
-\begin{figure}[h!]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=17cm]{tf2.png}
     \caption{A diagram showing the necessity for some sort of transformation system, modelled after the robot. In the first picture, the two transformation links for this robot are shown. In the second picture, the distances between the origins of the two transformation links are shown. Specifically, it can be said that \texttt{camera\_link} is positioned at an offset of (0.15, 0.30, 0) meters relative to \texttt{base\_link}. The inverse of this is also true, in that \texttt{base\_link} is positioned at an offset of (-0.15, -0.30, 0) meters relative to \texttt{camera\_link}. In the third picture, points detected on a wall at a distance of (0.2, 0, 0) meters relative to the camera are shown. By applying the transformation offsets between \texttt{camera\_link} and \texttt{base\_link}, it is possible to calculate the distance of the points relative to base of the robot. Through simple arithmetic, the points can be calculated to show that the points are at a position of (0.35, 0.3, 0) meters relative to the base of the robot.}
@@ -98,7 +98,7 @@ A common problem in robotics is the need to transform between different coordina
 
 The relations between different coordinate frames and their transformations are represented in a tree-like hierarchy, where each node corresponds to a particular coordinate frame. A fixed frame is used as the root of this node, representing a coordinate frame which the rest can relate to. This fixed can represent the environment around a robot, for example. By traversing through this tree, it is possible to calculate positions in one coordinate frame relative to another. An example transform tree is shown in \autoref{fig:tf_tree}.
 
-\begin{figure}[h!]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=10cm]{tf.png}
     \caption{An simplified diagram of a transform tree, modelled after the implemented robot control system. The boxes represent a transforms, while arrows between these boxes indicate a transform relation. Each transform provides its position and rotation in space, relative to the previous transform. For example, it is possible to get the position of the RGB-D camera relative to the environment by requesting a transform between \texttt{camera\_link} and \texttt{map}. The tf system will compute the resulting position based on the supplied transforms, working backwards through the hierarchy as necessary.}
@@ -113,7 +113,7 @@ The \emph{tf} package has a variety of useful features. Transform positions are 
 
 The robotic hardware used in this project is relatively straightforward, consisting of a number of off-the-shelf components. The robot is a hexapod-type, in that it has six limbs. Each limb has three joints at which it can rotate, as shown in \autoref{fig:hexapod_dof}, giving three degrees-of-freedom per limb. 
 
-\begin{figure}[h!]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=12cm]{hexapod_joints}
     \caption{This annotated photograph shows the three degrees-of-freedom available to each limb on the robot. Joint 1 provides horizontal rotation to the leg, allowing the robot to push itself forward. Joints 2 and 3 provide vertical rotation, which can be used to adjust the robots height, as well as being used for locomotion in general.}
@@ -148,7 +148,7 @@ It should be noted that the parameter for the target position is actually the pu
 \subsection{RGB-D Camera}
 The primary sensor in the system is an \emph{ASUS Xtion Pro Live} RGB-D camera, which is very similar to the \emph{Microsoft Kinect}. The key functionality of this camera is that it provides a depth data feed, giving a range of values indicating the distances to the objects in front of it.
 
-\begin{figure}[h!]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=8cm]{rgbd_rgb2.jpg}
     \includegraphics[width=8cm]{rgbd_depth2.jpg}

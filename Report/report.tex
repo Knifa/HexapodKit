@@ -1,11 +1,16 @@
 \documentclass{l4proj}
 
-\usepackage{tikz}
-\usepackage{listings}
+\usepackage{alltt}
 \usepackage{microtype}
 \usepackage{textcomp}
 \usepackage[small,bf]{caption}
 \usepackage{subcaption}
+
+\usepackage[usenames, dvipsnames]{color}
+\usepackage{listings}
+\lstset{
+	basicstyle=\footnotesize\ttfamily
+}
 
 \usepackage{graphicx}
 \graphicspath{{./images/}}
@@ -33,6 +38,13 @@
 Some abstract.
 \end{abstract}
 
+\renewcommand{\abstractname}{Acknowledgements}
+\begin{abstract}
+Thanks Mum!
+
+--- Daniel Callander
+\end{abstract}
+
 \educationalconsent
 \tableofcontents
 
@@ -46,6 +58,7 @@ Some abstract.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\renewcommand{\bibname}{References}
 \bibliographystyle{plain}
 \bibliography{report}
 

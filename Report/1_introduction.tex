@@ -6,7 +6,7 @@
 
 The objective of this project was to implement a control system for an existing hexapod-type robot (shown in \autoref{fig:hexapod}) through the use of the Robot Operating System (ROS) \cite{ros_site}. By attempting to implement a number of complex behaviours such as environment mapping and autonomous navigation, we aimed to evaluate the usefulness of ROS as a framework for rapidly developing these control systems. Specifically, we looked to explore a range of standard and community-provided packages available for use through ROS which provide state-of-the-art functionality, including those that were necessary for this control system.
 
-\begin{figure}[h!]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=12cm]{hexapod_body1}
     \caption{This hexapod-type robot which is used as the target hardware platform for this project. The robot has six limbs with three actuators on each, for a total of eighteen actuators. A RGB-D camera sits atop as the primary sensor, providing the robot with a 3D view of its immediate environment. A controller sits within the base of the robot, providing the necessary signals to operate the actuators. A bundle of cables protrudes from the back connecting the hardware to a nearby computer for operation, as well as a power source.}
@@ -40,7 +40,7 @@ The primary motivation was to show that it is possible to implement these comple
 
 As a secondary motivation, we wanted to show that it was possible to implement these behaviours without having to invest an immense number of person hours. Through the use of readily available libraries and frameworks, it is possible for a very small team to implement these behaviours without having to fully understand the underlying intricacies of any one system. Robot control systems are, simply, software development projects. By applying standard software development concepts, such as code reuse and separations of concerns, it allows us to make use of any existing works without having to ``re-invent the wheel'' each time.
 
-Additionally, these behaviours, such as being able to move around and understand an environment, act as a general foundation for any further developments. The ramifications of being able to rapidly develop these robot system are such that new developments and innovations can be made more quickly, with less overall cost in terms of both budget and time.
+Additionally, these behaviours, such as being able to move around and understand an environment, act as a general foundation for further developments. The ramifications of being able to rapidly develop these robot system are such that new developments and innovations can be made more quickly, with less overall cost in terms of both budget and time.
 
 \section{Overview}
 
@@ -62,7 +62,7 @@ To give further context to the project, we provide the following overview of the
 
 ROS is used as a framework for implementing this control system, providing a means of communication between each component. Where possible, built-in and community-provided ROS packages are used to provide the implementation, rather than relying on any self-sourced code. A high-level overview of the system is shown in \autoref{fig:overview}, showing the connectivity between each subsystem and the underlying hardware it relies on. Upon starting the system, each subsystem begins communicating such that the complex behaviours can be performed by relying on data from one another.
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=10cm]{overview.png}
 	\caption{This block diagram shows a high-level view of the robot control system. Arrows represent the communication channels between the different subsystems and hardware. Notably, communication between the hardware operation, sensing, and navigation subsystems is unidirectional only, as there is no sensor control available.}
