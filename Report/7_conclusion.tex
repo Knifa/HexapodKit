@@ -1,0 +1,36 @@
+\chapter{Conclusion}
+\label{chap:conclusion}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Summary}
+Robots are awesome, man.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Further Work}
+
+This final section will detail a number of ways in which the project could be developed further. Much of this additional functionality could be provided by existing standard or community-provided ROS packages, however further research is necessary to prove the adequacy of such packages. Furthermore, some of these suggestions require additional or even entirely new hardware. These would require new drivers, control software, not to mention the hardware integration itself.
+
+\subsection{Improved Hardware}
+The servos currently in use in the robot are extremely cheap, fast and have incredible amounts of torque. Unfortunately, this comes at the cost of accuracy and build quality. Generally, the robot requires complete calibration every time it is powered on to ensure correct operation.
+
+\subsection{Untethered \& Cloud Operation}
+The robot is only capable of tethered operation in its current hardware configuration. Specifically, a large bundle of cables protrudes from the back of the robot, connecting the RGB-D camera and servo controller to a nearby computer and power source. This restricts the robot to 5 meter radius around the equipment, as USB devices tend to stop functioning correctly with cables above this length without active boosters. 
+
+The decision to limit to tethered operation only was to, primarily, reduce the complexity of the robot hardware itself while the control system was being developed. Batteries require additional circuitry, such as voltage converters and charging circuits. Furthermore, the power requirements for the robot are quite high posing somewhat of a potential health risk, as the robot draws 10A at 6V at full operational speed. Now that a working control system is implemented, these issues are no longer a concern.
+
+Furthermore, the sensing system requires a particularly high performance machine to achieve good results. Even if it were possible to interface with the RGB-D sensor through a microcontroller, it would in no shape or form be able to meet these performance demands.
+
+However, it would be possible to exploit the distributed nature of ROS to alleviate these issues. A Beaglebone Black, for example, could be attached to the robot. This could connect directly to the RGB-D camera and servo controller over USB as the current system does. Subsystems that interface with the hardware would run on this embedded system. Another machine could then be dedicated to performing the complex processing tasks.
+
+This idea could be expanded to make use of cloud services such as Amazon EC2 and Microsoft Azure. Rather than running the performance demanding nodes on a physical machine, they could be ran on a number of virtual machines. 
+
+\subsection{Inverse Kinematics}
+More accurate walk cycle. Advanced movement, tilting. Sweeping.
+
+\subsection{Further Sensor Hardware \& Environment Interpretation}
+Accelerometers for automatic calibration, odometery. Distance sensors as insect-like feelers. Use of microphones on Xtion.  
+
+\subsection{Facial Recognition}
+ROS already has packages for this. More complex behaviour in general.
