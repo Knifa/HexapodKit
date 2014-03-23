@@ -101,15 +101,45 @@ Some logic and arithmetic must be performed to calculate the correct servo index
 
 For calibration, the \texttt{limb\_controller} node listens on a further three topics relative to itself, with similar paths as the movement topics. These topics are \texttt{/joint/offset/body}, \texttt{/joint/offset/shin}, and \texttt{/joint/offset/foot}. These topics also use the \texttt{ServoCommand} message, simply ignoring the \texttt{duration}. This allows offsets to be changed at run-time. When a message is received on these topics, the offset of that particular servo is registered but does not take effect until next time the servo moves. This is because the current servo positions are not tracked by the \texttt{limb\_controller} node so no updates can be made.
 
-In addition to these offset topics, functionality for loading a data file containing the servo offsets was also implemented. An \texttt{offsets\_path} parameter can be supplied to specify where this file is located. This file is loaded upon launching the \texttt{limb\_controller} node, meaning that any movements will immediately take the offsets into account. The \texttt{pickle} library---part of Python's standard library---was used to support the loading of this data file \cite{pickle}. The specifics of this is explained in the next subsection.
+In addition to these offset topics, functionality for loading a data file containing the servo offsets was also implemented. An \texttt{offsets\_path} parameter can be supplied to specify where this file is located. This file is loaded upon launching the \texttt{limb\_controller} node, meaning that any movements will immediately take the offsets into account. The \texttt{pickle} module---part of Python's standard library---was used to support the loading of this data file \cite{pickle}. The specifics of this are explained in the next subsection.
 
 \subsection{Limb Calibration Tool}
 
-Provides offsets.
+An interactive \texttt{limb\_calibrator} node was created to assist in the calibration of the limb sections. This takes form of a terminal application which allows the user to adjust joint offsets using the arrow keys on the keyboard. While running, the currently selected limb and limb section is displayed on-screen, along with its current offset. The user can select which joint section they wish to manipulate using a number of hotkeys. The resulting offsets can then be saved to a data file, which can be loaded automatically by the \texttt{limb\_controller} node on system launch. An example of the output provided by the node is shown in \autoref{fig:joint_calibrator_out}.
 
-\subsubsection{Usage}
+\begin{figure}[!h]
+    \centering
+	\begin{lstlisting}
+	Offset: -5
+	Joint: B
+	Limb: 0
+	\end{lstlisting}
+	\caption{An example of the output given by the \texttt{limb\_calibrator} node. This is displayed in the terminal in which the node is ran, and updates as the user provides keyboard input.}
+	\label{fig:joint_calibrator_out}
+\end{figure}
 
-Console app.
+All input is provided by keyboard key presses. The user can alter which limb is currently selected  by using the \emph{left} and \emph{right} arrow keys. The user can increment and decrement the offset of the currently selected joint by pressing the \emph{up} and \emph{down} arrow keys respectively. Joint section is made using the \emph{b}, \emph{s}, and \emph{f} keys, which select the body, shin and foot joints respectively. Pressing the \emph{l} key will load a saved offset file, and pressing the \emph{x} key will save the current offsets to a data file. The program can be exited by pressing the \emph{q} key.
+
+Each time an adjustment is made, the node sends \texttt{ServoCommand} messages on the offset topic matching the currently selected joint, as required by the \texttt{limb\_controller} node. For example, if the \emph{body} joint was selected, messages would be sent to the \texttt{/joint/offset/body} topic. Following this, the node will send another \texttt{ServoCommand} message, this time requesting that the currently selected joint be moved to an angle of 90\textdegree{}. This is necessary as changes in offset do not take effect until a new movement has been made.
+
+The node makes use of the \emph{curses} module, a standard library distributed with Python that acts as a wrapper for the \emph{curses} C library \cite{curses}. This provides a layer of abstraction atop the standard terminal input and output commands, while providing a number of useful functionalities. In particular, we can accept keyboard input directly from the terminal rather than having to use some sort of command-line interface (i.e., the user would have to type something similar to \texttt{offset body 1 -5} to offset the first body joint by -5\textdegree{}). Specifically, the \emph{curses} module provides a \texttt{getch} function which returns an ASCII number representing which key was last pressed \cite[User Input]{curses}. This can then be compared to a number of constants provided by the module (e.g., \texttt{KEY\_LEFT}) to check which key was pressed. This function was utilised in a repeating loop where the value is compared against the possible inputs each time. Furthermore, this module allows us to clear the terminal and place the current select joint, limb and offset in a consistent position on-screen rather than the next line each time.
+
+\begin{figure}[!h]
+    \centering
+	\begin{lstlisting}[language=Python]
+	offsets = {
+		'b': [0, 0, 0, 0, 0 ,0],
+		's': [0, 0, 0, 0, 0 ,0],
+		'f': [0, 0, 0, 0, 0 ,0],
+	}
+	\end{lstlisting}
+	\caption{A code snippet showing the structure used to represent joint offsets. Offset values are stored in three lists, one for each joint. A value's index corresponds to the limb with that same index (e.g,. value at index 4 is for limb 4). These lists are then stored as values in a map, where the keys refer to each joint. This data structure is serialised and used to store the offsets for later use.}
+	\label{fig:joint_calibrator_datastructure}
+\end{figure}
+
+To save and load offset data, the \emph{pickle} module was used. This module is also part of Python's standard library, providing serialisations facilities through a number of methods that convert Python objects into byte streams \cite{pickle}. Internally, offsets are represented using a data structure as shown in \autoref{fig:joint_calibrator_datastructure}. As offsets are changed by the user, this data structure is updated with the correct values. When saving, this data structure is converted into a byte stream by the \emph{pickle} module which can then be directly wrote out to a file. For loading, the same actions are simply reversed---we load the byte stream from a file which is then converted back into a usable Python object by the \emph{pickle} module. Specifically, the filename used is \texttt{joint\_offsets.dat}, located in the current working directory of the terminal session.
+
+This decision to create a terminal application, rather one that is GUI-based, was primarily  implify the development process for this particular facility. Creating such an application would have required additional design and implementation time. An adequate layout would had to have been designed, such that a user can interact with it sufficiently, as well as research done into which graphical toolkit would be best for this use case. Furthermore, it was deemed unnecessary in general as the user should be looking at the robot while performing the calibration procedure, such that they can align the joints correctly.
 
 \subsection{Tripod Gait Walker}
 
@@ -149,14 +179,14 @@ The \texttt{joy} package contains one node named \texttt{joy\_node}. This node p
 \begin{figure}[!h]
 	\centering
 	\begin{lstlisting}
-		axes:    [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
-		buttons: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-		---
-		axes:    [-1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
-		buttons: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-		---
-		axes:    [0.0, 0.0, 1.0, 0.5, 0.0, 1.0, 0.0, 0.0]
-		buttons: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	axes:    [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+	buttons: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	---
+	axes:    [-1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+	buttons: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	---
+	axes:    [0.0, 0.0, 1.0, 0.5, 0.0, 1.0, 0.0, 0.0]
+	buttons: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	\end{lstlisting}
 	\caption{Some example output from the \texttt{joy} topic as provided by the \texttt{rostopic} utility. The message header has been omitted for brevity. The first message shows all axes it rest while the \emph{A} button on the controller is pressed. The second message shows the left analogue stick pushed all the way to the left with no buttons pressed. The third message shows the right analogue stick pushed halfway upwards with no buttons pressed.}
 	\label{fig:joy_example}
