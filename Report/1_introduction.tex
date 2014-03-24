@@ -15,7 +15,7 @@ The objective of this project was to implement a control system for an existing 
 
 This report will detail how these objectives were achieved. Through the use of ROS and its packages, it was possible to implement a control system that provides a number of these complex behaviours with relative brevity and simplicity. ROS endows the resulting robot control system with a number of impressive capabilities:
 
-\begin{description}
+\begin{description}[labelindent=\parindent]
 	\item[Hardware Operations] \hfill \\
 	The system is capable with interacting with the RGB-D camera and servo controller on-board the robot. Commands can be sent through the system to the controller, allowing for the movement of any particular actuator. Image data from the sensor is received, processed, and then broadcast throughout the system, such that any subsystem needing the imagery can access it.
 
@@ -46,7 +46,7 @@ Additionally, these behaviours, such as being able to move around and understand
 
 To give further context to the project, we provide the following overview of the control system. The control system is divided into a number of subsystems, each dealing with a particular task necessary for achieving the behaviours described in the opening text. Each subsystem is additionally divided into more discrete nodes, as discussed in the later sections. These subsystems are referred to throughout the report and are described briefly below.
 
-\begin{description}
+\begin{description}[labelindent=\parindent]
 	\item[Hardware Operations] \hfill \\
 	This subsystem provides the necessary drivers to communicate with the robot hardware, converting any device-specific data into more generic formats that can be used elsewhere in the system.
 

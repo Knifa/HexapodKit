@@ -13,7 +13,7 @@ This chapter will document the implementation process of the robot's systems. Ra
 
 A wrapper for the \emph{OpenNI2} library is provided by the \texttt{openni2\_camera} \cite{ros_wiki_openni2_camera} and \texttt{openni2\_launch} \cite{ros_wiki_openni2_launch} packages. The former provides a single nodelet which acquires and publishes the image data, whereas the latter provides a means for starting that nodelet.
 
-This driver publishes image data from the camera on a number of different topics, with varying data types. Only two of these are particularly useful to us, however. The topic \texttt{/camera/rgb/image} provides the general optical feed from the camera, and the topic \texttt{/camera/depth/image} provides the depth feed from the camera, both of message type \texttt{Image}. An example of the output from these topics is shown in \autoref{fig:rgbd_images1}. While the depth feed can be interpreted as an 8-bit monochrome image for displaying on-screen, the image is actually given in a 16-bit format, where each pixel value represents the distance from the sensor in millimeters. Additionally, the depth data is available in a point cloud format, published on \texttt{/camera/depth/points} as \texttt{PointCloud2} messages. This can be visualised in RViz, an example of which is shown in \autoref{fig:rgbd_images2}.
+This driver publishes image data from the camera on a number of different topics, with varying data types. Only two of these are particularly useful to us, however. The topic \texttt{/camera/rgb/image} provides the general optical feed from the camera, and the topic \texttt{/camera/depth/image} provides the depth feed from the camera, both of message type \texttt{Image}. An example of the output from these topics is shown in \autoref{fig:rgbd_images1}. While the depth feed can be interpreted as an 8-bit monochrome image for displaying on-screen, the image is actually given in a 16-bit format, where each pixel value represents the distance from the sensor in millimeters. Additionally, the depth data is available in a point cloud format, published on \texttt{/camera/depth/points} as \texttt{PointCloud2} messages. This can be visualised in RViz, an example of which is shown in \autoref{fig:rgbd_images2}. The \texttt{openni2\_launch} package also publishes static TF transforms for the individual sensors on the camera, such that the slight differences in perspectives between the sensors can be corrected.
 
 \begin{figure}[!h]
     \centering
@@ -21,10 +21,6 @@ This driver publishes image data from the camera on a number of different topics
     \caption{Example point cloud output from the RGB-D camera mounted on top of the robot, as given by the \texttt{openni2\_camera} package, visualized using RViz. In this case, the points are projected into 3D space relative to the robot's position, and then coloured using the corresponding pixels on the RGB image.}
     \label{fig:rgbd_images2}
 \end{figure}
-
-The \texttt{openni2\_launch} package also publishes static TF transforms for the individual sensors on the camera, such that the slight differences in perspective can be corrected.
-
-Camera calibration is also performed.
 
 Understanding these package was rather troublesome, as both the wiki and GitHub pages documenting them were (and still are) completely blank. Instead, the documentation for a similar set of these packages for the first version of \emph{OpenNI}, named \texttt{openni\_launch}, was used \cite{ros_wiki_openni_launch}. Regardless, there was little difficulty in integrates this package due the little configuration it requires.
 
@@ -36,23 +32,29 @@ The node listens for movement commands on a topic named \texttt{direct} relative
 
 \begin{figure}[!h]
 	\centering
-	\begin{tabular}{ r r p{12cm} }
+	\begin{tabular}{ r r p{10cm} }
+		\toprule
 		\textbf{Name} & 
 		\textbf{Type} & 
 		\textbf{Description} \\
-		\hline
+		\midrule
 
 		\texttt{index} & 
 		\texttt{uint8} &
 		An index indicating which servo to rotate, where $0 \leq i \leq 31$. \\
 		
+		\hline
+
 		\texttt{angle} & 
 		\texttt{int16} & 
 		The target position that the servo should rotate to in degrees, generally where $0 \leq \theta \leq 180$. This can also accept negative values such that it can be used for supplying servo offsets. \\
 		
+		\hline
+
 		\texttt{duration} &
 		\texttt{float32} &
 		The duration for how long the rotation should take in seconds, essentially setting a speed for the rotation. \\
+		\bottomrule
 	\end{tabular}
 	\caption{The specification for the \texttt{ServoCommand} message as used by the \texttt{servo\_controller} node. A \texttt{header} field is also included but omitted for brevity.}
 	\label{fig:servocommand_msg}
@@ -62,7 +64,7 @@ To specify the time taken to rotate the servo, a \texttt{duration} primitive cou
 
 As standard with UNIX systems, the device presents itself as a file located in the \texttt{/dev} directory once connected which can be read from and written to \cite{unix_devices}. In this case, the device shows itself to be an external serial port with path \texttt{/dev/ttyAMC0} though this may vary depending on system configuration. While it is possible to open this file and begin writing directly using standard Python file semantics, a number of settings must be applied beforehand to ensure correct operation. A library named \emph{pySerial} was used to simplify this process by encapsulating access to the serial port while still a means of reading and writing using the familiar file semantics \cite{pyserial}. Additionally, this library provides the same interface to the serial port across many platforms allowing the controller node to be used in a variety of situations \cite{pyserial}.
 
-A number of calculations must be performed to convert the supplied \texttt{ServoCommand} message into the right format for the protocol. Firstly, the protocol mandates that servo indices begin from 1, rather than 0. For this, we simply increment the supplied \texttt{index} by 1. Secondly, the target position sent to the controller must be a PWM duration where 1.5\textmu{}s corresponds to 0\textdegree{} and 2.5\textmu{}s corresponds to 180\textdegree{}. As we know the supplied \texttt{angle} will fall between 0 and 180, we can apply formula to get the correct value, specifically $1500 + (\theta / 180 * 1000)$. Finally, the protocol expects the duration to be an integer representing number of milliseconds. This conversion is achieved by simply multiplying the value by 1000, converting the supplied \texttt{duration} field from seconds to milliseconds.
+A number of calculations must be performed to convert the supplied \texttt{ServoCommand} message into the right format for the protocol. Firstly, the protocol mandates that servo indices begin from 1, rather than 0. For this, we simply increment the supplied \texttt{index} by 1. Secondly, the target position sent to the controller must be a PWM duration where 1.5\textmu{}s corresponds to 0\textdegree{} and 2.5\textmu{}s corresponds to 180\textdegree{}. As we know the supplied \texttt{angle} will fall between 0 and 180, we can apply formula to get the correct value, specifically $1500 + (\theta / 180 x 1000)$. Finally, the protocol expects the duration to be an integer representing number of milliseconds. This conversion is achieved by simply multiplying the value by 1000, converting the supplied \texttt{duration} field from seconds to milliseconds.
 
 Due to some quirk in the servo controller's programming, a time delay had to be added between sending commands. Without this, commands would get lost or abort midway through a rotation. A delay of 3 milliseconds was adequate to correct this without causing timing issues elsewhere in the system, minimized purely through trial and error. Seemingly, the controller requires some processing time after a command before it can begin processing another. Unfortunately, it is impossible to diagnose this issue any further as no source code is available, nor does the protocol documentation mention this limitation in any form \cite{torobot_manual}.
 
@@ -83,7 +85,7 @@ The \texttt{limb\_controller} node listens for \texttt{ServoCommand} messages on
     \label{fig:servo_pins}
 \end{figure}
 
-Some logic and arithmetic must be performed to calculate the correct servo index for a given limb index and limb section. A diagram showing how the servos are connected to the servo controller is shown in \autoref{fig:servo_pins}. From this, it can be seen that servos are grouped per limb and then ordered by particular limb section. For a given limb index $i$, the servo index of the first joint in the grouping---the body joint---can be calculated by the formula $s = i * 3$. Then, a further displacement can be added to find the servo index of the other joints. To find the servo index of the shin joint we calculate $s = s + 1$, and to find the servo index of foot joint we calculate $s = s + 2$. While these formulae gives the correct indices for the first three limbs, we must also take into account the fact that the remaining three limbs begin at a servo index of 23 rather than 0. A trivial piece of logic to deal with this was added which simply increments the final servo index by 23 should the supplied limb be on that side. A code snippet is shown in \autoref{fig:actual_index} showing the specifics of how this is calculated.
+Some logic and arithmetic must be performed to calculate the correct servo index for a given limb index and limb section. A diagram showing how the servos are connected to the servo controller is shown in \autoref{fig:servo_pins}. From this, it can be seen that servos are grouped per limb and then ordered by particular limb section. For a given limb index $i$, the servo index of the first joint in the grouping---the body joint---can be calculated by the formula $s = i \times 3$. Then, a further displacement can be added to find the servo index of the other joints. To find the servo index of the shin joint we calculate $s = s + 1$, and to find the servo index of foot joint we calculate $s = s + 2$. While these formulae gives the correct indices for the first three limbs, we must also take into account the fact that the remaining three limbs begin at a servo index of 23 rather than 0. A trivial piece of logic to deal with this was added which simply increments the final servo index by 23 should the supplied limb be on that side. A code snippet is shown in \autoref{fig:actual_index} showing the specifics of how this is calculated.
 
 \begin{figure}[!h]
     \centering
@@ -111,8 +113,8 @@ An interactive \texttt{limb\_calibrator} node was created to assist in the calib
     \centering
 	\begin{lstlisting}
 	Offset: -5
-	Joint: B
-	Limb: 0
+	Joint:   B
+	Limb:    0
 	\end{lstlisting}
 	\caption{An example of the output given by the \texttt{limb\_calibrator} node. This is displayed in the terminal in which the node is ran, and updates as the user provides keyboard input.}
 	\label{fig:joint_calibrator_out}
@@ -143,11 +145,110 @@ This decision to create a terminal application, rather one that is GUI-based, wa
 
 \subsection{Tripod Gait Walker}
 
-Need diagrams.
+To implement robot movement through a tripod gait, a custom \texttt{walker} node was developed. This node provides an abstraction over movement such that other nodes can request that the robot move without needing to care about the underlying specifics. This node is configurable, such that the particular timings and rotations can be adjusted without changing the node internals.
+
+The \texttt{walker} node listens for \texttt{Twist} messages on a \texttt{/cmd\_vel} topic. The \texttt{Twist} message is provided as part of the \texttt{geometry\_msgs} package, distributed with ROS as standard \cite{ros_api_twist_msg}. Messages sent from this node are used to control the magnitude of linear and angular motion, as well as direction. The specification for this message is shown in \autoref{fig:twist_msg}. Limbs are controlled by sending \texttt{ServoCommand} messages on the \texttt{joint/body}, \texttt{joint/shin}, and \texttt{joint/foot} topics as required by the \texttt{limb\_controller} node. Additionally, the node accepts a number of parameters which are used to adjust the specific timings and angles used by tripod gait. These parameters are read at node launch and are not adjustable at runtime. A listing of these parameters can be seen in \autoref{fig:walker_params}.
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ r r p{10cm} }
+		\toprule
+		\textbf{Name} & 
+		\textbf{Type} & 
+		\textbf{Description} \\
+		\midrule
+
+		\texttt{linear} & 
+		\texttt{Vector3} &
+		An ($x$, $y$, $z$) vector stating the linear velocity in meters per second. \\
+		
+		\hline
+
+		\texttt{angular} & 
+		\texttt{Vector3} & 
+		An ($x$, $y$, $z$) vector stating the angular velocity in radians per second. \\
+		\bottomrule
+	\end{tabular}
+	\caption{The specification for the \texttt{Twist} message as used by the \texttt{walker} node. This is used to express velocity in free space, breaking it into linear and angular parts \cite{ros_api_twist_msg}.}
+	\label{fig:twist_msg}
+\end{figure}
+
+At launch, the node begins an endless loop whereupon it executes the walk cycle using the magnitudes stated in the last received \texttt{Twist} message. By using the details from the last received message, rather than moving only when a message is received, we allow any commanding node to set a velocity and then continue on as normal. Specifically, a constant stream of \texttt{Twist} messages are not required to continue movement. However, this does mean a commanding node must send a \texttt{Twist} message with zero velocities in order to stop the robot. 
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ r r p{10cm} }
+		\toprule
+		\textbf{Parameter} & 
+		\textbf{Default} & 
+		\textbf{Description} \\
+		\midrule
+
+		\texttt{up\_angle} & 
+		$60$\textdegree{} & 
+		\multirow{2}{10cm}{An angle in degrees stating how far the limbs should be raised and lowered by.} \\
+
+		\texttt{down\_angle} & 
+		$15$\textdegree{} & \\
+
+		\hline
+
+		\texttt{swing\_angle} & 
+		$\pm10$\textdegree{} & 
+		\multirow{2}{10cm}{An angle in degrees stating how far the limbs rotate by when performing linear or angular motions.} \\
+
+		& & \\
+		
+		\hline
+
+		\texttt{lift\_time} & 
+		$0.25$s & 
+		\multirow{2}{10cm}{A time value in seconds stating how long the script should pause after issuing the raise, lower and swing commands.} \\
+
+		\texttt{swing\_time} & 
+		$0.5$s & 
+		\\
+		\bottomrule
+	\end{tabular}
+	\caption{A listing showing the parameters available to be set for the \texttt{walker} node. These can be used to configure the particular timings and angles of the tripod gait. Default values were found purely through trial and error, providing the most stable walking motions.}
+	\label{fig:walker_params}
+\end{figure}
+
+A tripod gait cycle consists of eight stages. First, we divide the limbs into two groups, where each group forms a tripod (i.e., one group contains limbs $0$, $2$, and $4$, while the other contains limbs $1$, $3$, and $5$.). During the cycle, one group can be thought of as the \emph{upper} limbs (i.e., they are raised above the ground), and the other can be thought as the \emph{lower} limbs (i.e., they are touching the ground and provide balance). These groupings allow us to reduce the number of stages we need to consider to four, as we can swap the groupings after the fourth stage and repeat the same actions. Furthermore, the same four stages can be used to produce both linear and angular motions. Both the listing below and the diagram shown in \autoref{fig:tripod_gait_forward} describe these stages. Throughout the walk cycle, the feet are kept at $90$\textdegree{} relative to the shin by using the formula $\theta_f = 90 - \theta_s$ on each foot joint whenever the shin moves. This gives the most stable base for the robot to rest upon at each stage.
+
+\begin{description}[labelindent=\parindent]
+	\item[1. Raise] \hfill \\
+	First, the \emph{upper} limbs are raised above the ground by the angle specified by the \texttt{up\_angle} parameter, relative to $90$\textdegree{}.  
+
+	\item[2. Reset] \hfill \\
+	Secondly, the \emph{upper} limbs are moved to the correct position such that they can be used to push forward next cycle.
+
+	\item[3. Push] \hfill \\
+	Next, the \emph{lower} limbs are rotated such that they either push forward or rotate the base of the spot, depending on the provided input velocities.
+
+	\item[4. Lower] \hfill \\
+	Finally, the \emph{upper} limbs are lowered to the ground by the angle specified by the \texttt{down\_angle} parameter, relative to $90$\textdegree{}. After this stage, the cycle repeats with the two groupings swapped.
+\end{description}
+
+At the start of each cycle, a linear offset ($\theta_l$) and an angular offset ($\theta_a$) are calculated. These are used to calculate at which angles the limbs should push and reset. These offsets are given by multiplying the input linear and angular velocities by the \texttt{swing\_angle} parameter, such that $\theta_l = \texttt{swing\_angle} \times l$ and $\theta_a = \texttt{swing\_angle} \times a$, where $l$ is the linear movement coefficient and $a$ is the angular movement coefficient. For limbs $0$, $1$, and $2$, the rest angle is given by the formula $\theta = 90 - \theta_l - \theta_a$ and the push angle is given by the formula $\theta = 90 + \theta_l + \theta_a$. For limbs $3$, $4$, and $5$, we negate the angular offset such that the rest angle is given by the formula $\theta = 90 - \theta_l + \theta_a$ and the push angle is given by the formula $\theta = 90 + \theta_l - \theta_a$.
+
+To calculate the movement coefficients $l$ and $a$, we calculate a ratio such that $l = v_l(|v_l| + |v_a|)^{-1}$ and $a = v_a(|v_l| + |v_a|)^{-1}$, where $v_l$ and $v_a$ are the $x$ component of the linear vector and $z$ (yaw) component of the angular vector provided by the last \texttt{Twist} message respectively. This is necessary to prevent the limbs from overexerting themselves and colliding should both maximum angular and linear movements be requested. The effect is such that the rest and push angles are limited to a maximum of $\pm$\texttt{swing\_angle}.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=15cm]{tripod.png}
+    \vspace{1em}
+    \hrule
+    \vspace{1em}
+    \includegraphics[width=15cm]{tripod2.png}
+    \caption{Two diagrams showing a top-down view at each stage of the tripod walk gait for forward and rotational motions. Limbs coloured red and blue indicate the \emph{upper} group, while black limbs indicate the \emph{lower} group. An emboldened line along with an arrow indicates movement for that particular limb at that stage.}
+    \label{fig:tripod_gait_forward}
+\end{figure}
+
 
 \subsection{Gamepad Controller}
 
-Manual locomotion control was implemented using a custom \texttt{gamepad\_controller} node powered by the \texttt{joy} package, a standard package for a interfacing with joysticks and gamepads in a device-agnostic way through topics. A gamepad consists of a number of physical controls that a user can manipulate, such as buttons and analogue sticks. Buttons provide a digital output (i.e., currently pressed or not pressed) whereas analogue sticks provide a pair of coordinates ranging from (-1, -1) to (1, 1) depending on their position. While the \texttt{joy} package provides generic joystick access, the \emph{Microsoft Xbox 360 Controller} was targeted specifically---shown in \autoref{fig:xbox_360}.
+Manual locomotion control was implemented using a custom \texttt{gamepad\_controller} node powered by the \texttt{joy} package, a standard package for a interfacing with joysticks and gamepads in a device-agnostic way through topics. A gamepad consists of a number of physical controls that a user can manipulate, such as buttons and analogue sticks. Buttons provide a digital output (i.e., currently pressed or not pressed) whereas analogue sticks provide a pair of coordinates ranging from $(-1, -1)$ to $(1, 1)$ depending on their position. While the \texttt{joy} package provides generic joystick access, the \emph{Microsoft Xbox 360 Controller} was targeted specifically---shown in \autoref{fig:xbox_360}.
 
 \begin{figure}[!h]
 	\centering
@@ -161,16 +262,18 @@ The \texttt{joy} package contains one node named \texttt{joy\_node}. This node p
 \begin{figure}[!h]
 	\centering
 	\begin{tabular}{ r r p{10cm} }
+		\toprule
 		\textbf{Name} & \textbf{Type} & \textbf{Description} \\
-		\hline
+		\midrule
 
 		\texttt{axes} & 
 		\texttt{float32[]} &
 		An array of floating point numbers indicating the current position of each axes on the controller, ranging from -1 to 1. An analogue stick like on the controller shown in \autoref{fig:xbox_360} will consist of two axes, one for the X position and the other for the Y position. \\
-		
+		\hline
 		\texttt{buttons} & 
 		\texttt{int32[]} & 
 		An array of integers indicating the state of each button on the controller. A value of 1 indicates that the button is currently pressed, while a value of 0 indicates the opposite. \\
+		\bottomrule
 	\end{tabular}
 	\caption{The specification for the \texttt{Joy} message as used by the \texttt{joy\_node} and \texttt{gamepad\_controller} nodes. The message also contains a \texttt{header} field but is omitted for brevity.}
 	\label{fig:joy_msg}
@@ -192,21 +295,19 @@ The \texttt{joy} package contains one node named \texttt{joy\_node}. This node p
 	\label{fig:joy_example}
 \end{figure}
 
-The implemented \texttt{gamepad\_controller} node listens on this \texttt{joy} topic for any controller movements. Once received, the node will send a \texttt{Twist} message to the \texttt{/cmd\_vel} topic as required by the locomotion controller. The \emph{y axis} of the left analogue, at index 1 in the axes array, is used stick for linear motion and the \emph{x axis} of the right analogue stick, in index 3 in the axes array, is used for angular motion. A ``deadzone'' had to be set on any axis movements as the analogue sticks on the controller tend not to center exactly on a (0, 0) value, causing the robot to move even if the user was not touching them in any way. Instead, movement commands will only be sent if either of the axes is moved by at least one quarter of the range (i.e., $|x| \geq 0.25$).
+The implemented \texttt{gamepad\_controller} node listens on this \texttt{joy} topic for any controller movements. Once received, the node will send a \texttt{Twist} message to the \texttt{/cmd\_vel} topic as required by the locomotion controller. The \emph{y axis} of the left analogue, at index 1 in the axes array, is used stick for linear motion and the \emph{x axis} of the right analogue stick, in index 3 in the axes array, is used for angular motion. A ``deadzone'' had to be set on any axis movements as the analogue sticks on the controller tend not to center exactly on a $(0, 0)$ value, causing the robot to move even if the user was not touching them in any way. Instead, movement commands will only be sent if either of the axes is moved by at least one quarter of the range (i.e., $|x| \geq 0.25$).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Sensing}
 
-openni2 originally, ccny\_rgbd \cite{ccny_rgbd} provides some clean up features.
-
 \subsection{Visual Odometry}
 
-ccny\_rgbd \cite{ccny_rgbd} was used.
+Odometry was provided by the \texttt{visual\_odometry} included in the \texttt{ccny\_rgbd} package, a packaged provided by \emph{City University of New York} \cite{ccny_rgbd}.
 
 \subsection{Environment Mapping}
 
-ocotomap
+Mapping facilities per provided by the \texttt{ocotmap\_server} node included \texttt{octomap\_mapping} package, a package provided by the \emph{University of Freiburg} \cite{ros_wiki_octomap}. This node acts as a wrapped for the \emph{OctoMap} library \cite{octomap}. 
 
 \subsubsection{Alternatives}
 
@@ -216,6 +317,10 @@ SLAM, but expects laser scan.
 
 \section{Navigation}
 
-Built in stack.
+Autonomous navigation was provided by the.
 
 \subsection{Path Planning}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Integration}

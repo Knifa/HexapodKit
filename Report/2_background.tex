@@ -29,7 +29,7 @@ Nodes need not be tied to any particular programming language \cite{ros_paper}. 
     \centering
     \includegraphics[width=16cm]{nodes.png}
     \caption{A simplified diagram showing an example of node relations, modelled after the implemented robot system. White boxes represent particular nodes, while the grey boxes surrounding them represent a namespace in which they exist. Arrows between nodes indicate a communication flow.}
-    \label{fig:rviz}
+    \label{fig:nodes}
 \end{figure}
 
 As intraprocess communication can be somewhat costly in terms of performance, ROS provides a means for running multiple nodes in the same process via \emph{nodelets} \cite{ros_wiki_nodelet}. This allows messages to be passed in a zero copy manner, as pointers to memory locations where messages are stored can be shared directly. Nodes must be modified to support this behaviour, however, as they must export some class that can be dynamically loaded by a \emph{nodelet manager}. This feature is used extensively when real-time performance is required such as with computer vision related tasks, for example.
@@ -43,17 +43,21 @@ ROS also provides a \emph{request-response} style method of communication throug
 
 \subsection{Resource Names}
 
-Each resource in the system has a unique name, and can be placed into a namespace. This gives each resource a unique \emph{graph resource name} which can be used to identify this resource elsewhere throughout the system. As the name suggests, the layout of a ROS system can be thought of as a graph or tree. Some examples of \emph{graph resource names} are shown below.
+Each resource in the system has a unique name, and can be placed into a namespace. This gives each resource a unique \emph{graph resource name} which can be used to identify this resource elsewhere throughout the system. As the name suggests, the layout of a ROS system can be thought of as a graph or tree. Some examples of \emph{graph resource names} are shown in \autoref{fig:graph_resource_names}.
 
 \begin{figure}[!h]
     \centering
     \begin{tabular}{  l l  }
+        \toprule
         \textbf{Path} & \textbf{Description} \\
-        \hline
+        \midrule
         \texttt{/} & the global namespace \\
         \texttt{/hexapod/} & the \texttt{hexapod} namespace \\
         \texttt{/hexapod/servo\_controller} & a \texttt{servo\_controller} node \\
+        \bottomrule
     \end{tabular}
+    \caption{Some examples of graph resource names.}
+    \label{fig:graph_resource_names}
 \end{figure}
 
 \subsection{Packages}
