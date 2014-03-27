@@ -137,15 +137,15 @@ To test the visual odometry system, which was provided by a \texttt{visual\_odom
 
 The first experiment involved moving the robot forward by one meter while observing the position given by the visual odometery system. At the start of each test, the robot was placed at the starting position shown in \autoref{fig:eval_plan} and the control system reset. The robot would then be moved forward---either manually by hand or via the tripod gait---such that the robot had moved a meter relative to this starting position. Two points were placed both at the start and end positions such that the front two feet could be aligned with them. An ideal result would have been a resulting position of $(1$m, $0$m, $0$\textdegree{}$)$.
 
-By manual movement, the visual odometery system gave an average position of $(0.924$m, $0.004$m, $0.471$\textdegree{}$)$. Notably, the system seemed to underestimate the $x$ component by an average of $0.076$m in this case, while the $y$ component and heading remained fairly accurate. A full listing of the results can be seen in \autoref{tab:eval_vo_manual}.
+By manual movement, the visual odometery system gave an average position of $(0.924$m, $0.004$m, $0.471$\textdegree{}$)$. Notably, the system seemed to underestimate the $x$ component by an average of $0.076$m in this case, while the $y$ component and heading remained fairly accurate. A full listing of the results can be seen in \autoref{tab:eval_vo}.
 
-By movement via the tripod gait, the visual odometery system gave an average position of $(0.952$m, $0.013$m, $0.191$\textdegree{}$)$. Similarly, the system seemed to underestimate the $x$ component by an average of $0.048$m while the heading remains reasonably accurate. The higher $y$ component drift in this case could be due to the roughness of the walk gait. Specifically, the camera does not glide forward exactly in a straight line as it does when being moved manually through the air. Each step causes the robot shake in general as it settles into position. A full listing of the results can be seen in \autoref{tab:eval_vo_walk}.
+By movement via the tripod gait, the visual odometery system gave an average position of $(0.952$m, $0.013$m, $0.191$\textdegree{}$)$. Similarly, the system seemed to underestimate the $x$ component by an average of $0.048$m while the heading remains reasonably accurate. The higher $y$ component drift in this case could be due to the roughness of the walk gait. Specifically, the camera does not glide forward exactly in a straight line as it does when being moved manually through the air. Each step causes the robot shake in general as it settles into position. Again, a full listing of the results can be seen in \autoref{tab:eval_vo}.
 
 \subsubsection{Angular Motion}
 
 The second experiment involved rotating the robot by $90$\textdegree{} in place. As before, the robot was placed at the starting position shown in \autoref{fig:eval_plan} and the control system reset at the start of each test. The robot would then be rotated clockwise by 90\textdegree{} on the spot either either manually by hand or via the tripod gait. An ideal result would have been a resulting position of $(0$m, $0$m, $90$\textdegree{}$)$.
 
-By manual movement, the visual odometery system gave an average position of $(0.1$m, $0.004$m, $89.296$\textdegree{}$)$. By movement via the tripod gait, the visual odometery system gave an average position of $(0.172$m, $-0.018$m, $89.284$\textdegree{}$)$. A full listing of the results from both tests can be seen in \autoref{tab:eval_vo_manual_rot} and \autoref{tab:eval_vo_walk_rot} respectively.
+By manual movement, the visual odometery system gave an average position of $(0.1$m, $0.004$m, $89.296$\textdegree{}$)$. By movement via the tripod gait, the visual odometery system gave an average position of $(0.172$m, $-0.018$m, $89.284$\textdegree{}$)$. A full listing of the results from both tests can be seen in \autoref{tab:eval_vo_walk}.
 
 In both cases, there was a significant drift in the $x$ component---a drift of $0.1$m and $0.172$m for the manual and tripod gait movements respectively---while the $y$ and $\theta_z$ components remained fairly accurate. While observing the visual odometry output through \emph{RViz}, it seemed as though the robot was rotating around a pivot rather than in place as it should be. This was a particularly troubling outcome as it had the potential to disrupt both the mapping and navigation systems, but no further diagnosis could be done without delving into the complexities of the node's source code. It is possible that a more in-depth calibration of the camera lenses is necessary, as any warping of points caused by the lens may not be taken into account. A further evaluation into this particular aspect is definitely necessary.
 
@@ -165,7 +165,7 @@ The first test involved placing the robot on the starting position as shown in \
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=12cm]{eval_map1.jpg} \\
+	\includegraphics[width=14cm]{eval_map1.jpg} \\
 	\vspace{2pt}
 	\includegraphics[width=8cm]{eval_rgbd3.jpg}
 	\includegraphics[width=8cm]{eval_rgbd4.jpg}
@@ -181,7 +181,7 @@ The second test was performed in a manner similar to the previous test. At the s
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=12cm]{eval_map2.jpg} \\
+	\includegraphics[width=14cm]{eval_map2.jpg} \\
 	\vspace{2pt}
 	\includegraphics[width=8cm]{eval_rgbd1.jpg}
 	\includegraphics[width=8cm]{eval_rgbd2.jpg}
@@ -218,7 +218,22 @@ Dynamic obstacle avoidance would also be tested. An object---in this case a back
 
 \subsubsection{Without Obstacle}
 
+The first experiment in this set would evaluate accuracy and timing without any obstacles in the path of the robot. First, a number of manual movements were done as a control which gave a resulting average time of $36.164$s from start point to end point. Following this, tests using the navigation system were performed. These tests gave a resulting average time of $45.495$s from start point to end point, giving an average increase in time of $9.331$s. A full listing of results can be seen in \autoref{tab:eval_nav_dp_wo}.
+
+The navigational system spends a lot of time trying to keep the robot directly on its planned path---as one would expect---but this resulted in a number of unnecessary rotations, slowing down the overall movement. Additionally, some amount of processing time is needed for the system to compute a path. These are the most likely sources of this time increase. In general, however, the motions given by the system were accurate.
+
 \subsubsection{With Obstacle}
+
+The second experiment in this set would evaluate the accuracy and timing of the navigational system, but this time after an obstacle had been placed in front of the robot while it was walking. As before, a number of manual movements were performed for control---assuming that an ideal path was to curve around the obstacle. The manual movements gave an average time of $51.136$s. Following this, tests using the navigation system alone were performed. These autonomous tests gave a resulting average time of $1$m $5.677$s from start point to end point, giving an average increase in time of $14.541$s. A full listing of results can be seen in \autoref{tab:eval_nav_dp}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=14cm]{eval_nav.jpg}
+	\caption{A display of the planned path from the autonomous navigation system after an obstacle---in this case a backpack as before---has been placed in front of the robot. Prior to this image the planned path was directly ahead with no rotations. However, after the obstacle has been placed in front of the robot, the navigation system automatically recalculates the path such that it avoid the obstacles. The circular patterns on the ground plane indicate obstacle radii on the planner's avoidance costmap.}
+	\label{fig:eval_nav}
+\end{figure}
+
+An example of the path generated after the bag has been placed in front of the robot can be seen in \autoref{fig:eval_nav}. The causes of this time increase were similar to those mentioned in the previous test, but with the added rotational visual odometry drift. This rotational drift from the causes the navigation system to try and correct itself unnecessarily even though it is already in the correct position. Regardless, the robot was able to navigate around the bag successfully each time.
 
 \subsection{Complex Path}
 
@@ -226,5 +241,16 @@ The second set of tests aimed to test the navigation system given a goal that wo
 
 \subsubsection{Known Environment}
 
+The first experiment in this set would aim to prove the accuracy and efficiency of the navigation system in a known environment. A number of manual tours around the ``ideal'' path would be performed before hand to get a control on timing as well as to provide a good mapping of the environment. After this, the robot would be placed at its starting position and commanded to navigate to the end position, as shown on \autoref{fig:eval_map_room}.
+
+The manual movements from this experiment gave an average time of $2$m $5.649$s. For the autonomous navigation tests, the resulting average time was $2$m $34.014$s giving a difference of $28.365$s. This additional time is for the same reasons as explained in the previous tests. In one case, the test did not finish due to a cascading set of failures. Specifically, the navigational system managed to propel the robot into a nearby obstacle whereupon the visual odometry system ceased to give a positional fix. This required a full restart of the control system, and thus was counted as a ``did not finish'' result.
+
+Generally, however, the test was successful. The visual odometry drift issue was still apparent overall but not enough to cause any significant problems.
+
 \subsubsection{Unknown Environment}
 
+The final experiment would aim to prove the accuracy and efficiency of the navigation system in an unknown environment. Unlike the previous test, no manual walking was performed to provide any mapping information. The control system would be started cleanly and then be expected to navigate from one side of the environment to the other. Manual timing information from the previous experiment would be used as a control---it did not make much sense for us to run the test manually when we already knew the environment. The navigational system would have to detect and avoid obstacles to get to the end position as it moved the robot around. 
+
+Results from this test were varied. Out of the seven tests that completed successfully, the average time taken was $3$m $37.486$s giving a time difference from the control of $1$m $31.837$s. For those tests that did not complete successfully, similar issues as of those in the previous experiment occurred. Upon receiving the target goal, the navigational system immediately assumes it can get there directly as it has no information telling it otherwise. In these failure cases, the robot would get stuck looking at the obstacle as the visual odometry system fails to detect any features in the obstacle, causing a cascading failure of the mapping and navigational systems. In most cases, however, the robot was able to detect and adjust its path accordingly before it could get stuck.
+
+Further tweaking of both the navigation and visual odometry systems is needed to improve these results.
