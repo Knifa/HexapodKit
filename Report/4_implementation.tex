@@ -28,9 +28,9 @@ Understanding these package was rather troublesome, as both the wiki and GitHub 
 
 While there were already drivers available for the RGB-D sensor, this was not the case for the servo controller. A custom \texttt{servo\_controller} node was developed which accepts command messages through a topic. This node then relays commands to the controller by converting them into the format specified in the protocol. Furthermore, the node is implemented in such a way that it can be used to move any number of servos connected to the controller, not just the eighteen as required by the hexapod.
 
-The node listens for movement commands on a topic named \texttt{direct} relative to its namespace. By using a topic over a service, we ensure that any node sending commands to the controller need not wait for the command to actually be issued. This simplifies any timing necessities for a commanding node, such as those performing locomotion duties. A custom \texttt{ServoCommand} message had to be created to support this topic as none of the standard messages distributed with ROS were appropriate. In particular, it was necessary that a command include which servo to rotate, the target position, and how long it should take to move to that angle. The specification for this message is shown in \autoref{fig:servocommand_msg}. Having received one of these messages, the node will relay it to the controller after performing the steps necessary to transform it into the required protocol format.
+The node listens for movement commands on a topic named \texttt{direct} relative to its namespace. By using a topic over a service, we ensure that any node sending commands to the controller need not wait for the command to actually be issued. This simplifies any timing necessities for a commanding node, such as those performing locomotion duties. A custom \texttt{ServoCommand} message had to be created to support this topic as none of the standard messages distributed with ROS were appropriate. In particular, it was necessary that a command include which servo to rotate, the target position, and how long it should take to move to that angle. The specification for this message is shown in \autoref{tab:servocommand_msg}. Having received one of these messages, the node will relay it to the controller after performing the steps necessary to transform it into the required protocol format.
 
-\begin{figure}[!h]
+\begin{table}[!h]
 	\centering
 	\begin{tabular}{ r r p{10cm} }
 		\toprule
@@ -57,8 +57,8 @@ The node listens for movement commands on a topic named \texttt{direct} relative
 		\bottomrule
 	\end{tabular}
 	\caption{The specification for the \texttt{ServoCommand} message as used by the \texttt{servo\_controller} node. A \texttt{header} field is also included but omitted for brevity.}
-	\label{fig:servocommand_msg}
-\end{figure}
+	\label{tab:servocommand_msg}
+\end{table}
 
 To specify the time taken to rotate the servo, a \texttt{duration} primitive could have been used rather than a \texttt{float32} \cite{ros_wiki_msg}. These primitives are by backed by classes in the client libraries such that they can be manipulated more easily \cite{ros_api_duration_msg}. For example, a \texttt{duration} can be added to a \texttt{time}---another primitive---resulting in a new \texttt{time}. While this may be useful, the duration can only be specified using integers in either \emph{seconds} or \emph{nanoseconds} \cite{ros_api_duration_msg}. This granularity can be quite tedious as the rotation durations are usually specified in the range of hundreds of milliseconds. To give an example, to rotate with a duration of a 0.1 seconds, the duration would need to be specified as either 1 second---thus being wildly inaccurate---or 100,000,000 nanoseconds---a rather excessively large number. It was for this reason that \texttt{float32} was chosen as it allows time to specified in seconds directly with fractions if necessary.
 
@@ -147,9 +147,9 @@ This decision to create a terminal application, rather one that is GUI-based, wa
 
 To implement robot movement through a tripod gait, a custom \texttt{walker} node was developed. This node provides an abstraction over movement such that other nodes can request that the robot move without needing to care about the underlying specifics. This node is configurable, such that the particular timings and rotations can be adjusted without changing the node internals.
 
-The \texttt{walker} node listens for \texttt{Twist} messages on a \texttt{/cmd\_vel} topic. The \texttt{Twist} message is provided as part of the \texttt{geometry\_msgs} package, distributed with ROS as standard \cite{ros_api_twist_msg}. Messages sent from this node are used to control the magnitude of linear and angular motion, as well as direction. The specification for this message is shown in \autoref{fig:twist_msg}. Limbs are controlled by sending \texttt{ServoCommand} messages on the \texttt{joint/body}, \texttt{joint/shin}, and \texttt{joint/foot} topics as required by the \texttt{limb\_controller} node. Additionally, the node accepts a number of parameters which are used to adjust the specific timings and angles used by tripod gait. These parameters are read at node launch and are not adjustable at runtime. A listing of these parameters can be seen in \autoref{fig:walker_params}.
+The \texttt{walker} node listens for \texttt{Twist} messages on a \texttt{/cmd\_vel} topic. The \texttt{Twist} message is provided as part of the \texttt{geometry\_msgs} package, distributed with ROS as standard \cite{ros_api_twist_msg}. Messages sent from this node are used to control the magnitude of linear and angular motion, as well as direction. The specification for this message is shown in \autoref{tab:twist_msg}. Limbs are controlled by sending \texttt{ServoCommand} messages on the \texttt{joint/body}, \texttt{joint/shin}, and \texttt{joint/foot} topics as required by the \texttt{limb\_controller} node. Additionally, the node accepts a number of parameters which are used to adjust the specific timings and angles used by tripod gait. These parameters are read at node launch and are not adjustable at runtime. A listing of these parameters can be seen in \autoref{tab:walker_params}.
 
-\begin{figure}[h!]
+\begin{table}[h!]
 	\centering
 	\begin{tabular}{ r r p{10cm} }
 		\toprule
@@ -170,12 +170,12 @@ The \texttt{walker} node listens for \texttt{Twist} messages on a \texttt{/cmd\_
 		\bottomrule
 	\end{tabular}
 	\caption{The specification for the \texttt{Twist} message as used by the \texttt{walker} node. This is used to express velocity in free space, breaking it into linear and angular parts \cite{ros_api_twist_msg}.}
-	\label{fig:twist_msg}
-\end{figure}
+	\label{tab:twist_msg}
+\end{table}
 
 At launch, the node begins an endless loop whereupon it executes the walk cycle using the magnitudes stated in the last received \texttt{Twist} message. By using the details from the last received message, rather than moving only when a message is received, we allow any commanding node to set a velocity and then continue on as normal. Specifically, a constant stream of \texttt{Twist} messages are not required to continue movement. However, this does mean a commanding node must send a \texttt{Twist} message with zero velocities in order to stop the robot. 
 
-\begin{figure}[h!]
+\begin{table}[h!]
 	\centering
 	\begin{tabular}{ r r p{10cm} }
 		\toprule
@@ -211,8 +211,8 @@ At launch, the node begins an endless loop whereupon it executes the walk cycle 
 		\bottomrule
 	\end{tabular}
 	\caption{A listing showing the parameters available to be set for the \texttt{walker} node. These can be used to configure the particular timings and angles of the tripod gait. Default values were found purely through trial and error, providing the most stable walking motions.}
-	\label{fig:walker_params}
-\end{figure}
+	\label{tab:walker_params}
+\end{table}
 
 A tripod gait cycle consists of eight stages. First, we divide the limbs into two groups, where each group forms a tripod (i.e., one group contains limbs $0$, $2$, and $4$, while the other contains limbs $1$, $3$, and $5$.). During the cycle, one group can be thought of as the \emph{upper} limbs (i.e., they are raised above the ground), and the other can be thought as the \emph{lower} limbs (i.e., they are touching the ground and provide balance). These groupings allow us to reduce the number of stages we need to consider to four, as we can swap the groupings after the fourth stage and repeat the same actions. Furthermore, the same four stages can be used to produce both linear and angular motions. Both the listing below and the diagram shown in \autoref{fig:tripod_gait_forward} describe these stages. Throughout the walk cycle, the feet are kept at $90$\textdegree{} relative to the shin by using the formula $\theta_f = 90 - \theta_s$ on each foot joint whenever the shin moves. This gives the most stable base for the robot to rest upon at each stage.
 
@@ -257,9 +257,9 @@ Manual locomotion control was implemented using a custom \texttt{gamepad\_contro
 	\label{fig:xbox_360}
 \end{figure}
 
-The \texttt{joy} package contains one node named \texttt{joy\_node}. This node parses joystick input data, converts that data into standard \texttt{Joy} messages, and then broadcasts it through a \texttt{joy} topic relative to itself \cite{ros_wiki_joy}. The specification for the \texttt{Joy} message can be seen in \autoref{fig:joy_msg} and some example output from the \texttt{joy} topic can be seen in \autoref{fig:joy_example}. Additionally, \texttt{joy\_node} accepts a \texttt{dev} parameter which specifies where it should read joystick data from. If no parameter is set, the node will read data from \texttt{/dev/input/js0} which is the first controller connected to the system. 
+The \texttt{joy} package contains one node named \texttt{joy\_node}. This node parses joystick input data, converts that data into standard \texttt{Joy} messages, and then broadcasts it through a \texttt{joy} topic relative to itself \cite{ros_wiki_joy}. The specification for the \texttt{Joy} message can be seen in \autoref{tab:joy_msg} and some example output from the \texttt{joy} topic can be seen in \autoref{fig:joy_example}. Additionally, \texttt{joy\_node} accepts a \texttt{dev} parameter which specifies where it should read joystick data from. If no parameter is set, the node will read data from \texttt{/dev/input/js0} which is the first controller connected to the system. 
 
-\begin{figure}[!h]
+\begin{table}[!h]
 	\centering
 	\begin{tabular}{ r r p{10cm} }
 		\toprule
@@ -276,8 +276,8 @@ The \texttt{joy} package contains one node named \texttt{joy\_node}. This node p
 		\bottomrule
 	\end{tabular}
 	\caption{The specification for the \texttt{Joy} message as used by the \texttt{joy\_node} and \texttt{gamepad\_controller} nodes. The message also contains a \texttt{header} field but is omitted for brevity.}
-	\label{fig:joy_msg}
-\end{figure}
+	\label{tab:joy_msg}
+\end{table}
 
 \begin{figure}[!h]
 	\centering
@@ -309,17 +309,9 @@ Odometry was provided by the \texttt{visual\_odometry} included in the \texttt{c
 
 Mapping facilities per provided by the \texttt{ocotmap\_server} node included \texttt{octomap\_mapping} package, a package provided by the \emph{University of Freiburg} \cite{ros_wiki_octomap}. This node acts as a wrapped for the \emph{OctoMap} library \cite{octomap}. 
 
-\subsubsection{Alternatives}
-
-SLAM, but expects laser scan.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Navigation}
-
-Autonomous navigation was provided by the.
-
-\subsection{Path Planning}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

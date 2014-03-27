@@ -43,9 +43,9 @@ ROS also provides a \emph{request-response} style method of communication throug
 
 \subsection{Resource Names}
 
-Each resource in the system has a unique name, and can be placed into a namespace. This gives each resource a unique \emph{graph resource name} which can be used to identify this resource elsewhere throughout the system. As the name suggests, the layout of a ROS system can be thought of as a graph or tree. Some examples of \emph{graph resource names} are shown in \autoref{fig:graph_resource_names}.
+Each resource in the system has a unique name, and can be placed into a namespace. This gives each resource a unique \emph{graph resource name} which can be used to identify this resource elsewhere throughout the system. As the name suggests, the layout of a ROS system can be thought of as a graph or tree. Some examples of \emph{graph resource names} are shown in \autoref{tab:graph_resource_names}.
 
-\begin{figure}[!h]
+\begin{table}[!h]
     \centering
     \begin{tabular}{  l l  }
         \toprule
@@ -57,8 +57,8 @@ Each resource in the system has a unique name, and can be placed into a namespac
         \bottomrule
     \end{tabular}
     \caption{Some examples of graph resource names.}
-    \label{fig:graph_resource_names}
-\end{figure}
+    \label{tab:graph_resource_names}
+\end{table}
 
 \subsection{Packages}
 A collection of nodes providing a particular set of functionalities (e.g., path planning for autonomous navigation), can be grouped and distributed as \emph{packages} \cite{ros_paper}. This can be used to divide nodes in a system into logical subsystems. By developing nodes and packages in a generic way, they can also act as a means for providing drop-in functionality.

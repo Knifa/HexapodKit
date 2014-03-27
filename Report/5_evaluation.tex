@@ -1,11 +1,9 @@
-\chapter{Testing}
+\chapter{Evaluation}
 \label{chap:evaluation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-A number of tests were ran to evaluate the correctness of the implemented robot control system. 
-
-The robot control system was ran in its entirety on a high-end machine running Ubuntu Linux 12.04 LTS. Specifically, the machine has an \emph{Intel Core i7 3770K} clocked at \emph{4.5Ghz} paired with \emph{16GB} of memory. An attempt to run the control system on an \emph{Apple MacBook Pro} was made, which has an \emph{Intel Core i5 3239M} clocked at \emph{2.6Ghz} paired with \emph{8GB} of memory, but the machine could not achieve the performance necessary for good operation.
+A number of experiments were conducted to evaluate the correctness of the implemented robot control system. The robot control system was ran in its entirety on a high-end machine running Ubuntu Linux 12.04 LTS. Specifically, the machine has an \emph{Intel Core i7 3770K} clocked at \emph{4.5Ghz} paired with \emph{16GB} of memory. An attempt to run the control system on an \emph{Apple MacBook Pro} was made, which has an \emph{Intel Core i5 3239M} clocked at \emph{2.6Ghz} paired with \emph{8GB} of memory, but the machine could not achieve the performance necessary for good operation.
 
 \begin{figure}[!h]
 	\centering
@@ -14,13 +12,19 @@ The robot control system was ran in its entirety on a high-end machine running U
 	\label{fig:eval_plan}
 \end{figure}
 
-Testing took place in a large bedroom environment as shown in \autoref{fig:eval_plan}. This environment contained a number of everyday obstacles with varying shapes, colours and textures. All tests were ran under ideal lighting conditions---i.e., full natural light---where possible. This ensured that the RGB-D sensor provided the highest quality images which would have a knock-on effect for the visual locomotory and mapping subsystems.
+Testing took place in a large environment as shown in \autoref{fig:eval_plan}. This environment contained a number of everyday obstacles with varying shapes, colours and textures. All tests were ran under ideal lighting conditions---i.e., full natural light---where possible. This ensured that the RGB-D sensor provided the highest quality images which would have a knock-on effect for the visual locomotory and mapping subsystems.
 
 \section{Hardware Interaction}
 
+These experiments were created to test the correct function of the hardware interaction systems, specifically the RGB-D camera driver and the servo driver.
+
 \subsection{RGB-D Camera Driver}
 
-The RGB-D camera driver, provided by the \texttt{openni2\_driver} and \texttt{openni2\_launch} packages
+The RGB-D camera driver, provided by the \texttt{openni2\_driver} and \texttt{openni2\_launch} packages, was tested by observing output through \emph{RViz}. A \emph{RViz} configuration was made that would show both the colour and depth video feeds from the camera, taken from the \texttt{/camera/color/image} and \texttt{/camera/depth/image} topics. As this is a standard package, it was expected that it would function as intended without any issues.
+
+That said, a peculiar fault was discovered in that the device would show itself to be disconnecting and reconnecting repeatedly while running. Throughout this, many USB timeout messages and similiar errors were shown in the Linux \emph{message buffer} (shown by \texttt{dmesg}). The cause of the issue turned out to be that, simply, the USB cable from the computer to the camera was too long. The USB specification that devices running in USB 2.0 mode---which is the case for the \emph{Xtion}---may have a maximum cable length of $5$m \cite{usb_spec}. The cable had been extended to allow a larger movement distance but the resulting cable length was now $6.5$m long, as the \emph{Xtion} already had a $1.5$m cable attached.
+
+Following this discovery, the cable was trimmed to $5$m and, as a result, the driver functioned correctly as intended.
 
 \subsection{Servo Driver}
 
@@ -41,9 +45,9 @@ This first test was designed to confirm correct behaviour when moving only one s
 	Should the formulae from converting from the units specified in the \texttt{ServoCommand} message to those specified by the servo controller's protocol be correct, we would have expected the specified servo to move the correct angle over the correct duration. Any deviation from this would have indicated some mathematical error in the formulae.
 \end{description}
 
-To implement this test, a \texttt{servo\_controller\_test\_single} node was created. This node requests four movements from each servo sequentially in a continuous loop at various angles and durations, pausing for one second between each. A listing of these movements is shown in \autoref{fig:servo_controller_eval}.
+To implement this test, a \texttt{servo\_controller\_test\_single} node was created. This node requests four movements from each servo sequentially in a continuous loop at various angles and durations, pausing for one second between each. A listing of these movements is shown in \autoref{tab:servo_controller_eval}.
 
-\begin{figure}[!h]
+\begin{table}[!h]
 	\centering
 	\begin{tabular}{ c c c }
 		\toprule
@@ -68,8 +72,8 @@ To implement this test, a \texttt{servo\_controller\_test\_single} node was crea
 		\bottomrule
 	\end{tabular}
 	\caption{A listing of movements made for each servo in the single servo rotation test. These movements are applied to each servo in a continuous loop with a one second delay between each movement.}
-	\label{fig:servo_controller_eval}
-\end{figure}
+	\label{tab:servo_controller_eval}
+\end{table}
 
 The \texttt{servo\_controller} node and \texttt{servo\_controller\_test\_single} node were launched and the robot observed. Prior to this, the robot was placed upon a pedestal to ensure that the limbs could rotate freely without unintentionally moving the robot. As expected, each servo rotated as intended to the correct angles and durations, thus showing the implementation was functional as required.
 
@@ -85,9 +89,11 @@ Following this modification, the test ran as intended, thus showing the implemen
 
 \section{Locomotion}
 
-These experiments were created to evaluate that the systems designed to handle locomotion operated correctly.
+These experiments were created to evaluate that the systems designed to handle locomotion operated correctly. Specifically, we aimed to test the correct function of the limb controller, the limb calibration tool, and the walk controller.
 
 \subsection{Limb Controller}
+
+The limb controller, implemented as a custom \texttt{limb\_controller} node, was tested in a manner similar to the servo controller. The servo controller test nodes were adapted to send messages to the limb control topics, rather than the topic used to control the servos directly. Through running the same set of tests, the limb controller was shown to function correctly.
 
 \subsection{Limb Calibration Tool}
 
@@ -99,73 +105,126 @@ Additionally, it was found that the servos would not rotate by small increments 
 
 In general, both of these issues could be solved be utilising more accurate (and accordingly more expensive) servos---software can only correct for hardware problems up to a point.
 
-\subsection{Tripod Gait Walker}
+\subsection{Tripod Gait Controller \& Gamepad Controller}
 
-Maximum speed constraints.
+To test the tripod gait controller, implemented by the \texttt{gait\_controller} node, we conducted the following set of experiments. These would confirm that the implemented tripod gait cycle was correct and resulted in motions as intended. Specifically, we would test that the gait worked correctly for forward motions, angular motions and a combination of both motions. Manual control would be used throughout the test, given from the \texttt{gamepad\_controller}, providing confirmation that it was functioning correctly. Tests would involve observing the robot visually as it moved around.
 
-Walk cycle (linear).
+\subsubsection{Linear Motion}
 
-Walk cycle (rotation).
+The first test involved simply moving the robot back and forth in a straight line from its starting position. The left analogue stick on the controller was pushed upwards and downwards, signifying a forward and backwards movement. This was done for a few minutes to ensure there were no problems. As expected, the robot moved as intended without issue.
 
-Walk cycle (combination). 
+\subsubsection{Angular Motion}
+
+The second test involved rotating the robot in place. The right analogue stick on the controller was pushed left and right, signifying anti-clockwise and clockwise rotations. Again, this was done for a number of minutes to ensure that there were no problems. As expected, the robot rotated as intended.
+
+\subsubsection{Combined Linear and Angular Motion}
+
+The third test involved supplying commands for both linear and angular motions simultaneously, such that the robot would move in a curved path. This was essentially a combination of the previous two tests. Both the left and right analogue sticks on the controller were moved in varying combinations of positions. The expected outcome was that the robot should push forward while also turning to one side.
+
+It was through this test that the necessity to apply some sort of equal ratio formula to the swing angles was found. Originally, both linear and angular movement angles were simply added together based on the requested velocities---i.e., $v_x \times \texttt{swing\_angle} + v_\theta \times \texttt{swing\_angle}$. This meant that both full linear and angular movements were requested, the resulting angles sent to the servos would be twice the specified maximum---i.e., $2 \times \texttt{swing\_angle}$. This was a rather nasty problem as it caused the legs of the robot to collide and get stuck inside one another.
+
+The solution was to ratios such that the maximum angle sent to the servos could only be \texttt{swing\_angle}, as described in great detail in the implementation section. After applying this correction, the robot could move around correctly as intended. However, while this correction prevents the legs from colliding with one another, the speed at which the robot moves is somewhat reduced. If both maximum linear and angular movements are requested, the robot will only move at half the maximum speed, as the ratio formula divides \texttt{swing\_angle} equally.
 
 \section{Sensing}
 
-These experiments were created to evaluate that the systems could interpret the world around the robot via the supplied sensory input.
+These experiments were created to evaluate that the systems could interpret the world around the robot via the supplied sensory input. Specifically, we test both the visual odometry and mapping systems.
 
 \subsection{Visual Odometry}
 
-Visual odometry (manual movement of camera).
+To test the visual odometry system, which was provided by a \texttt{visual\_odometry} node in the \texttt{ccny\_rgbd} package, we ran the following experiments. These experiments involved moving the robot in various ways while observing how accurately the visual odometery system matched these movements. Experiments would be ran with both manual movement of the robot---i.e., lifting it up along a path by hand---as well as with the implemented tripod gait. The \texttt{tf\_echo} tool from the \texttt{tf} package was used to get an exact readout of the interpreted position. Each experiment was ran ten times and the resulting positions averaged.
 
-Visual odometry (walk cycle).
+\subsubsection{Linear Motion}
 
-Mapping (while walking).
+The first experiment involved moving the robot forward by one meter while observing the position given by the visual odometery system. At the start of each test, the robot was placed at the starting position shown in \autoref{fig:eval_plan} and the control system reset. The robot would then be moved forward---either manually by hand or via the tripod gait---such that the robot had moved a meter relative to this starting position. Two points were placed both at the start and end positions such that the front two feet could be aligned with them. An ideal result would have been a resulting position of $(1$m, $0$m, $0$\textdegree{}$)$.
 
-Visual odometry drift. Difficulty with stationary rotation. Interesting reaction to mirrors. No resync if location is lost.
+By manual movement, the visual odometery system gave an average position of $(0.924$m, $0.004$m, $0.471$\textdegree{}$)$. Notably, the system seemed to underestimate the $x$ component by an average of $0.076$m in this case, while the $y$ component and heading remained fairly accurate. A full listing of the results can be seen in \autoref{tab:eval_vo_manual}.
+
+By movement via the tripod gait, the visual odometery system gave an average position of $(0.952$m, $0.013$m, $0.191$\textdegree{}$)$. Similarly, the system seemed to underestimate the $x$ component by an average of $0.048$m while the heading remains reasonably accurate. The higher $y$ component drift in this case could be due to the roughness of the walk gait. Specifically, the camera does not glide forward exactly in a straight line as it does when being moved manually through the air. Each step causes the robot shake in general as it settles into position. A full listing of the results can be seen in \autoref{tab:eval_vo_walk}.
+
+\subsubsection{Angular Motion}
+
+The second experiment involved rotating the robot by $90$\textdegree{} in place. As before, the robot was placed at the starting position shown in \autoref{fig:eval_plan} and the control system reset at the start of each test. The robot would then be rotated clockwise by 90\textdegree{} on the spot either either manually by hand or via the tripod gait. An ideal result would have been a resulting position of $(0$m, $0$m, $90$\textdegree{}$)$.
+
+By manual movement, the visual odometery system gave an average position of $(0.1$m, $0.004$m, $89.296$\textdegree{}$)$. By movement via the tripod gait, the visual odometery system gave an average position of $(0.172$m, $-0.018$m, $89.284$\textdegree{}$)$. A full listing of the results from both tests can be seen in \autoref{tab:eval_vo_manual_rot} and \autoref{tab:eval_vo_walk_rot} respectively.
+
+In both cases, there was a significant drift in the $x$ component---a drift of $0.1$m and $0.172$m for the manual and tripod gait movements respectively---while the $y$ and $\theta_z$ components remained fairly accurate. While observing the visual odometry output through \emph{RViz}, it seemed as though the robot was rotating around a pivot rather than in place as it should be. This was a particularly troubling outcome as it had the potential to disrupt both the mapping and navigation systems, but no further diagnosis could be done without delving into the complexities of the node's source code. It is possible that a more in-depth calibration of the camera lenses is necessary, as any warping of points caused by the lens may not be taken into account. A further evaluation into this particular aspect is definitely necessary.
+
+\subsubsection{General Commentary}
+
+As an additional issue, should the visual odometry system be unable to find sufficient features in the images it is currently receiving---e.g., some object is obstructing the camera--- then the output positional will be essentially, undefined. While an actual position is output but the system, it could essentially be considered completely random and therefore useless. Additionally, when the system is able to find sufficient features once more, the position does not reset to where it was previously. At this point, the whole control system must be restarted.
+
+In general, it is was not unexpected that the visual odometry system had some positional drift. The concept of odometry is such that it provides an estimate of the current position in space, rather than an exact position. Additional sensors---e.g., laser scanners, accelerometers, GPS, etc---would be very useful in this case. A multitude of filters can then be used to combine the information such that the robot can be localized in space much more accurately.
 
 \subsection{Mapping}
 
-\begin{figure}[!h]
+To evaluate the mapping system, we ran the following set of tests. These tests would confirm that the mapping system could interpret the environment surrounding the robot correctly. Additionally, they would confirm that the map can update in real-time as the robot moves around the environment. A \emph{RViz} configuration was made to display both 2D and 3D maps generated by the \texttt{octomap\_server} node.
+
+\subsubsection{Stationary Mapping}
+
+The first test involved placing the robot on the starting position as shown in \autoref{fig:eval_plan}. The robot control system would then be started, and the map output shown in \emph{RViz} observed visually, checking the map for general accuracy versus the real environment. No movements---apart from putting the robot into a steady standing position---would be performed.
+
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=12cm]{eval_map1.jpg} \\
 	\vspace{2pt}
 	\includegraphics[width=8cm]{eval_rgbd3.jpg}
 	\includegraphics[width=8cm]{eval_rgbd4.jpg}
 	\caption{A display of the generated map a few seconds after the robot control system has started along with the direct colour (bottom left) and depth (bottom right) outputs from the RGB-D camera. The shape of the desk and wall directly in front of the robot, as seen in the colour image, can clearly be seen in the resulting map.}
-	\label{fig:eval_map_bag}
+	\label{fig:eval_map_nobag}
 \end{figure}
 
-\begin{figure}[!h]
+The resulting output along with raw imagery from the camera for this test as shown in \autoref{fig:eval_map_nobag}. While the map was generally accurate, there was some noise visible in the map output which is visible around the middle of the map output. It is possible that the mapping system could have erroneously detected some parts of the floor as obstacles. Regardless, they are so insignificant that the navigational systems would not have any issue with them. Thusly, this test was deemed successful.
+
+\subsubsection{Stationary Mapping with an Obstacle}
+
+The second test was performed in a manner similar to the previous test. At the start of the test, the robot was placed at the starting position and the control system started. The map output from the same \emph{RViz} configuration would then be observed. This time, however, after a few seconds an obstacle---in this case a backpack of similar height to the robot---would be placed $1$m in front of the robot. It was expected that the bag should then show up as an obstacle on the map. No movement would be performed, as before.
+
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=12cm]{eval_map2.jpg} \\
 	\vspace{2pt}
 	\includegraphics[width=8cm]{eval_rgbd1.jpg}
 	\includegraphics[width=8cm]{eval_rgbd2.jpg}
 	\caption{A display of the generated map after an obstacle has been placed in front of the robot---a backpack in this case---along with the direct RGB (bottom left) and depth (bottom right) outputs from the RGB-D camera. The resulting blocks from the bag can be seen on the map. Notably, the bag appears as a rather patchy grouping of blocks but would still be enough to trigger any avoidance routines from the navigation system.}
-	\label{fig:eval_map_nobag}
+	\label{fig:eval_map_bag}
 \end{figure}
 
-\begin{figure}[!h]
+The resulting output after having placed the obstacle in front of the robot can be seen in \autoref{fig:eval_map_bag}. In this case, the surrounding environment was mapped quite accurately once again. The bag was also detected and mapped, however the resulting points were rather disjointed. The full shape of the obstacle was not mapped completely, even though it can be seen quite clearly in the raw imagery. Even though this was the case, the navigational system would have still been able to route around these points as the base footprint of the object can still be seen.
+
+\subsubsection{Mapping During Walk Cycle}
+
+The final test aimed to test the accuracy of the mapping system as the robot moved around the environment using the tripod gait. In particular, the robot would walk around the environment along the path as shown on \autoref{fig:eval_plan}, starting from the start position and ending at the end position. Manual control through the gamepad controller would be used for this test, rather than relying on the navigational system. The same \emph{RViz} configuration from previous tests would be used to visually observe the generated map for accuracy.
+
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=16cm]{eval_map3.jpg}
 	\caption{A display of the generated map after the robot has had a tour around the environment, as provided by RViz. It can be seen that the mapping system correctly generated a reasonable facsimile of the surrounding environment, however there is a large amount of distortion due to the drift from the visual locomotory system. Additionally, a rather large patch of the floor (bottom left, specifically) has been detected as an obstacle. As an aside, a strange effect results from the mirror that sits in the corner of the environment (top left, specifically).}
 	\label{fig:eval_map_room}
 \end{figure}
 
-Mapping (stationary).
-
-Mapping (object in front).
-
-Mapping is awesome all of the time, ruined by visual odometry.
+The resulting map output for this test is shown in \autoref{fig:eval_map_room}. While the map system generated a reasonable facsimile of the surrounding environment, there were significant distortions due to the positional drift caused by the visual odometery system, particularly when the robot was rotating. Specifically, the detected walls of the environment should have been at right angles to each other but are shown to be somewhat askew. As the mapping system depends entirely on the visual odometry system for a positional fix, there is little that could have been done to solve this issue. An additional facility to localise the robot's position based on the map rather than relative motion may have been helpful in this case, as it would be able to correct for any drift.
 
 \section{Navigation}
 
-These experiments were created to evaluate that the systems could navigate autonomously using the interpreted sensory information.
+To test the navigation system, the following set of tests were performed. In particular, we looked to test the time taken and accuracy for the movements generated by this system when asked to reach a particular goal. To give a comparison, we would compare the results to that of those given from manual movements following an ``ideal'' path. This would require full integration and correct operations of all previous systems thus far, as the navigation system relies on all of these systems for its own operation. 
 
-Navigation accuracy. (no obstacles, straight line)
+Specifically, two different sets of tests were performed. One set would test autonomous navigation on a direct path with minimal rotation whereas the other would test a more complex path involving multiple turns.
 
-Navigation accuracy. (obstacle in way, curved path)
+\subsection{Direct Path}
 
-Obstacles in way during navigation.
+The first set of tests aimed to test the navigation system given a goal directly in front of the robots, such that no rotations were required. The target goal would be $3$m forward from the robot's starting position. At the start of each test, the control system would be reset. Once the system was ready, a goal would be set $3$m from the starting position with a forward heading using the target tool on \emph{RViz}. Time would be recorded and general accuracy observed. As a comparison, the time taken to move along the path manually using the control would be recorded. 
 
-It works alright, I guess.
+Dynamic obstacle avoidance would also be tested. An object---in this case a backpack as used in the previous examples---would be placed in front of the robot as it reached $1$m. How well the navigation system managed to move around this object would then be observed.
+
+\subsubsection{Without Obstacle}
+
+\subsubsection{With Obstacle}
+
+\subsection{Complex Path}
+
+The second set of tests aimed to test the navigation system given a goal that would create a complex path. In these cases, the starting position and target end position would be those shown in \autoref{fig:eval_map_room}. This would show that the robot was capable of moving from one side of the room to the other. Two tests would be performed: one where the robot had a chance to move around before hand such that the environment was already mapped, and the other where the robot had no knowledge of the environment before hand. As before, time would be recorded and general accuracy observed. A manually controlled walk would be done for time comparison.
+
+\subsubsection{Known Environment}
+
+\subsubsection{Unknown Environment}
+

@@ -17,7 +17,7 @@ This report will detail how these objectives were achieved. Through the use of R
 
 \begin{description}[labelindent=\parindent]
 	\item[Hardware Operations] \hfill \\
-	The system is capable with interacting with the RGB-D camera and servo controller on-board the robot. Commands can be sent through the system to the controller, allowing for the movement of any particular actuator. Image data from the sensor is received, processed, and then broadcast throughout the system, such that any subsystem needing the imagery can access it.
+	The system is capable of interacting with the RGB-D camera and servo controller on-board the robot. Commands can be sent through the system to the controller, allowing for the movement of any particular actuator. Image data from the sensor is received, processed, and then broadcast throughout the system, such that any subsystem needing the imagery can access it.
 
 	\item[Locomotion] \hfill \\
 	The system allows the robot to walk with a tripod-type walk gait in an abstracted manner. This abstraction allows any control subsystems to request linear and angular movements, without regard as to the specific actuator commands. The system also provides a means for calibrating the actuators, allowing for movements to be made precisely. Additionally, the robot can be manually controlled via a standard game controller.
@@ -89,9 +89,6 @@ The remainder of this report is divided into the chapters described below.
 
 	\item[Chapter~\ref{chap:evaluation}: Evaluation] \hfill \\
 	This chapter presents the results on an evaluation of the performance of the robot control system, as well as detailing the experimental setup.
-
-	\item[Chapter~\ref{chap:usage}: Usage] \hfill \\
-	This chapter shows how the implemented robot control system is used. Specifically, how a user can interact with the control system, allowing navigational commands to be given.
 
 	\item[Chapter~\ref{chap:conclusion}: Conclusion] \hfill \\
 	This chapter summarises the report, providing a number of ideas for future development of the project.
