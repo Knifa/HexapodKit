@@ -5,7 +5,7 @@ For any advanced robot to operate correctly, a vast infrastructure of software i
 
 However, through the use of ROS it is possible to gain access to these state-of-the-art functionalities free of charge, both in terms of cost and in person hours. The open-source nature of ROS is such that any innovations made by other developers can be easily shared to with the rest of the community. This offloads the complex understanding to smaller development teams which have expertise in that particular area.
 
-The following sections in this chapter elaborate on the features of the ROS and our robot hardware, explaining why they are relevant to this project. This will provide a basis of understanding necessary for the implementation chapter and beyond.
+The following sections in this chapter elaborate on the features of the ROS and our robot hardware. This will provide a basis of understanding necessary for the implementation chapter and beyond.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -172,4 +172,6 @@ Should one wish to develop for the \emph{Xtion} in general, they must use the \e
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Existing Examples}
+\section{Existing Robots \& Discussion}
+
+As far as could be found, no legitimate hexapod-type robot projects exist that utilise ROS as their base framework. Through a web search, it was possible to find numerous posts on forums from hobbyists looking to set up their own hexapod-type robots using ROS, but these typically resulted in a dead end with regards to the implemented control systems. Futhermore, no package sets existed in the ROS repository that would implement an full robot control system for a hexapod-type robot. It is for this reason that we would have to devise our own.
