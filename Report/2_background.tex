@@ -5,7 +5,7 @@ For any advanced robot to operate correctly, a vast infrastructure of software i
 
 However, through the use of ROS it is possible to gain access to these state-of-the-art functionalities free of charge, both in terms of cost and in person hours. The open-source nature of ROS is such that any innovations made by other developers can be easily shared to with the rest of the community. This offloads the complex understanding to smaller development teams which have expertise in that particular area.
 
-The following sections in this chapter elaborate on the features of the ROS and our robot hardware, explaining why they are relevant to this project. This will provide a basis of understanding necessary for the implementation chapter and beyond.
+The following sections in this chapter elaborate on the features of the ROS and our robot hardware, explaining why they are relevant to this project. A discussion will also be made around the background in general, as well as any existing research. This will provide a basis of understanding necessary for the implementation chapter and beyond.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -130,10 +130,29 @@ The robotic hardware used in this project is relatively straightforward, consist
 
 In its current state, the robot has no wireless capability and, thusly, operates in a tethered manner. A bundle of cables protruding from the rear end of the unit connects the on-board hardware to a nearby power source and computer.
 
+\subsection{RGB-D Camera}
+The primary sensor in the system is an \emph{ASUS Xtion Pro Live} RGB-D camera, which is very similar to the \emph{Microsoft Kinect}. The key functionality of this camera is that it provides a depth data feed, giving a range of values indicating the distances to the objects in front of it. The images shown in \autoref{fig:rgbd_images1} show an example of the output provided by this camera. A combination of an infra-red grid emitter and infra-red sensor is used to calculate the distances of any nearby objects, however we need not concern ourselves with the particular intricacies of its operation.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=8cm]{rgbd_rgb2.jpg}
+    \includegraphics[width=8cm]{rgbd_depth2.jpg}
+    \caption{Example imagery from the RGB-D camera mounted on top of the robot as given by the \texttt{openni2\_camera} package. The image on the left shows the RGB output from the camera. The image on the right shows the depth output interpreted as a monochrome image.}
+    \label{fig:rgbd_images1}
+\end{figure}
+
+It should be noted that the depth detection range is not unlimited. The specification for the device states that the range of detection is from $0.8$m to $3.5$m \cite{xtion_spec}. Objects that are too close will cause significant errors in the resulting depth imagery, while objects that are too far away will simply not be detected. Additionally, the device has problems with reflective surfaces, again causing significant errors in the resulting depth imagery. These issues do not effect the colour feed.
+
+The advantages this particular sensor provides over the \emph{Kinect} is mostly physical, specifically weight and footprint. The \emph{Kinect} has a motorized base which allows the device to be tilted upwards and downwards through software, in comparison to the \emph{Xtion} which has a simple hinge that must be rotated by hand. This feature is unnecessary in this use case and adds a significant amount of weight. Additionally, the \emph{Kinect} is intended to be a consumer device and, thus, has a much striking product design. However, this striking design comes at the cost of making the device much larger in general. As space on the robot's base is at a premium, this makes the \emph{Xtion} much more favourable.
+
+Should one wish to develop for the \emph{Xtion} in general, they must use the \emph{OpenNI} framework which is a ``standard framework for 3D sensing'' \cite{openni_site}. In particular, the \emph{Xtion} requires the use of \emph{OpenNI2} which is the second iteration of this framework. The framework encapsulates much of the complex hardware interaction such that it is possible to get the output imagery with relative ease. 
+
 \subsection{Servos \& Servo Controller}
 Each joint piece is attached to the shaft of a servomechanism (servo) to facilitate rotation. Each servo is controlled by a \emph{pulse-width modulated} (PWM) signal supplied by the controller such that the angle of the servo can be controlled precisely. Servos operate using a feedback-loop system such that the current of an internal motor is controlled, rotating the shaft to the desired position. Rotational range and speed of servos vary depending on model, but in this case the servos allow for a total rotational range of 180\textdegree.
 
-The servos are controlled by an off-the-shelf servo controller board. This board, in particular, expects text-based control commands over serial, either via direct TTL or emulated over an on-board USB to TTL converter \cite{torobot_manual}. A number of commands are supported, allowing control of the position of both single and groups of servos. Additionally, a set of movements can be programmed and issued with a single command \cite{torobot_manual}. Power is also distrusted to the servos via this board.
+The servos are controlled by an off-the-shelf servo controller board, specifically the \emph{Torobot 32-channel Servo Controller}. This board, in particular, expects text-based control commands over serial, either via direct TTL or emulated over an on-board USB to TTL converter \cite{torobot_manual}. A number of commands are supported, allowing control of the position of both single and groups of servos. Additionally, a set of movements can be programmed and issued with a single command \cite{torobot_manual}. Power is also distrusted to the servos via this board.
+
+No package that implements a driver for this particular servo controller is available in the ROS repositories. Our control system would need to implement this driver.
 
 \subsubsection{Protocol}
 
@@ -153,23 +172,20 @@ A rotation command is issued by sending a string in the format shown above, spec
 
 It should be noted that the parameter for the target position is actually the pulse-width duration (in milliseconds) that is sent to the servo rather than an actual angle. Duration ranges can very per manufacturer however there is a common standard such that 1.5\textmu s corresponds to 0\textdegree{} and 2.5\textmu s correspond to 180\textdegree. These are the minimum and maximum possible values for this controller. 
 
-\subsection{RGB-D Camera}
-The primary sensor in the system is an \emph{ASUS Xtion Pro Live} RGB-D camera, which is very similar to the \emph{Microsoft Kinect}. The key functionality of this camera is that it provides a depth data feed, giving a range of values indicating the distances to the objects in front of it. The images shown in \autoref{fig:rgbd_images1} show an example of the output provided by this camera. A combination of an infra-red grid emitter and infra-red sensor is used to calculate the distances of any nearby objects, however we need not concern ourselves with the particular intricacies of its operation.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=8cm]{rgbd_rgb2.jpg}
-    \includegraphics[width=8cm]{rgbd_depth2.jpg}
-    \caption{Example imagery from the RGB-D camera mounted on top of the robot as given by the \texttt{openni2\_camera} package. The image on the left shows the RGB output from the camera. The image on the right shows the depth output interpreted as a monochrome image.}
-    \label{fig:rgbd_images1}
-\end{figure}
+\section{Existing Robot Control Systems}
 
-It should be noted that the depth detection range is not unlimited. The specification for the device states that the range of detection is from $0.8$m to $3.5$m \cite{xtion_spec}. Objects that are too close will cause significant errors in the resulting depth imagery, while objects that are too far away will simply not be detected. Additionally, the device has problems with reflective surfaces, again causing significant errors in the resulting depth imagery. These issues do not effect the colour feed.
+A number of ROS-based control systems exist for prefab robots. Some examples are these include the \emph{PR2} by \emph{Willow Garge} for which ROS was originally created \cite{ros_pr2}, the \emph{Jaguar} by \emph{Dr Robot Inc} \cite{jag}, and the \emph{TurtleBot} \cite{turtlebot}. These are robots are purchasable from the manufacturer in an already assembled form, where the manufacturer has also implemented the control system. This allows any buyer to get started implementing interesting behaviours on top of this system without having to worry about movement, navigation, etc. These systems target their corresponding hardware platforms specifically and, as such, cannot be adapted for use with our hexapod-type robot. Regardless, these systems can be used to gain an understanding of what shape a control system should take in general. Furthermore, these control systems rely on generic packages underneath which we can, indeed, leverage.
 
-The advantages this particular sensor provides over the \emph{Kinect} is mostly physical, specifically weight and footprint. The \emph{Kinect} has a motorized base which allows the device to be tilted upwards and downwards through software, in comparison to the \emph{Xtion} which has a simple hinge that must be rotated by hand. This feature is unnecessary in this use case and adds a significant amount of weight. Additionally, the \emph{Kinect} is intended to be a consumer device and, thus, has a much striking product design. However, this striking design comes at the cost of making the device much larger in general. As space on the robot's base is at a premium, this makes the \emph{Xtion} much more favourable.
-
-Should one wish to develop for the \emph{Xtion} in general, they must use the \emph{OpenNI} framework which is a ``standard framework for 3D sensing'' \cite{openni_site}. In particular, the \emph{Xtion} requires the use of \emph{OpenNI2} which is the second iteration of this framework. The framework encapsulates much of the complex hardware interaction such that it is possible to get the output imagery with relative ease. 
+As far as could be found, there are no existing robot control systems for hexapod-type robots that are based upon ROS. By doing a web search, it is possible to find numerous forum posts by hobbyist roboticists suggesting that some are being developed, but none in an official research sense. Additionally, these posts are usually dead end leads in that no source code, or even further information in general, can be found. Furthermore, no existing robot control systems for any hexapod-type robots exist within the ROS repositories. It is for this reason, that we must design and develop our own control system.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Existing Examples}
+\section{Visual Control}
+
+A number of research papers were found relating to the use of RGB-D cameras for localisation and environment mapping, however these papers dealt with the specifics of the algorithms used rather than their usage in general \cite{correa2012mobile, biswas2012depth, cunha2011using}. Furthermore, none of these projects targeted ROS in particular and thus would require us to implement them by hand. These algorithms are particular complex and, as such, were outside the scope of this project. The use of any existing package that implemented this functionality would be favoured instead.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Conclusions}
