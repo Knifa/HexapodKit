@@ -1,32 +1,4 @@
 <launch>
-	<include file="$(find ccny_openni_launch)/launch/openni2.launch" />
-	<include file="$(find ccny_rgbd)/launch/visual_odometry.launch" />
-
-	<node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
-		<remap from="cloud_in" to="/rgbd/cloud" />
-
-		<param name="base_frame_id" value="base_link" />
-
-		<param name="sensor_model/max_range" value="5.0" />
-		<param name="pointcloud_min_z" value="0.05" />
-		<param name="occupancy_max_z" value="0.35" />
-
-		<param name="resolution" value="0.05" />
-
-		<!-- <param name="filter_ground" value="true" />
-		<param name="ground_filter/plane_distance" value="0.1" />
-		<param name="ground_filter/distance" value="0.1" /> -->
-	</node>
-
-	<node pkg="tf" type="static_transform_publisher" name="xtion_to_hexapod" args="0.09 0 0.14 0 0 0 base_link camera_link 10" />
-	<node pkg="tf" type="static_transform_publisher" name="odom_to_map" args="0 0 0 0 0 0 map odom 10" />
-
-	<node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan">
-		<remap from="image" to="/camera/depth/image_raw" />
-
-		<param name="scan_time" value="0.05" />
-	</node>
-
 	<node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
 	    <rosparam file="$(find hexapod_nav)/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
 	    <rosparam file="$(find hexapod_nav)/params/costmap_common_params.yaml" command="load" ns="local_costmap" />

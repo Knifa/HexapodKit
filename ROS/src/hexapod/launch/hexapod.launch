@@ -1,16 +1,17 @@
 <launch>
+    <include file="$(find hexapod_sensing)/launch/hexapod_sensing.launch" />
 	<include file="$(find hexapod_nav)/launch/hexapod_nav.launch" />
 
 	<group ns="hexapod">
 		<group ns="servo">
-			<node name="servo_controller" pkg="hexapod_servo" type="servo_controller.py" />
-			<node name="joint_controller" pkg="hexapod_servo" type="joint_controller.py">
+			<node name="servo_controller" pkg="hexapod_hw" type="servo_controller.py" />
+			<node name="joint_controller" pkg="hexapod_hw" type="joint_controller.py">
 				<param name="offsets_path" value="/home/knifa/HexapodKit/ROS/joint_offsets.dat" />
 			</node>
 		</group>
 
 		<group ns="locomotion">
-			<node name="walker" pkg="hexapod_locomotion" type="walker.py">
+			<node name="walker" pkg="hexapod_locomotion" type="walk_controller.py">
 				<param name="up_angle" value="50" />
 				<param name="down_angle" value="25" />
 
@@ -21,7 +22,7 @@
 				<param name="swing_time" value="0.40" />
 			</node>
 
-			<!-- <node name="joystick_controller" pkg="hexapod_locomotion" type="joystick_controller.py" /> -->
+			<node name="gamepad_controller" pkg="hexapod_locomotion" type="gamepad_controller.py" />
 		</group>
 	</group>
 
