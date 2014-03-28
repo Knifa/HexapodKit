@@ -1,5 +1,5 @@
 <launch>
-	<include file="$(find ccny_openni_launch)/launch/openni2.launch" />
+	<include file="$(find openni2_launch)/launch/openni2.launch" />
 	<include file="$(find ccny_rgbd)/launch/visual_odometry.launch" />
 
 	<node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
