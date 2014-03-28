@@ -38,14 +38,24 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{abstract}
-Some abstract.
+Robot control systems require a large underlying infrastructure of software to facilitate any complex behaviour. Typical systems require a means for communicating with hardware, locomotion control for movement, vision systems for guidance and environment mapping, autonomous navigation, means of user interaction, and so on. Each of these components requires a deep understanding of the subject matter and an immense number of person hours to design, implement, and test.
+
+We implement a robot control system for a hexapod-type robot using the Robot Operating System (ROS) as a framework, an open-source framework designed specifically for building robot control systems. Through this implementation, we show that it is possible to endow a robot with these complex behaviours---specifically visual odometry, environment mapping and autonomous navigational functionalities---without the need to invest a large number of person hours. The key advantage of ROS is its vast amount of standard and community-provided packages which implement the necessary functionality for these complex behaviours. We make great use of these packages, offloading the complexities of development to those who are more qualified. 
+
+Furthermore, we show that it is possible to implement these behaviours on a robot built using only consumer components rather than expensive research hardware. An RGB-D camera is used as the primary sensor for understanding the environment, which is used to provide mapping and positional information throughout the control system.
 \end{abstract}
 
 \renewcommand{\abstractname}{Acknowledgements}
 \begin{abstract}
-I am going to sleep for a hundred days.
+I would like to thank Dr. Paul Siebert for providing me with his invaluable guidance and expertise throughout the project. It would have been very tough going without his help! 
 
---- Daniel Callander
+\noindent
+I would also like to thank my fantastic friends and family for their support during the final stages of the project, especially for their proof-reading services for which I am extremely grateful.
+
+\noindent
+Finally, it would be rude of me not to thank the robot in some form for remaining (mostly) intact throughout the project. Even though the legs fell off a few times, everything remained working right to the very end.
+
+--- Daniel Callander, 2014
 \end{abstract}
 
 \educationalconsent

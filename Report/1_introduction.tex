@@ -23,20 +23,20 @@ This report will detail how these objectives were achieved. Through the use of R
 	The system allows the robot to walk with an abstracted tripod-type walk gait. This abstraction allows any control subsystems to request linear and angular movements, without regard as to the specific actuator commands. The system also provides a means for calibrating the actuators, allowing for movements to be made precisely. Additionally, the robot can be manually controlled via a standard game controller.
 
 	\item[Sensing] \hfill \\
-	The system is capable of building a 3D map of the environment around the robot, updating in real-time as the robot moves around. This map is stored in an efficient manner, allowing the system to quickly determine if any obstacles are nearby. Additionally, the system is capable of localising the position of the robot relative to its environment.
+	The system is capable of building a 3D map of the environment around the robot, updating in real-time as the robot moves around. This map can then be used to detect any nearby obstacles which would obstruct the robot. Additionally, the system is capable of localising the position of the robot relative to its environment.
 
 	\item[Navigation] \hfill \\
 	The system is capable of fully autonomous navigation. Given a target position, the system will determine the most efficient path through the known environment and then supply the appropriate commands to move the robot to that position. Should the robot encounter any new obstacles, the path will be recalculated in real-time to avoid that obstacle.
 
 \end{description}
 
-Without access to the packages available for use through ROS, each of these capabilities would have taken a great number of person hours to develop, test, and integrate.
+Without access to the packages available for use through ROS, each of these capabilities would have taken a great number of person hours to design, implement, and integrate.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Motivation}
 
-The primary motivation was to show that it is possible to implement these complex behaviours, previously restricted to research projects with large budgets, on robots utilising cheaper consumer components. Laser range-finders, in particular, are typically used for environment scanning and positional tracking. These scanners provide extremely accurate results but can cost multiple thousands of pounds. However, as RGB-D sensors become increasingly available, it is possible to achieve similar results at a fraction of the cost.
+The primary motivation was to show that it is possible to implement these complex behaviours, previously restricted to research projects with large budgets, on robots utilising cheaper consumer components. Laser range-finders, in particular, are typically used for environment scanning and positional tracking. These scanners provide extremely accurate results but can cost thousands of pounds \cite{laserscanner}. However, as RGB-D sensors become increasingly available, it is possible to achieve similar results at a fraction of the cost.
 
 As a secondary motivation, we wanted to show that it was possible to implement these behaviours without having to invest an immense number of person hours. Through the use of readily available libraries and frameworks, it is possible for a very small team to implement these behaviours without having to fully understand the underlying intricacies of any one system. Robot control systems are, simply, software development projects. By applying standard software development concepts, such as code reuse and separations of concerns, it allows us to make use of any existing works without having to ``re-invent the wheel'' each time.
 
@@ -60,7 +60,7 @@ To give further context to the project, we provide the following overview of the
 	This subsystem combines the sensing and locomotion subsystems to achieve autonomous navigation through the environment surrounding the robot.
 \end{description}
 
-ROS is used as a framework for implementing this control system, providing a means of communication between each component. Where possible, built-in and community-provided ROS packages are used to provide the implementation, rather than relying on any self-sourced code. A high-level overview of the system is shown in \autoref{fig:overview}, showing the connectivity between each subsystem and the underlying hardware it relies on. Upon starting the system, each subsystem begins communicating such that the complex behaviours can be performed by relying on data from one another.
+ROS is used as a framework for implementing this control system, providing a means of communication between each component. Where possible, standard and community-provided ROS packages are used to provide the implementation, rather than relying on any self-sourced code. A high-level overview of the system is shown in \autoref{fig:overview}, showing the connectivity between each subsystem and the underlying hardware it relies on. Upon starting the system, each subsystem begins communicating such that the complex behaviours can be performed by relying on data from one another.
 
 \begin{figure}[!h]
 	\centering
@@ -69,7 +69,7 @@ ROS is used as a framework for implementing this control system, providing a mea
 	\label{fig:overview}
 \end{figure}
 
-As with any good software development project, this separation of concerns is essential for building a manageable system. The methods with which each subsystem communicates is generic, such that one can be replaced in its entirety with some other implementation, as long as it uses a similar interface. This also means that the subsystems can be used in other projects, should they be relevant.
+As with any good software development project, this ``separation of concerns'' is essential for building a manageable system. The methods with which each subsystem communicates is generic, such that one can be replaced in its entirety with some other implementation, as long as it uses a similar interface. This also means that the subsystems can be used in other projects, should they be relevant.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -12,8 +12,20 @@ Robots are awesome, man.
 
 This final section will detail a number of ways in which the project could be developed further. Much of this additional functionality could be provided by existing standard or community-provided ROS packages, however further research is necessary to prove the adequacy of such packages. Furthermore, some of these suggestions require additional or even entirely new hardware. These would require new drivers, control software, not to mention the hardware integration itself.
 
-\subsection{Improved Hardware}
-The servos currently in use in the robot are extremely cheap, fast and have incredible amounts of torque. Unfortunately, this comes at the cost of accuracy and build quality. Generally, the robot requires complete calibration every time it is powered on to ensure correct operation.
+\subsection{Improved Actuators}
+The actuators currently used in the robot severely limit accuracy and movement speed. While these servos are extremely cheap and have incredible amounts of torque, this comes at the cost of accuracy, speed and build quality. Generally, the robot requires complete calibration every time it is powered on to ensure correct operation, and even after the calibration process it isn't particularly accurate.
+
+Replacing these servos with ones of higher quality would allow the robot to move much more quickly and accurately. As a result, the walking motions implemented by the tripod gait would be smoother in general. This could possibly help with the drift issues occurring in the visual odometry system.
+
+\subsection{Inverse Kinematics}
+To improve movements in general, an inverse kinematics system could be added. This system would allow us to specify where the legs should be positioned relative to the ground, rather than implementing a specific sequence for the angles to rotate to. The inverse kinematics system could then calculate which angle to rotate the joints to based on these position. This would allow for much more smoother movements in terms of the walk gait, which may be beneficial to the visual odometry system as mentioned previously.
+
+This allows for much more complex movements over all. For example, the base of the hexapod can be pivoted but in such a way that the legs remain in place. With an inverse kinematics system, we could supply commands that specify this base rotation having to be concerned about the underlying actuator movements. This can then be expanded to implement more complex walking gaits, perhaps even to allow the robot to walk up stairs, for example.
+
+\subsection{Additional Sensor Hardware \& Environment Interpretation}
+Additional sensory input would allow the control system to understand the environment surrounding the robot much more clearly. In particular, a pair of accelerometer and gyroscope sensors would be extremely helpful. These sensors would provide data relating to the acceleration and orientation of the robot in 3D space. By combining data from these sensors with the output given by the visual odometry system, it may be possible to improve the accuracy of the positional fix. Furthermore, it may be possible to automatically calibrate the servos by using these sensors as it can be used to give a reading as to when the robot is in a stable upright position.
+
+The RGB-D camera used in the robot---specifically the \emph{ASUS Xtion Pro Live}---also features a pair of microphones. These could be used in some manner to implement voice recognition commands, for example. In particular, it is possible to infer from which direction any sound is coming by comparing times between the input signals of the two microphones. This could be used to implement some sort of follow behaviour based on sound.
 
 \subsection{Untethered \& Cloud Operation}
 The robot is only capable of tethered operation in its current hardware configuration. Specifically, a large bundle of cables protrudes from the back of the robot, connecting the RGB-D camera and servo controller to a nearby computer and power source. This restricts the robot to 5 meter radius around the equipment, as USB devices tend to stop functioning correctly with cables above this length without active boosters. 
@@ -24,13 +36,4 @@ Furthermore, the sensing system requires a particularly high performance machine
 
 However, it would be possible to exploit the distributed nature of ROS to alleviate these issues. A Beaglebone Black, for example, could be attached to the robot. This could connect directly to the RGB-D camera and servo controller over USB as the current system does. Subsystems that interface with the hardware would run on this embedded system. Another machine could then be dedicated to performing the complex processing tasks.
 
-This idea could be expanded to make use of cloud services such as Amazon EC2 and Microsoft Azure. Rather than running the performance demanding nodes on a physical machine, they could be ran on a number of virtual machines. 
-
-\subsection{Inverse Kinematics}
-More accurate walk cycle. Advanced movement, tilting. Sweeping.
-
-\subsection{Further Sensor Hardware \& Environment Interpretation}
-Accelerometers for automatic calibration, odometery. Distance sensors as insect-like feelers. Use of microphones on Xtion.  
-
-\subsection{Facial Recognition}
-ROS already has packages for this. More complex behaviour in general.
+This could be further expanded to make use of cloud services such as Amazon EC2 and Microsoft Azure. Rather than running the performance demanding nodes on a physical machine, they could be ran on a number of virtual machines. 
