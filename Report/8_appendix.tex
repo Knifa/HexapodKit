@@ -1,0 +1,498 @@
+\begin{appendices}
+
+\chapter{Demonstration Video}
+
+A demonstration video of the robot can be found at \url{http://youtu.be/efLMad5wh7w}.
+
+\chapter{Source Code}
+
+A repository containing the source code of the implemented robot control system can be found on GitHub at \url{https://github.com/Knifa/HexapodKit}.
+
+\chapter{Evaluation Results}
+
+This appendices show the full results from the control system evaluation.
+
+\section{Visual Odometery}
+
+These tables contain the resulting $(x, y)$ position and $\theta_z$ angle reported by the visual odometery system after various movements. The positions are relative to the robot's starting position---i.e., the starting position is $(0, 0)$.
+
+\subsection{Linear Motion}
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ r r r }
+		\toprule
+		\multicolumn{3}{c}{\textbf{Manual}} \\
+		\midrule
+		\textbf{$x$} & \textbf{$y$} & \textbf{$\theta_z$} \\
+		\midrule
+		$0.905$m &
+		$0.048$m &
+		$3.565$\textdegree{} \\
+
+		$0.906$m &
+		$0.007$m &
+		$-0.709$\textdegree{} \\
+
+		$0.932$m &
+		$0.024$m &
+		$3.648$\textdegree{} \\
+
+		$0.932$m &
+		$-0.007$m &
+		$2.786$\textdegree{} \\
+
+		$0.928$m &
+		$-0.006$m &
+		$-3.599$\textdegree{} \\
+
+		$0.938$m &
+		$-0.010$m &
+		$-2.813$\textdegree{} \\
+
+		$0.928$m &
+		$0.028$m &
+		$2.752$\textdegree{} \\
+
+		$0.932$m &
+		$-0.020$m &
+		$-3.681$\textdegree{} \\
+
+		$0.934$m &
+		$-0.028$m &
+		$0.782$\textdegree{} \\
+
+		$0.909$m &
+		$0.005$m &
+		$1.981$\textdegree{} \\
+
+		\midrule
+		$0.924$m &
+		$0.004$m &
+		$0.471$\textdegree{} \\
+		\bottomrule
+	\end{tabular}
+	\hspace{2ex}
+	\begin{tabular}{ r r r }
+		\toprule
+		\multicolumn{3}{c}{\textbf{Walking}} \\
+		\midrule
+		\textbf{$x$} & \textbf{$y$} & \textbf{$\theta_z$} \\
+		\midrule
+		$0.936$m &
+		$-0.019$m &
+		$-0.871$\textdegree{} \\
+
+		$0.949$m &
+		$0.046$m &
+		$-6.362$\textdegree{} \\
+
+		$0.944$m &
+		$0.039$m &
+		$1.971$\textdegree{} \\
+
+		$0.955$m &
+		$-0.046$m &
+		$5.363$\textdegree{} \\
+
+		$0.968$m &
+		$0.057$m &
+		$-3.224$\textdegree{} \\
+
+		$0.934$m &
+		$0.021$m &
+		$-0.548$\textdegree{} \\
+
+		$0.949$m &
+		$0.037$m &
+		$-0.27$\textdegree{} \\
+
+		$0.987$m &
+		$-0.044$m &
+		$-2.067$\textdegree{} \\
+
+		$0.968$m &
+		$0.039$m &
+		$1.594$\textdegree{} \\
+
+		$0.934$m &
+		$0.001$m &
+		$6.325$\textdegree{} \\
+
+		\midrule
+		$0.952$m &
+		$0.013$m &
+		$0.191$\textdegree{} \\
+		\bottomrule
+	\end{tabular}
+
+	\caption{Results from the visual odometry system after having moved the robot by $1$m both by hand and using the walk cycle.}
+	\label{tab:eval_vo}
+\end{table}
+
+\subsection{Angular Rotation}
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ r r r }
+		\toprule
+		\multicolumn{3}{c}{\textbf{Manual}} \\
+		\midrule
+		\textbf{$x$} & \textbf{$y$} & \textbf{$\theta_z$} \\
+		\midrule
+		$0.066$m &
+		$-0.027$m &
+		$90.023$\textdegree{} \\
+
+		$0.088$m &
+		$-0.059$m &
+		$88.592$\textdegree{} \\
+
+		$0.199$m &
+		$0.029$m &
+		$90.419$\textdegree{} \\
+
+		$0.097$m &
+		$0.069$m &
+		$88.109$\textdegree{} \\
+
+		$0.055$m &
+		$-0.039$m &
+		$88.51$\textdegree{} \\
+
+		$0.176$m &
+		$0.074$m &
+		$88.438$\textdegree{} \\
+
+		$0.055$m &
+		$-0.005$m &
+		$91.587$\textdegree{} \\
+
+		$0.14$m &
+		$0.056$m &
+		$89.128$\textdegree{} \\
+
+		$0.055$m &
+		$0.004$m &
+		$88.484$\textdegree{} \\
+
+		$0.064$m &
+		$-0.058$m &
+		$89.676$\textdegree{} \\
+
+		\midrule
+		$0.1$m &
+		$0.004$m &
+		$89.296$\textdegree{} \\
+		\bottomrule
+	\end{tabular}
+	\hspace{2ex}
+	\begin{tabular}{ r r r }
+		\toprule
+		\multicolumn{3}{c}{\textbf{Walking}} \\
+		\midrule
+		\textbf{$x$} & \textbf{$y$} & \textbf{$\theta_z$} \\
+		\midrule
+		$0.152$m &
+		$0.068$m &
+		$88.937$\textdegree{} \\
+
+		$0.283$m &
+		$-0.011$m &
+		$89.188$\textdegree{} \\
+
+		$0.197$m &
+		$-0.046$m &
+		$92.523$\textdegree{} \\
+
+		$0.14$m &
+		$-0.044$m &
+		$85.965$\textdegree{} \\
+
+		$0.119$m &
+		$0.01$m &
+		$86.522$\textdegree{} \\
+
+		$0.098$m &
+		$-0.072$m &
+		$85.157$\textdegree{} \\
+
+		$0.239$m &
+		$0.021$m &
+		$93.074$\textdegree{} \\
+
+		$0.122$m &
+		$0.015$m &
+		$92.791$\textdegree{} \\
+
+		$0.169$m &
+		$-0.044$m &
+		$90.951$\textdegree{} \\
+
+		$0.199$m &
+		$-0.077$m &
+		$87.728$\textdegree{} \\
+
+		\midrule
+		$0.172$m &
+		$-0.018$m &
+		$89.284$\textdegree{} \\
+		\bottomrule
+	\end{tabular}
+
+	\caption{Results from the visual odometry system after having rotated the robot by $90$\textdegree{} both by hand and using the walk cycle.}
+	\label{tab:eval_vo_rot}
+\end{table}
+
+\section{Navigation}
+
+\subsection{Direct Path}
+
+\subsubsection{Without Obstacle}
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ c }
+		\toprule
+		\textbf{Manual} \\
+		\midrule
+		Time \\
+		\midrule
+		$34.203$s \\
+
+		$34.411$s \\
+
+		$37.379$s \\
+
+		$34.983$s \\
+
+		$38.032$s \\
+
+		$34.401$s \\
+
+		$34.988$s \\
+
+		$38.167$s \\
+
+		$36.907$s \\
+
+		$38.166$s \\
+
+		\midrule
+		$36.164$s \\
+		\bottomrule
+	\end{tabular}
+	\hspace{2ex}
+	\begin{tabular}{ c }
+		\toprule
+		\textbf{Autonomous} \\
+		\midrule
+		Time \\
+		\midrule
+		$51.267$s \\
+
+		$45.533$s \\
+
+		$40.938$s \\
+
+		$46.094$s \\
+
+		$42.858$s \\
+
+		$48.690$s \\
+
+		$44.141$s \\
+
+		$45.372$s \\
+
+		$44.847$s \\
+
+		$45.208$s \\
+
+		\midrule
+		$45.495$s \\
+		\bottomrule
+	\end{tabular}
+	\caption{Time taken for the robot to autonomously navigate a direct $3$m path.}
+	\label{tab:eval_nav_dp_wo}
+\end{table}
+
+\subsubsection{With Obstacle}
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ c }
+		\toprule
+		\textbf{Manual} \\
+		\midrule
+		Time \\
+		\midrule
+		$0$m $50.406$s \\
+
+		$0$m $50.183$s \\
+
+		$0$m $50.782$s \\
+
+		$0$m $51.81$s \\
+
+		$0$m $51.012$s \\
+
+		$0$m $50.406$s \\
+
+		$0$m $52.334$s \\
+
+		$0$m $52.264$s \\
+
+		$0$m $51.475$s \\
+
+		$0$m $50.684$s \\
+
+		\midrule
+		$0$m $51.136$s \\
+		\bottomrule
+	\end{tabular}
+	\hspace{2ex}
+	\begin{tabular}{ c }
+		\toprule
+		\textbf{Autonomous} \\
+		\midrule
+		Time \\
+		\midrule
+		$1$m $4.771$s \\
+
+		$1$m $8.007$s \\
+
+		$1$m $4.724$s \\
+
+		$1$m $0.816$s \\
+
+		$1$m $7.04$s \\
+
+		$1$m $6.758$s \\
+
+		$1$m $1.963$s \\
+
+		$1$m $8.458$s \\
+
+		$1$m $5.232$s \\
+
+		$1$m $9.0$s \\
+
+		\midrule
+		$1$m $5.677$s \\
+		\bottomrule
+	\end{tabular}
+	\caption{Time taken for the robot to autonomously navigate a direct $3$m path after an obstacle has been placed $1$m from the starting position.}
+	\label{tab:eval_nav_dp}
+\end{table}
+
+\subsection{Complex Path}
+
+\subsubsection{Known Environment}
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ c }
+		\toprule
+		\textbf{Manual} \\
+		\midrule
+		Time \\
+		\midrule
+		$2$m $5.643$s \\
+
+		$2$m $10.224$s \\
+
+		$2$m $7.821$s \\
+
+		$2$m $8.206$s \\
+
+		$2$m $4.561$s \\
+
+		$2$m $1.542$s \\
+
+		$2$m $2.964$s \\
+
+		$2$m $2.178$s \\
+
+		$2$m $9.315$s \\
+
+		$2$m $4.037$s \\
+
+		\midrule
+		$2$m $5.649$s \\
+		\bottomrule
+	\end{tabular}
+	\hspace{2ex}
+	\begin{tabular}{ c }
+		\toprule
+		\textbf{Autonomous} \\
+		\midrule
+		Time \\
+		\midrule
+		$2$m $29.284$s \\
+
+		DNF \\
+				
+		$2$m $28.418$s \\
+
+		$2$m $34.716$s \\
+
+		$2$m $34.484$s \\
+
+		$2$m $25.634$s \\
+
+		$2$m $26.558$s \\
+
+		$2$m $32.505$s \\
+
+		$2$m $29.575$s \\
+
+		$2$m $33.873$s \\
+
+		\midrule
+		$2$m $30.561$s \\
+		\bottomrule
+	\end{tabular}
+	\caption{Time taken for the robot to navigate a known environment, specifically the path shown in \autoref{fig:eval_plan}. Average time taken in this case did not include \emph{DNF} results.}
+	\label{tab:eval_nav_cp_known}
+\end{table}
+
+\subsubsection{Unknown Environment}
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ c }
+		\toprule
+		\textbf{Autonomous} \\
+		\midrule
+		Time \\
+		\midrule
+		$3$m $47.259$s \\
+
+		$3$m $46.573$s \\
+
+		$3$m $24.283$s \\
+
+		DNF \\
+
+		DNF \\
+
+		$3$m $23.027$s \\
+
+		$3$m $41.999$s \\
+
+		$3$m $32.822$s \\
+
+		$3$m $46.440$s \\
+
+		DNF \\
+
+		\midrule
+		$3$m $37.486$s \\
+		\bottomrule
+	\end{tabular}
+	\caption{Time taken for the robot to navigate an unknown environment, specifically the path shown in \autoref{fig:eval_plan}. Average time taken in this case did not include \emph{DNF} results.}
+	\label{tab:eval_nav_cp_unknown}
+\end{table}
+
+\end{appendices}
