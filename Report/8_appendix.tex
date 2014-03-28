@@ -16,8 +16,6 @@ This appendices show the full results from the control system evaluation.
 
 These tables contain the resulting $(x, y)$ position and $\theta_z$ angle reported by the visual odometery system after various movements. The positions are relative to the robot's starting position---i.e., the starting position is $(0, 0)$.
 
-\subsection{Linear Motion}
-
 \begin{table}[!h]
 	\centering
 	\begin{tabular}{ r r r }
@@ -129,8 +127,6 @@ These tables contain the resulting $(x, y)$ position and $\theta_z$ angle report
 	\caption{Results from the visual odometry system after having moved the robot by $1$m both by hand and using the walk cycle.}
 	\label{tab:eval_vo}
 \end{table}
-
-\subsection{Angular Rotation}
 
 \begin{table}[!h]
 	\centering
@@ -246,9 +242,6 @@ These tables contain the resulting $(x, y)$ position and $\theta_z$ angle report
 
 \section{Navigation}
 
-\subsection{Direct Path}
-
-\subsubsection{Without Obstacle}
 
 \begin{table}[!h]
 	\centering
@@ -317,8 +310,6 @@ These tables contain the resulting $(x, y)$ position and $\theta_z$ angle report
 	\label{tab:eval_nav_dp_wo}
 \end{table}
 
-\subsubsection{With Obstacle}
-
 \begin{table}[!h]
 	\centering
 	\begin{tabular}{ c }
@@ -386,10 +377,6 @@ These tables contain the resulting $(x, y)$ position and $\theta_z$ angle report
 	\label{tab:eval_nav_dp}
 \end{table}
 
-\subsection{Complex Path}
-
-\subsubsection{Known Environment}
-
 \begin{table}[!h]
 	\centering
 	\begin{tabular}{ c }
@@ -456,8 +443,6 @@ These tables contain the resulting $(x, y)$ position and $\theta_z$ angle report
 	\caption{Time taken for the robot to navigate a known environment, specifically the path shown in \autoref{fig:eval_plan}. Average time taken in this case did not include \emph{DNF} results.}
 	\label{tab:eval_nav_cp_known}
 \end{table}
-
-\subsubsection{Unknown Environment}
 
 \begin{table}[!h]
 	\centering

@@ -1,10 +1,19 @@
 \chapter{Conclusion}
 \label{chap:conclusion}
 
+This chapter concludes the report, reviewing our initial objectives and providing an assessment of over all success against these objectives. The chapter will then end with a discussion about any future developments that could be made with the robot and robot control system.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Summary}
-Robots are awesome, man.
+
+The original premise of this project was develop a control system for a hexapod-type robot through the use of the Robot Operating System (ROS). A number of complex behaviours such as environmental mapping and autonomous navigation would be implemented. By doing this, we would evaluate the usefulness of ROS as a means for rapidly developing these control systems in a simplified manner. The large variety of standard and community-provided ROS packages would be explored, and we would attempt to leverage these packages to endow the robot with the complex behaviours described. These packages should have allowed us to implement these behaviours without requiring a deep understanding of their inner workings.
+
+This control system was implemented by dividing the system into a number of subsystems. These subsystems would implement hardware operations, locomotion facilities, sensing facilities and autonomous navigation facilities. While a number of standard and community-provided packages existed which we utilised to implement these subsystems, specifically for the sensing and navigation subsystems, we still had to implement a number of platform specific nodes. These nodes would provide drivers for the servo controller, a means of calibrating the servos, and a means of locomoting the robot through a tripod walk gait. ROS proved to be very useful in simplifying the development of these custom nodes.
+
+An evaluation of the control system showed that the implemented system was fairly functional. All of the nodes which were developed specifically for the our hexapod-type robot worked as intended.  The visual odometery system was shown to drift quite intensely as the robot performed angular motions but was otherwise reasonably accurate in estimating the robot's position in space. The mapping system gave a good facsimile of the surrounding environment, but drift from the visual odometry system tended to cause severe distortions in the resulting generated map. The autonomous navigation system was particularly good at moving the robot along direct paths, even when an obstacle was placed in its path. However, the system was not particularly good at moving along complex paths---i.e., around large obstacles---especially in an unknown environment. The control system tended to take a long time to get the robot to the correct position, and in some cases failed completely.
+
+Overall, the project has been relatively successful. It would have been very difficult to complete this project without the use of ROS. The many standard and community-provided packages allowed us to leverage complex functionalities that would have otherwise required many person hours to implement by hand. Each subsystem could have been considered an entire project of its own right without these packages. Additionally, the development of the custom nodes which were required was accelerated through the use of ROS in general.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

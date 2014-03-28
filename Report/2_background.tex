@@ -145,14 +145,14 @@ It should be noted that the depth detection range is not unlimited. The specific
 
 The advantages this particular sensor provides over the \emph{Kinect} is mostly physical, specifically weight and footprint. The \emph{Kinect} has a motorized base which allows the device to be tilted upwards and downwards through software, in comparison to the \emph{Xtion} which has a simple hinge that must be rotated by hand. This feature is unnecessary in this use case and adds a significant amount of weight. Additionally, the \emph{Kinect} is intended to be a consumer device and, thus, has a much striking product design. However, this striking design comes at the cost of making the device much larger in general. As space on the robot's base is at a premium, this makes the \emph{Xtion} much more favourable.
 
-Should one wish to develop for the \emph{Xtion} in general, they must use the \emph{OpenNI} framework which is a ``standard framework for 3D sensing'' \cite{openni_site}. In particular, the \emph{Xtion} requires the use of \emph{OpenNI2} which is the second iteration of this framework. The framework encapsulates much of the complex hardware interaction such that it is possible to get the output imagery with relative ease. 
+Should one wish to develop for the \emph{Xtion} in general, they must use the \emph{OpenNI} framework which is a ``standard framework for 3D sensing'' \cite{openni_site}. In particular, the \emph{Xtion} requires the use of \emph{OpenNI2} which is the second iteration of this framework. The framework encapsulates much of the complex hardware interaction such that it is possible to get the output imagery with relative ease. A \texttt{openni2\_camera} package exists that provides a wrapper node for this framework, such that the imagery can be accessed through standard ROS topics.
 
 \subsection{Servos \& Servo Controller}
 Each joint piece is attached to the shaft of a servomechanism (servo) to facilitate rotation. Each servo is controlled by a \emph{pulse-width modulated} (PWM) signal supplied by the controller such that the angle of the servo can be controlled precisely. Servos operate using a feedback-loop system such that the current of an internal motor is controlled, rotating the shaft to the desired position. Rotational range and speed of servos vary depending on model, but in this case the servos allow for a total rotational range of 180\textdegree.
 
-The servos are controlled by an off-the-shelf servo controller board, specifically the \emph{Torobot 32-channel Servo Controller}. This board, in particular, expects text-based control commands over serial, either via direct TTL or emulated over an on-board USB to TTL converter \cite{torobot_manual}. A number of commands are supported, allowing control of the position of both single and groups of servos. Additionally, a set of movements can be programmed and issued with a single command \cite{torobot_manual}. Power is also distrusted to the servos via this board.
+The servos are controlled by an off-the-shelf servo controller board, specifically the \emph{ToroBot 32-channel Servo Controller}. This board, in particular, expects text-based control commands over serial, either via direct TTL or emulated over an on-board USB to TTL converter \cite{torobot_manual}. A number of commands are supported, allowing control of the position of both single and groups of servos. Additionally, a set of movements can be programmed and issued with a single command \cite{torobot_manual}. Power is also distrusted to the servos via this board.
 
-No package that implements a driver for this particular servo controller is available in the ROS repositories. Our control system would need to implement this driver.
+No package that implements a driver for this particular servo controller exists within the ROS repositories, so our control system would have to implement its own.
 
 \subsubsection{Protocol}
 
@@ -176,16 +176,47 @@ It should be noted that the parameter for the target position is actually the pu
 
 \section{Existing Robot Control Systems}
 
-A number of ROS-based control systems exist for prefab robots. Some examples are these include the \emph{PR2} by \emph{Willow Garge} for which ROS was originally created \cite{ros_pr2}, the \emph{Jaguar} by \emph{Dr Robot Inc} \cite{jag}, and the \emph{TurtleBot} \cite{turtlebot}. These are robots are purchasable from the manufacturer in an already assembled form, where the manufacturer has also implemented the control system. This allows any buyer to get started implementing interesting behaviours on top of this system without having to worry about movement, navigation, etc. These systems target their corresponding hardware platforms specifically and, as such, cannot be adapted for use with our hexapod-type robot. Regardless, these systems can be used to gain an understanding of what shape a control system should take in general. Furthermore, these control systems rely on generic packages underneath which we can, indeed, leverage.
+A number of ROS-based control systems exist for prefab robots. Some examples of these include the \emph{PR2} by \emph{Willow Garge} for which ROS was originally created \cite{ros_pr2}, the \emph{Jaguar} by \emph{Dr Robot Inc} \cite{jag}, and the \emph{TurtleBot} \cite{turtlebot}. These robots are purchasable from the manufacturer in an already assembled form, where the manufacturer has also implemented a control system. This allows any buyer to get started implementing interesting behaviours on top of this system without having to worry about movement, navigation, etc. These systems target their corresponding hardware platforms specifically and, as such, cannot be adapted for use with our hexapod-type robot. Regardless, these systems can be used to gain an understanding of what shape a control system should take in general. Furthermore, these control systems rely on generic packages underneath which we can, indeed, leverage.
 
 As far as could be found, there are no existing robot control systems for hexapod-type robots that are based upon ROS. By doing a web search, it is possible to find numerous forum posts by hobbyist roboticists suggesting that some are being developed, but none in an official research sense. Additionally, these posts are usually dead end leads in that no source code, or even further information in general, can be found. Furthermore, no existing robot control systems for any hexapod-type robots exist within the ROS repositories. It is for this reason, that we must design and develop our own control system.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Visual Control}
+\section{Visual Interpretation}
 
-A number of research papers were found relating to the use of RGB-D cameras for localisation and environment mapping, however these papers dealt with the specifics of the algorithms used rather than their usage in general \cite{correa2012mobile, biswas2012depth, cunha2011using}. Furthermore, none of these projects targeted ROS in particular and thus would require us to implement them by hand. These algorithms are particular complex and, as such, were outside the scope of this project. The use of any existing package that implemented this functionality would be favoured instead.
+A number of research papers were found relating to the use of RGB-D cameras for localisation and environment mapping, however these papers dealt with the specifics of the algorithms used rather than their usage in general \cite{correa2012mobile, biswas2012depth, cunha2011using}. Furthermore, none of these projects targeted ROS in particular and thus would require us to implement them by hand. These algorithms are particularly complex and, as such, were outside the scope of this project. The use of any existing package that implemented this sort of functionality would be favoured instead.
+
+Two packages were found that deliver this functionality. Specifically, \texttt{ccny\_rgbd} and \texttt{octomap\_mapping} \cite{ccny_rgbd, ros_wiki_octomap}. These provided a means for position estimation and environment mapping respectively through simplified interfaces. The particulars of these packages will be detailed in the implementation section.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Conclusions}
+\section{Summary}
+
+To summarise this background information, ROS provides us with the following useful features which we can leverage while implementing our robot control system.
+
+\begin{itemize}
+    \item A means of dividing complex functionalities into separate tasks through the use of nodes.
+    \item A means of asynchronous communication between these nodes through topics using standard data structures.
+    \item A method to group these nodes into subsystems through packages.
+    \item A standard way of programatically launching large groups of nodes while being able to group them into namespaces. Additionally, a means of providing parameters to these nodes such that they can be reconfigured as necessary.
+    \item A method of transforming between various positional frames on the robot.
+    \item A user interface that can be used to visualise sensor data and provide control inputs to the control system.
+\end{itemize}
+
+Combined, these features greatly simplify the development process by offloading much of the difficult work onto the framework itself. Furthermore, a number of standard and community-provided ROS packages already provide us with the following functionality:
+
+\begin{itemize}
+    \item Drivers for the RGB-D camera which publishes the imagery on a number of topics.
+    \item A visual odometry system that can be used to estimate the robot's position in the environment using camera imagery.
+    \item A mapping system capable of interpreting the environment using camera imagery, such that obstacles can easily be detected.
+    \item A full navigational suite capable of path planning and robot control.
+\end{itemize}
+
+While these packages get us a significant way to completing the system, we must still implement the following functionality ourselves:
+
+\begin{itemize}
+    \item Drivers for controlling the on-board servo controller.
+    \item A method of locomoting the robot---e.g, through some walk gait.
+\end{itemize}
+
+Additionally, a number of existing robot control systems exist within the ROS repositories but these target specific robots and, thus, cannot be adapted for use with our hexapod. A number of visual interpretation methods were researched but the specifics of these were too complex for the scope of this project. Instead, we rely on a number of community-provided packages to give us this functionality.
